@@ -1,4 +1,4 @@
-# bioinformatics
+# applied bioinformatics
 SP2019
 
 
