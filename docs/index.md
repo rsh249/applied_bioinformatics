@@ -20,18 +20,19 @@ The 2019 spring semester course will focus on generating and analyzing genomic D
 
 Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.com/products/minion"> here. 
 
-# Objectives:
-
-# License for reuse: 
-
-<a href = "https://github.com/rsh249/bioinformatics/blob/master/LICENSE.md"> License
-
 
 # Outline:
 
-# Computational Skills Sections:
+### Computational Skills Labs:
+
+### Lecture Notes
+
+### Readings
 
 
+### Links to Blogs
+
+### Links to Projects
 
 
 
@@ -39,7 +40,14 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 ---
 
 <image src='images/minion.jpg'>
+
 ---
+
+
+# License for reuse: 
+
+<a href = "https://github.com/rsh249/bioinformatics/blob/master/LICENSE.md"> License
+
 
 
 
