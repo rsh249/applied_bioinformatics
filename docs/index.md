@@ -29,7 +29,6 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 ### Readings
 
-
 ### Links to Blogs
 
 ### Links to Projects
@@ -37,16 +36,18 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 
 
+#### License for reuse: 
+
+CC-BY 4.0
+
+<a href = "https://github.com/rsh249/bioinformatics/blob/master/LICENSE.md"> License
+
+
 ---
 
 <image src='images/minion.jpg'>
 
 ---
-
-
-# License for reuse: 
-
-<a href = "https://github.com/rsh249/bioinformatics/blob/master/LICENSE.md"> License
 
 
 
