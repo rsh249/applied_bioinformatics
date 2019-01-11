@@ -33,6 +33,15 @@ We will work on developing these skills in the framework of a DNA sequencing pro
 
 Together we will design sequencing experiments, collect data using the MinION, and build projects to analyze those data.
 
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-IFo5Uv-9BY?rel=0"; frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+
+<iframe src="https://player.vimeo.com/video/172339118" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<p><a href="https://vimeo.com/172339118">Kew Gardens | Real-time nanopore sequencing and analysis of plant genomes in the field using MinION</a> from <a href="https://vimeo.com/user5318092">Oxford Nanopore</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
 ## Course components
 
 ### Labs
@@ -53,7 +62,7 @@ Primary literature readings on topics related to MinION experiments and DNA sequ
 
 ## Software
 
-### Unix Terminal
+### Unix Terminal and Remote Access via SSH
 
 You will be working primarily on a remote computer hosted by Prof. Harbert. We will be touring this shortly. For this class you will access that machine in two ways. First will be with RStudio Server through your browser (I have tested and recommend Firefox). Second will be through the Unix command line and a utility called 'ssh'. 
 
