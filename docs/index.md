@@ -27,8 +27,50 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 ### Lecture Notes
 
-### Readings
+### Schedule and Readings
 
+Week 1 (January 17)
+<a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community
+
+<a href="https://doi.org/10.1093/jxb/erx289"> A world of opportunities with nanopore sequencing
+
+Week2 (January 24)
+<a href="https://dx.doi.org/10.7171%2Fjbt.17-2801-009">  Real-Time DNA Sequencing in the Antarctic Dry Valleys Using the Oxford Nanopore Sequencer
+
+Week 3 (January 31)
+<a href="https://doi.org/10.1038/s41598-017-18364-0"> Nanopore DNA Sequencing and Genome Assembly on the International Space Station
+
+Week 4 (February 7)
+<a href="https://doi.org/10.1186/s12864-018-5348-8"> Assembly of chloroplast genomes with long- and short-read data: a comparison of approaches using Eucalyptus pauciflora as a test case
+
+Oxford Nanopore Plant Genome White Paper (See eLearn for copy)
+
+Week 5 (February 14)
+<a href="https://doi.org/10.1186/s13059-018-1462-9"> From squiggle to basepair: computational approaches for improving nanopore sequencing read accuracy
+
+Week 6 (February 21) NO READINGS -- Sequencing Lab Week
+
+Week 7 (February 28) NO READINGS -- Project Development Week
+
+Week 8 (March 7) NO READINGS -- Spring Break
+
+Week 9 (March 14) NO READINGS -- Project Proposals DUE
+
+Week 10 (March 21) 
+<a href="https://doi.org/10.1038/nbt.4060"> Nanopore sequencing and assembly of a human genome with ultra-long reads
+
+Week 11 (March 28)
+<a href="https://doi.org/10.1126/science.aau9343"> Metagenomic sequencing at the epicenter of the Nigeria 2018 Lassa fever outbreak
+
+<a href="https://nanoporetech.com/resource-centre/metagenomic-nanopore-sequencing-rna-viruses-lab-field"> Video:  Liana Kafetzopoulou - Metagenomic nanopore sequencing: RNA viruses from lab to field 
+
+Week 12 (April 4)
+<a href = "https://doi.org/10.1101/487033"> Ultra-deep, long-read nanopore sequencing of mock microbial community standards
+
+Week 13 (April 11)
+<a href = "https://www.nature.com/articles/d41586-018-05462-w"> New human gene tally reignites debate
+
+End of readings...
 
 
 ### Links to Blogs
