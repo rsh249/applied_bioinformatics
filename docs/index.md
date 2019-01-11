@@ -45,9 +45,15 @@ CC-BY 4.0 + MIT for code
 <a href = "https://github.com/rsh249/bioinformatics/blob/master/LICENSE.md"> License
 
 
----
+---  
+
+
+
 
 <image src='images/minion.jpg' style="transform:rotate(90deg);">
+
+
+
 
 ---
 
