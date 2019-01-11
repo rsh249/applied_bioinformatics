@@ -20,8 +20,124 @@ use_python('/home/rharbert/anaconda3/bin/python')
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# First
 
-Since we have limited time to spend on Python we will not be covering Pandas and data visualization 
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+# Introduction
+
+Applied Bioinformatics will challenge you all by teaching computational skills that are becoming essential training for biologists. This includes coding in R and Python and working with command line programs.
+
+We will work on developing these skills in the framework of a DNA sequencing project using the Oxford Nanopore MinION sequencer. The MinION is a cutting edge device that brings DNA sequencing directly to the scientist in real-time. 
+
+Together we will design sequencing experiments, collect data using the MinION, and build projects to analyze those data.
+
+## Course components
+
+### Labs
+
+Either working on learning coding techniques OR doing MinION projects.
+
+### Lectures
+
+Introducing some bioinformatics theory and software.
+
+### Reading Discussion
+
+Primary literature readings on topics related to MinION experiments and DNA sequence analysis generally.
+
+
+
+# Your Setup
+
+## Software
+
+### Unix Terminal
+
+You will be working primarily on a remote computer hosted by Prof. Harbert. We will be touring this shortly. For this class you will access that machine in two ways. First will be with RStudio Server through your browser (I have tested and recommend Firefox). Second will be through the Unix command line and a utility called 'ssh'. 
+
+Mac users should be all set with this and can check this out by starting the "Terminal" app and typing:
+
+```{bash, eval=FALSE}
+
+ssh -h
+
+```
+
+Windows users should search the app store for "Ubuntu 18.04 LTS" and follow the installation instructions. This will install a Unix (Ubuntu Linux) command line app that works with your Windows operating system. This app comes with many command line utilities, including 'ssh'. So when you start that app you should be able to type at the prompt:
+
+```{bash, eval = FALSE}
+ssh -h
+```
+
+I will demonstrate how to use SSH during our first lab.
+
+### RStudio (Recommended)
+
+We will be working a lot with R and RStudio mostly through the RStudio server. This will not require you to work directly on your laptop, but there may be times that you prefer to work locally (i.e., any time you are not on campus). In that case  you will want to have your own copy of R and RStudio. I suggest you work on this after class today and post on Slack (see next) if you run into any issues.
+
+Get R [https://cran.r-project.org/](here) and RStudio (Free Desktop version) [https://www.rstudio.com/products/rstudio/download/#download](here). 
+
+## Slack
+
+We will be communicating with each other using a Slack group. Please navigate[https://2019applied.slack.com/messages/CF7ET7Q86](here) to join. Use your college email to join. I also highly recommend getting the Slack app on your laptop and phone so that you get push notifications when there is activity.
+
+
+# Computing
+
+## Personal computer hardware
+
+We will tour the compute resource we will be using for this course next. But first, you should look up some information about your laptops. We need to know (make notes):
+
++ What operating system are you using? (Windows, Linux, Mac)
++ How much data storage do you have? (your 'hard drive'; usually 256GB or 512GB)
++ How much RAM is installed? (usuall 4,8, or 16GB)
++ What processor is your computer using? (Brand, model #)
+
+## Neotoma1 
+
+**field trip**
+
+# Accessing a remote resource
+
+You have all been given an account on Neotoma1. To log in you will need your username, password, and the IP address of Neotoma1. Next week I will show you how to change your password to something more memorable and secure.
+
+The IP number may change but will always be written on the board during class. It will NOT be posted on the webpage for security purposes.
+
+## SSH
+
+To login by SSH
+
+```{bash, eval = FALSE}
+#Always with no spaces in the username or IP #
+
+ssh yourusername@ip.number.of.the.day 
+
+```
+
+## RStudio Server
+
+In your browser navigation bar type:
+
+http://ip.number.of.the.day:8787
+
+# Git
+
+Git is a powerful software for version control, collaboration, and backup management. This semester we will be using Git to deposit Blog homework assignments and project code. Your homeworks will merge computer code with written notes and documentation in a template to generate pages just like this one. Your blog pages will then be given their own section on the course website each week and archived on Github. This means that you all will be co-authors of the final product of the course Git repository. 
+
+Why should you care? Computational skills are highly valued in biology right now and people are very interested in new training materials. See [https://twitter.com/robharbert/status/1073301690659545088]here. Your blogs and projects will significantly enhance the course materials I am developing.
+
+So, go sign up for a GitHub account so I can make you all collaborators in this repository! [www.github.com](www.github.com)
+
+# Homework:
+
+Log into the Slack group and post 2-3 sentences about yourself in the [https://2019applied.slack.com/messages/CF7ET7Q86](#introductions) channel.
+
+# Next time:
+
+Lecture session on current sequencing technology.
+
+
 
 [home](https://rsh249.github.io/applied_bioinformatics)
