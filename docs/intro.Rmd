@@ -1,0 +1,27 @@
+---
+title: "Introductions, Scientific Computing, Git Setup"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/home/rharbert/anaconda3/bin/python')
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# First
+
+Since we have limited time to spend on Python we will not be covering Pandas and data visualization 
+
+[home](https://rsh249.github.io/applied_bioinformatics)
