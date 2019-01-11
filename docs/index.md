@@ -47,7 +47,7 @@ CC-BY 4.0 + MIT for code
 
 ---
 
-<image src='images/minion.jpg' class="rotate90">
+<image src='images/minion.jpg' style="transform:rotate(90deg);">
 
 ---
 
