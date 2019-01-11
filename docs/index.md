@@ -50,6 +50,10 @@ CC-BY 4.0 + MIT for code
 
 
 
+<br>
+<br>
+<br>
+
 <image src='images/minion.jpg' height="200" style="transform:rotate(90deg);">
 
 
