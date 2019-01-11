@@ -63,7 +63,7 @@ Week 16: NO LAB
 
 TBA
 
-### Schedule and Readings
+### Schedule of Readings
 
 Week 1 (January 17)
 <a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community
@@ -111,8 +111,11 @@ End of readings...
 
 ### Links to Blogs
 
+Student written Blogs <a href=''>HERE
+
 ### Links to Projects
 
+Student project directories <a href='https://github.com/rsh249/applied_bioinformatics/projects'>HERE
 
 
 
