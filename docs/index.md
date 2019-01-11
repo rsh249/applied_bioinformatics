@@ -23,9 +23,29 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 # Outline:
 
-### Computational Skills Labs:
+### Labs:
+
+Week 1: Introductions + Computing Basics + Git Setup
+Week 2: Unix Command Line
+Week 3: R, RStudio, and RMarkdown 
+Week 4: R and Data Visualization
+Week 5: Advanced R (Functions and Packages)
+Week 6: Nanopore Sequencing
+Week 7: Python 1 + Reticulate R
+Week 8: *Spring Break*
+Week 9: Python 2
+Week 10: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
+Week 11: Data Workshop 2: Genome Assembly + Viewing
+Week 12: Data Workshop 3: Metagenomics and contaminant detection
+Week 13: Project Workshop 1
+Week 14: Project Workshop 2
+Week 15: Project Presentations
+Week 16: NO LAB
+
 
 ### Lecture Notes
+
+TBA
 
 ### Schedule and Readings
 
