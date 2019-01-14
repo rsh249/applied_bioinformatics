@@ -61,7 +61,8 @@ Week 16: NO LAB
 
 ### Lecture Notes
 
-TBA
+Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
+
 
 ### Schedule of Readings
 
