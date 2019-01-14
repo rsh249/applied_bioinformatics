@@ -111,6 +111,8 @@ End of readings...
 
 ### Links to Blogs
 
+Use the RMarkdown template provided <a href = 'https://github.com/rsh249/applied_bioinformatics/docs/rmarkdown_template.Rmd'> here. View template output <a href = 'rmarkdown_template.html'> here.
+
 Student written Blogs <a href=''>HERE
 
 ### Links to Projects
