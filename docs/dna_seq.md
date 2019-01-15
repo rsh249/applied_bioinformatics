@@ -151,6 +151,15 @@ How many runs at 500bp per read and (let's assume) 384 reads per run would it ta
 
 ---
 
+--- 
+
+## More Nanopore
+
+<iframe src="https://player.vimeo.com/video/297106166" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<p><a href="https://vimeo.com/297106166">Introduction to nanopore sequencing</a> from <a href="https://vimeo.com/user5318092">Oxford Nanopore</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+
+---
+
 
 ## Other Resources
 
@@ -165,5 +174,7 @@ https://www.omicsonline.org/open-access/generations-of-sequencing-technologies-f
 
 --- .segue 
 
-# Questions?
+# Questions? 
+[home](https://rsh249.github.io/applied_bioinformatics)
+
 ---
