@@ -27,41 +27,41 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup
 
-Week 2: Unix Command Line
+Week 2: R, RStudio, and RMarkdown 
 
-Week 3: R, RStudio, and RMarkdown 
+Week 3: R and Data Visualization
 
-Week 4: R and Data Visualization
+Week 4: Advanced R (Functions and Packages)
 
-Week 5: Advanced R (Functions and Packages)
+Week 5: Nanopore Sequencing
 
-Week 6: Nanopore Sequencing
+Week 6: Python 1 + Reticulate R
 
-Week 7: Python 1 + Reticulate R
+Week 7: *Spring Break*
 
-Week 8: *Spring Break*
+Week 8: Python 2
 
-Week 9: Python 2
+Week 9: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
 
-Week 10: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
+Week 10: Data Workshop 2: Genome Assembly + Viewing
 
-Week 11: Data Workshop 2: Genome Assembly + Viewing
+Week 11: Data Workshop 3: Metagenomics and contaminant detection
 
-Week 12: Data Workshop 3: Metagenomics and contaminant detection
+Week 12: Project Workshop 1
 
-Week 13: Project Workshop 1
+Week 13: Project Workshop 2
 
-Week 14: Project Workshop 2
+Week 14: Project Presentations
 
-Week 15: Project Presentations
 
-Week 16: NO LAB
 
 
 
 ### Lecture Notes
 
 Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
+
+Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 
 
 ### Schedule of Readings
