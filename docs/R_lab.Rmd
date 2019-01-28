@@ -1,0 +1,375 @@
+---
+title: "Intro R Lab"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+# Introduction to R
+
+# R Resources
+
+[R for Data Science](https://r4ds.had.co.nz/) 
+[Advanced R](https://adv-r.hadley.nz/)
+[Data Visualization with R](https://rkabacoff.github.io/datavis/)
+[Data visualization in ggplot2](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)
+
+
+# R Basics
+
+
+## Accessing RStudio Online
+
+To access your RStudio account for this course navigate to http://ip.of.the.day:8787. This number can change from time to time so if you have trouble accessing this later you should email your instructor. I'll let you know if this protocol changes.
+
+Log in when prompted using your username and password.
+
+This RStudio server will host all of our activities for this course, but you may also want to have RStudio on your laptop. To do that download and install (in order):
+
+[R](https://cran.r-project.org/) *Select the correct version for your operating system*
+
+[RStudio](https://www.rstudio.com/products/rstudio/download/) **Select the FREE Desktop version*
+
+
+
+
+## R via the command line
+
+You should know that everything we do in the RStudio console can be done in R on the commandline as well.
+
+To get started type: 'R' at your command line.
+
+What version of R do you have? The output should look something like this:
+
+
+```{r fig.width=7, fig.align='center', echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./images/Rprompt.png")
+grid.raster(img)
+```
+
+
+## Basic R
+
+We can now get started with the R command promp open.
+
+### Simple Variables
+Declare variables with '=' OR "<-". This assigns a value to a variable.
+
+```{r}
+x=2
+print(x) ##Print method
+class(x)
+
+```
+### Data classes
+
+R does what is known as "dynamic typing" when you create a new variable or object. This means that the kind of data is used to determine how that object gets created. Different classes of data have different properties in R, and many functions will require  specific classes.
+
+The main classes that you will see are:
+
+Numeric - (default for numbers)
+
+```{r}
+x = 2
+class(x)
+```
+Integer - (Sometimes required, but usually the same as numeric whole numbers. Almost never the default)
+
+```{r}
+y = as.integer(x)
+class(y)
+```
+
+Character- (Non-numeric character strings)
+
+```{r}
+c = 'two'
+class(c)
+```
+
+Factor- (Categorical variables, often the default for character fields in tables)
+
+```{r}
+cf = as.factor(c)
+class(cf)
+```
+
+### Operators
+
+R has built in mathematical and logical operators that we can use to set up calculations.
+
+Math:
+Addition (+)
+Subtraction (-)
+Multiplication (*)
+Division (/)
+Exponent (^ OR **)
+
+Logical:
+Greater than/Less than (>/<)
+Equals (==) *IMPORTANT to use two equals!
+Greater than or equal to (>=)
+Not (! / !=)
+"In" %/% *Useful for checking if a list or vector contains some value
+
+Examples:
+
+Math 
+```{r}
+x=3
+x+x
+x*x
+x**x
+x/x
+```
+
+Logical
+```{r}
+x>1
+x<=3
+x!=3
+x %in% c(1,2,3,4,5)
+x==2
+```
+
+### Vectors (Arrays/Lists)
+
+Multiple values can be assigned a single variable, or object, by using R data structures known as vectors or lists. In other programming languages these are often called arrays.
+
+Multi-value objects can often be created with functions like c(), seq(), and vector()
+
+```{r}
+
+x=c(1:10) # Create a vector
+class(x)
+print(x)
+```
+
+
+Accessing single variables from an object:
+
+```{r}
+print(x[1]) # First index of vector
+print(x[1:5])
+```
+
+
+2-dimensional objects are known as matrices or data.frames. Think of tables in Excel or similar:
+
+```{r}
+y = matrix(nrow=5, ncol=5) # create a 5x5 matrix
+print(y)
+class(y)
+y[1,1] = 5 #Access data
+print(y)
+
+
+y = cbind(seq(1:5), 
+seq(1:5),
+seq(1:5),
+seq(1:5),
+seq(1:5))
+
+class(y)
+
+
+z = as.data.frame(y);
+class(z) #access is the same for data.frames
+
+```
+
+For ALL multi-value objects we can apply basic operators to all values:
+
+```{r}
+y+2
+y**2
+y>2
+y!=4
+```
+
+### Built in math functions
+
+R provides you with several useful functions for basic math operations that you don't want to calculate by hand:
+
+```{r}
+sum(c(1:10)) #calculate the sum
+sqrt(88) #square root
+log(10) #logarithm, default: natural log but base can be defined
+##Many others... min(), max(), mean(), median()
+
+```
+
+## Challenge 1:
+
+Given a list of numeric data:
+```{r}
+data= c(1.1,1.5,1.2,0.7,1.6,0.2,1.1, 1.1, 1.2, 1.7,0.2, 0.7, 0.8, 0.9)
+```
+
+Calculate the mean and standard deviation using only the basic operators and the sum() function.
+
+Save your approach for inclusion in your first Blog entry.
+
+## Data input/output
+
+For this section we will read in a table of US Census Demographic data from https://www.kaggle.com/muonneutrino/us-census-demographic-data. The file can be found on the RStudio server at '/usr/share/data/kaggle/census.csv'. 
+
+
+### Read table data in text files:
+read.table()
+read.csv()
+read.delim()
+
+```{r, eval=FALSE}
+census = read.csv('/usr/share/data/kaggle/census.csv')
+head(census)
+
+```
+
+```{r, eval=TRUE, echo=FALSE}
+census=read.csv("/Users/rharbert/Documents/census.csv")
+```
+### Write data to a file:
+
+write.csv() 
+
+```{r, eval=FALSE}
+write.csv(census, 'newfile.txt')
+
+```
+
+### Saving your workspace:
+
+Either Session -> Save Workspace As
+
+OR:
+
+```{r, eval=F}
+save.image('workspace_1.RData')
+```
+
+## Basic plotting
+
+One of R's biggest advantages is the ability to create high quality graphics in nearly any format or style. Today we will be working with the basic plotting features but later we will take a look at the [ggplot library](https://ggplot2.tidyverse.org/). ggplot is the current leader in graphics for R.
+
+Plot with base R's 'plot' (This can be really bad!)
+```{r}
+head(census)
+str(census) #How many variables/columns do we have?
+#plot(census) May fail
+```
+
+Pick two variables, it gets better:
+```{r}
+plot(census[,7:8])
+```
+
+Add plot elements: e.g., title, marker symbols, colors
+
+```{r}
+plot(census[,7:8], main="Percent of population white vs hispanic", pch=20, cex =0.2, col = 'grey')
+```
+
+OR we can create other types of plots by calling other functions. e.g., a histogram of boxplot:
+
+```{r}
+hist(census[,'Citizen'])
+
+```
+
+
+```{r}
+boxplot(census[,'Citizen'])
+```
+
+
+Density plotting: Wrap density() function in plot
+Add series with points() instead of plot:
+```{r}
+plot(density(census[,'Citizen']))
+points(density(census[,'TotalPop']), type = 'l', col ='blue')
+```
+
+## ggplot2 Graphics
+
+```{r}
+library(ggplot2)
+demo = census #Just rename the object for the next lines
+```
+### SCATTERPLOTS
+```{r}
+ggplot(data = demo) +
+  geom_point(mapping = aes(x = Citizen, y = TotalPop))
+```
+### change x and y axis titles
+```{r}
+ggplot(data = demo) +
+  geom_point(mapping = aes(x = Citizen, y = TotalPop)) +
+  xlab("No. of Citizens per County") + ylab("Total County Population")
+```
+
+
+### use transparency with 'alpha'
+```{r}
+ggplot(data = demo) +
+  geom_point(mapping = aes(x = Citizen, y = TotalPop,alpha =0.5)) +
+  xlab("No. of Citizens per County") + ylab("Total County Population")
+```
+
+### or color by a group column
+```{r}
+ggplot(data = demo) +
+  geom_point(mapping = aes(x = Citizen, y = TotalPop, alpha=0.2, col=State)) +
+  xlab("No. of Citizens per County") + ylab("Total County Population")
+```
+
+# Tour RMarkdown
+
+Open the file /usr/share/docs/rmarkdown_template.Rmd
+
+Tour editing RMarkdown docs.
+
+# Blog
+
+Using rmarkdown and the census data: Create a document that guides you throug the steps of reading in data, accessing parts of it, and creating basic data visualization. Alongside the code include comments about what is happening at each step. 
+
+Then create a new data visualization (different parameters) and discuss any patterns or trends you observe using the census data. If using ggplot consult the ggplot [cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf) for guidance beyond scatterplots.
+
+When finished "knit" your document to html (use the "Knit" button in RStudio). Make sure this runs without errors.
+
+## Upload homework to Git
+
+If you have not done already, get the Github Desktop app: https://desktop.github.com/ And sign in with your account.
+
+Save your document to the server. Download with 'scp'
+
+```{bash, eval=F}
+scp 'username@ip.of.the.day:path/to/file.Rmd' 'path/to/Git'
+scp 'username@ip.of.the.day:path/to/file.html' 'path/to/Git'
+```
+
+Then commit and push to repository using the Github Desktop app.
+
+[home](https://rsh249.github.io/applied_bioinformatics)
