@@ -27,7 +27,7 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup
 
-Week 2: R, RStudio, and RMarkdown 
+Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown 
 
 Week 3: R and Data Visualization
 
