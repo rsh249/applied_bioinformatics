@@ -30,8 +30,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # R Resources
 
 [R for Data Science](https://r4ds.had.co.nz/) 
+
 [Advanced R](https://adv-r.hadley.nz/)
+
 [Data Visualization with R](https://rkabacoff.github.io/datavis/)
+
 [Data visualization in ggplot2](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)
 
 
@@ -72,7 +75,7 @@ grid.raster(img)
 
 ## Basic R
 
-We can now get started with the R command promp open.
+We can now get started with the R in RStudio.
 
 ### Simple Variables
 Declare variables with '=' OR "<-". This assigns a value to a variable.
