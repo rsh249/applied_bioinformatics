@@ -63,6 +63,7 @@ Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
 
 Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 
+Lecture 3: <a href='seq_files.html'> Sequence Data Files
 
 ### Schedule of Readings
 
