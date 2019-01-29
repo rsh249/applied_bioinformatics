@@ -216,6 +216,14 @@ What kind of files do we recover from these searches?
 
 ---
 
+## Next: Nanopore Community 
+
+You should all have received and email to join my Nanopore Community group.
+
+https://community.nanoporetech.com/
+
+---
+
 
 --- .segue 
 
