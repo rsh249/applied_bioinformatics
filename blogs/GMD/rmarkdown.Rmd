@@ -1,0 +1,122 @@
+---
+title: "Lab 1"
+author: "Gianna Desrochers"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+# Introduction
+
+Applied Bioinformatics will challenge you all by teaching computational skills that are becoming essential training for biologists. This includes coding in R and Python and working with command line programs.
+
+We will work on developing these skills in the framework of a DNA sequencing project using the Oxford Nanopore MinION sequencer. The MinION is a cutting edge device that brings DNA sequencing directly to the scientist in real-time. 
+
+Together we will design sequencing experiments, collect data using the MinION, and build projects to analyze those data.
+
+
+# Embed youtube videos:
+
+Note that you must get the 'embed' link by clicking on the share link, or paste the video ID number after "embed/" in the URL below.
+
+<div align="left">
+<iframe width="640" height="360" src="https://www.youtube.com/embed/-IFo5Uv-9BY?rel=0"; frameborder="0" allowfullscreen></iframe>
+</div>
+
+
+
+## secondary section heading
+
+lalalala 
+
+### tertiary section heading
+
+put stuff here 
+
+### tertiary section heading 2
+
+leedle lee
+
+
+# Adding Code Blocks
+
+## Run R
+
+```{R, eval=TRUE}
+#Put sections of R code here
+
+x = 1
+y = 2
+z = 22/7
+print(y)
+
+```
+
+Then write explanations, commentary, or questions you have in between.
+
+Followed by more R code:
+
+```{R, eval = TRUE}
+print(x+y)
+
+print(z)
+
+n = z^y
+
+print(n)
+```
+## Don't run (some R, usually bash, some python)
+
+Sometimes you don't want code to run. Maybe it does not work or it takes a long time to run. Or the scope (path, program) is not accessible.
+
+Use 'eval=FALSE' for those code blocks.
+
+
+```{bash, eval=FALSE}
+
+ssh -h
+
+```
+
+## Text and bullet lists
+
+Put text here. Separate paragraphs by multiple lines
+
+Bullet List: 
+
++ first
++ second
++ third
++ fourth
+
+# Add a Link:
+
+Add links using brackets [] around the URL and the name to show in parentheses () [https://google.com](Google).
+
+
+
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
