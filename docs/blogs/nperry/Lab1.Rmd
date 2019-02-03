@@ -1,0 +1,72 @@
+---
+title: "Lab 1: R and RStudio"
+author: "Nicholas Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Introduction
+In this lab, we will be reading in data. This lab will show how to access certain parts of data as well as how to create a basic visualization.
+
+#Section 1: Reading in Data
+R has a really useful function to read in data. For reading in csv files, the function is read.csv(). There are also ways to read in other types of files, depending on the type of file. For example, one of these functions is read.delim(). In the parentheses, one must put the path to the file to be read. In this example, we are going to read in some census data.
+```{R, eval=TRUE}
+census = read.csv('/usr/share/data/kaggle/census.csv')
+```
+#Section 2: Accessing the Data
+To test if we read in the file correctly, we can view the beginning of the file using another function. This function is head(), where you put the variable that you used to read the file in the parentheses.
+```{R, eval=TRUE}
+head(census)
+```
+Now that we know we have the data file correctly read into R, we should access the file and view its contents. When we used the head() function, we saw various column names. We can view each of the column names using the head(census) function, followed by a $ and the name of the column name. For example:
+```{R, eval=TRUE}
+head(census$State)
+```
+This allows to select a portion of the data, specifically the state column from the census data file.
+
+#Section 3: Data Visualization
+##Basic Visualization
+Now that we've read in the data file and accessed the file, we can now graph some of the data using some more commands. For example, we can make a histogram of the data using the following command.
+```{R, eval=TRUE}
+hist(census[, "TotalPop"])
+```
+
+This code produced a histogram of the total population. This code isn't very useful, as it doesn't really show what its graphing. This is just a basic data visualization.
+
+Another basic visualization we can produce is a boxplot.
+```{R, eval=TRUE}
+boxplot(census[,'Men'])
+```
+
+The above code produces a boxplot for 'Men'. This, like the histogram, is not very informative. There are, however, more advanced graphs that can be made to visualize the data.
+
+##More Advanced Data Visualization
+
+To do a more advanced data visualization, we need to use the ggplot2 library. To load this package, we use the following code:
+
+```{R, eval=TRUE}
+library(ggplot2)
+```
+Now that the ggplot2 library has been loaded, we can now plot a graph to view the data in a way better than the default graphs produced before.
+```{R, eval=TRUE}
+ggplot(data = census)+geom_point(mapping = aes(x = State, y = Income, alpha=0.2))+
+  xlab("State") + ylab("Average Income")
+```
+
+The above graph displays the average income per state from the census data. It shows a range of incomes per state, which shows how each state varies. The ggplot(data=census) code calls the census file as the sources of data, the geom_point(mapping=aes(x=State, y=Income, alpha=0.2)) assigns which variables will be on which axis and distributes points on the graph, and xlab("State") + ylab("Average Income") labels each axis. This graph is more descriptive and allows us to better see what is going on with the data.
+
+This graph shows a range of incomes per state. Some states appear to have higher incomes, sometimes going above 250000, while others seem to have lower incomes. States with lower incomes sometimes didn't even reach 100000. This graph shows how much income varies between states. This could be the result of different environments and cultures.
