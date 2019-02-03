@@ -142,7 +142,7 @@ ggplot(data=census) +
 But, this is hard to read. A few fixes:
 
 + Rotate x-axis labels (Use 'theme()')
-+ Sort states by count (Use library(forcats) -- TOols for working with categorical variables)
++ Sort states by count (Use library(forcats) -- Tools for working with categorical variables)
 
 ```{r}
 library(forcats)
@@ -154,8 +154,60 @@ ggplot(data=census) +
 
 ## Graphs for two parameters
 
-### Continuous X Continuous
+### Continuous parameters
 
+#### geom_point()
+
+```{R}
+ggplot(data=census) + 
+    geom_point(aes(x=IncomePerCap, y=Poverty))
+```
+
+See also: geom_jitter(), and geom_label()
+
+#### geom_smooth
+
+```{r}
+ggplot(data=census) + 
+    geom_point(aes(x=IncomePerCap, y=Poverty), alpha=0.1) +
+    geom_smooth(aes(x=IncomePerCap, y=Poverty)) 
+```
+
+#### Countour and density plots
+
+```{R}
+ggplot(data=census) + 
+    geom_hex(aes(x=IncomePerCap, y=Poverty)) 
+```
+```{R}
+ggplot(data=census) + 
+    geom_density2d(aes(x=IncomePerCap, y=Poverty)) 
+```
+
+### One Discrete X One Continuous parameter
+
+#### Boxplots
+
+```{R}
+ggplot(data=census[1:10000,]) + 
+    geom_boxplot(aes(x=State, y=Poverty)) 
+```
+
+#### Violin charts
+
+```{R}
+ggplot(data=census[1:10000,]) + 
+    geom_violin(aes(x=State, y=Poverty)) 
+```
+
+## Facetting: Multipanel plots
+
+```{R}
+ggplot(data=census[1:10000,]) + 
+    geom_point(aes(x=Employed, y=Poverty)) +
+    facet_grid(~State) + theme(axis.text.x = element_text(angle=90))
+    
+```
 
 # Saving your workspace:
 
