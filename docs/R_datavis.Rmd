@@ -24,7 +24,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [home](https://rsh249.github.io/applied_bioinformatics)
 
+# Cool stuff:
 
+https://aeon.co/amp/videos/watch-a-single-cell-become-a-complete-organism-in-six-pulsing-minutes-of-timelapse?__twitter_impression=true
 
 # R Reminders
 
@@ -152,6 +154,10 @@ ggplot(data=census) +
   theme(axis.text.x  = element_text(angle=90))
 ```
 
+### Challenge 1:
+
+Pick a plot method appropriate for the data in the MeanCommute column. 
+
 ## Graphs for two parameters
 
 ### Continuous parameters
@@ -202,12 +208,20 @@ ggplot(data=census[1:10000,]) +
 
 ## Facetting: Multipanel plots
 
+Plus more logical subsetting using %in%
+
+
 ```{R}
-ggplot(data=census[1:10000,]) + 
+ggplot(data=census[census$State %in% c('Alabama', 'Oregon', 'New York', 'California'),]) + 
     geom_point(aes(x=Employed, y=Poverty)) +
     facet_grid(~State) + theme(axis.text.x = element_text(angle=90))
     
 ```
+
+### Challenge 2
+
+Develop a plot showing the relationship between MeanCommute and Transit. Then attempt to facet this by State for five states of your choosing.
+
 
 # Saving your workspace:
 
@@ -220,3 +234,14 @@ save.image('workspace_1.RData')
 ```
 
 You ALSO want to save the R script file that you have been putting your code in with File-> Save(As) and using the file extension .R to identify R code files.
+
+
+# Blog
+
+Create a new blog RMarkdown document outlining the basics of plotting with ggplot and R. Then open a new file using:
+
+```{r, eval=F}
+newdata = read.csv()
+```
+
+Create a new figure 
