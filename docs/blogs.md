@@ -14,4 +14,5 @@ Stonehill College <br>
 
 # Lab 1:
 <a href='blogs/nperry/Lab1.html'> nperry
-<a href='blogs/Alex Baryiames/Lab1.html'> Alex
+
+<a href='blogs/abaryiames/Lab1.html'> Alex
