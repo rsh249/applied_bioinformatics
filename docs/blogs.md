@@ -17,4 +17,4 @@ Stonehill College <br>
 
 <a href='blogs/abaryiames/Lab1.html'> abaryiames
 
-<a href='blogs/jordanc2020/Lab1.html'> jordanc2020
+<a href='blogs/jordanc2020/lab1.html'> jordanc2020
