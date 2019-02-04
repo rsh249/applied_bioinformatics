@@ -246,7 +246,7 @@ You ALSO want to save the R script file that you have been putting your code in 
 Create a new blog RMarkdown document outlining the basics of plotting with ggplot and R. Then open a new file using:
 
 ```{r, eval=F}
-newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt')
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep=' ')
 ```
 
 These data are read lengths for three samples run on an Illumina sequencing instrument. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample.
