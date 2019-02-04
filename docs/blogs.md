@@ -15,4 +15,6 @@ Stonehill College <br>
 # Lab 1:
 <a href='blogs/nperry/Lab1.html'> nperry
 
-<a href='blogs/abaryiames/Lab1.html'> Alex
+<a href='blogs/abaryiames/Lab1.html'> abaryiames
+
+<a href='blogs/jordanc2020/Lab1.html'> jordanc2020
