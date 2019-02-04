@@ -1,0 +1,83 @@
+---
+title: "Lab 1"
+author: "Gianna Desrochers"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+# Introduction
+
+Applied Bioinformatics will challenge you all by teaching computational skills that are becoming essential training for biologists. This includes coding in R and Python and working with command line programs.
+
+We will work on developing these skills in the framework of a DNA sequencing project using the Oxford Nanopore MinION sequencer. The MinION is a cutting edge device that brings DNA sequencing directly to the scientist in real-time. 
+
+Together we will design sequencing experiments, collect data using the MinION, and build projects to analyze those data.
+
+## Ubuntu notes and codes
+pwd -> print working directory
+
+ls -> shows folders and files in working directory
+
+ls -a -> shows files and ones hidden
+
+ls-l -> gives date of files being last edited
+
+man (+command) -> says what the command does
+
+q -> quit out of window
+
+cd -> change directory, put new place after cd
+
+ssh -> secure shell
+
+mkdir (name) -> make directory
+
+touch (name) -> makes empty text file
+
+
+## R notes and codes
+``` used to start and end data block
+
+Knitr runs command only in data blocks, makes documents look nice
+
+Run runs everything in the document
+
+# Adding Code Blocks
+
+## Run R
+
+```{R, eval=TRUE}
+census = read.csv('/usr/share/data/kaggle/census.csv')
+head(census)
+library(ggplot2)
+demo = census #Just rename the object for the next lines
+ggplot(data = demo) +
+  geom_point(mapping = aes(x = Citizen, y = TotalPop))
+
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
