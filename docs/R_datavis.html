@@ -422,6 +422,10 @@ zerocit=<span class="st"> </span>census[logic,] <span class="co">#make sure to u
 </div>
 </div>
 </div>
+<div id="just-for-fun" class="section level1">
+<h1>Just for fun:</h1>
+<p>Try installing and running the code found <a href="https://github.com/marcusvolz/mathart">here</a> to create ‘mathart’ examples from Marcus Volz.</p>
+</div>
 <div id="saving-your-workspace" class="section level1">
 <h1>Saving your workspace:</h1>
 <p>Either Session -&gt; Save Workspace As</p>
@@ -432,8 +436,10 @@ zerocit=<span class="st"> </span>census[logic,] <span class="co">#make sure to u
 <div id="blog" class="section level1">
 <h1>Blog</h1>
 <p>Create a new blog RMarkdown document outlining the basics of plotting with ggplot and R. Then open a new file using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newdata =<span class="st"> </span><span class="kw">read.csv</span>()</code></pre></div>
-<p>Create a new figure</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">newdata =<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">'/usr/share/data/classfiles/readlengths3.txt'</span>)</code></pre></div>
+<p>These data are read lengths for three samples run on an Illumina sequencing instrument. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample.</p>
+<p>The sequencing generated reads of 125 base pairs and read paired-end data (recall the Illumina sequencing by synthesis process). These read lengths come from merged overlapping reads, so those reads &gt;125bp represent molecules that were originally less than 240bp in size (required minimum 10bp overlap).</p>
+<p>Create a new figure showing some attribute of the read length distribution that can be compared between these samples and include it in your blog for this week.</p>
 </div>
 
 

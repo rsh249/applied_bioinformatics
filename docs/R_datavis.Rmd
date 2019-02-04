@@ -223,6 +223,11 @@ ggplot(data=census[census$State %in% c('Alabama', 'Oregon', 'New York', 'Califor
 Develop a plot showing the relationship between MeanCommute and Transit. Then attempt to facet this by State for five states of your choosing.
 
 
+# Just for fun:
+
+Try installing and running the code found [here](https://github.com/marcusvolz/mathart) to create 'mathart' examples from Marcus Volz.
+
+
 # Saving your workspace:
 
 Either Session -> Save Workspace As
@@ -241,7 +246,11 @@ You ALSO want to save the R script file that you have been putting your code in 
 Create a new blog RMarkdown document outlining the basics of plotting with ggplot and R. Then open a new file using:
 
 ```{r, eval=F}
-newdata = read.csv()
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt')
 ```
 
-Create a new figure 
+These data are read lengths for three samples run on an Illumina sequencing instrument. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample.
+
+The sequencing generated reads of 125 base pairs and read paired-end data (recall the Illumina sequencing by synthesis process). These read lengths come from merged overlapping reads, so those reads >125bp represent molecules that were originally less than 240bp in size (required minimum 10bp overlap).
+
+Create a new figure showing some attribute of the read length distribution that can be compared between these samples and include it in your blog for this week.
