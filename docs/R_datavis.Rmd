@@ -254,3 +254,6 @@ These data are read lengths for three samples run on an Illumina sequencing inst
 The sequencing generated reads of 125 base pairs and read paired-end data (recall the Illumina sequencing by synthesis process). These read lengths come from merged overlapping reads, so those reads >125bp represent molecules that were originally less than 240bp in size (required minimum 10bp overlap).
 
 Create a new figure showing some attribute of the read length distribution that can be compared between these samples and include it in your blog for this week.
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
