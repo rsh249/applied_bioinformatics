@@ -115,7 +115,7 @@ End of readings...
 
 Use the RMarkdown template provided <a href = 'https://raw.githubusercontent.com/rsh249/applied_bioinformatics/master/docs/rmarkdown_template.Rmd'> here </a>. View template output <a href = 'rmarkdown_template.html'> here </a>.
 
-Student written Blogs: <a href='blogsindex'> HERE
+Student written Blogs: <a href='blogs'> HERE
 
 ### Links to Projects
 
