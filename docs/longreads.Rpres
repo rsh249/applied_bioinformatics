@@ -30,7 +30,7 @@ What separates "Long" and "Short"
 
 Short read tech tends to have fixed read lenghts of 50-150bp depending on the platform. 
 
-What qualifies as long? That depends on when you ask that question. A safe answer might be [2000-10000bp](https://www.omicsonline.org/open-access/generations-of-sequencing-technologies-from-first-to-next-generation-0974-8369-1000395.php?aid=87862) but people are working to get [longer and longer reads](https://nanoporetech.com/about-us/news/world-first-continuous-dna-sequence-more-million-bases-achieved-nanopore-sequencing) using careful laboratory and sequencing [protocols](http://lab.loman.net/protocols/).
+What qualifies as long? That depends on when you ask that question. A safe answer might be [2000-10000bp](https://www.omicsonline.org/open-access/generations-of-sequencing-technologies-from-first-to-next-generation-0974-8369-1000395.pdf) but people are working to get [longer and longer reads](https://nanoporetech.com/about-us/news/world-first-continuous-dna-sequence-more-million-bases-achieved-nanopore-sequencing) using careful laboratory and sequencing [protocols](http://lab.loman.net/protocols/).
 
 Why does this matter?
 =========================================================
