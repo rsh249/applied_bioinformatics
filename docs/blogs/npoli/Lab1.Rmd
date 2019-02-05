@@ -1,0 +1,58 @@
+---
+title: 'Lab 1: R and RStudio'
+author: "Nicholas Poli"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+
+```{r setup, include=FALSE}
+#library(reticulate)
+#use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+# Adding File Census
+
+Using the code, census = read.csv('/usr/share/data/kaggle/census.csv'), I was ab le to uplaod the data from the file being used in order to create plots like the histogram
+
+```{R, eval=TRUE}
+
+census = read.csv('/usr/share/data/kaggle/census.csv')
+
+```
+
+# Histogram of Income
+
+I was able to create a histogram plot of the data within the file using, hist(census[,'Citizen'])
+
+```{R, eval=TRUE}
+
+hist(census[,'Income'])
+
+```
+
+# Changing Axis
+
+By adding hist(census[,'Income'], xlab = "Income") to the end of the funtion, this changes the x-axis title. Using "ylab" would change the y-axis.
+
+```{R, eval=TRUE}
+
+hist(census[,'Income'], xlab = "Income")
+
+```
+
+[home](https://rsh249.github.io/applied_bioinformatics)
