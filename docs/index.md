@@ -65,6 +65,8 @@ Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 
 Lecture 3: <a href='seq_files.html'> Sequence Data Files
 
+Lecture 4: <a href='longreads.html'> Why Long Reads Matter
+
 ### Schedule of Readings
 
 Week 1 (January 17)
