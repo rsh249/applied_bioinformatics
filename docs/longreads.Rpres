@@ -112,10 +112,10 @@ Typical read lengths for short read platforms are 50-150bp x 5 million reads
 
 ```{R, echo=F, fig.width=12, fig.height=4, fig.align='center'}
 size = 4100000
-n=c(50:150)
+n=seq(50,150,10)
 seq=0.25^n
 match=5000000*(size*seq)
-plot(n,match, xlab='Nucleotide Sequence Length', ylab='Prob. of matching 5 million reads to 4.1Mb genome', pch=20, cex=2)
+plot(n,log(match, base=10), xlab='Nucleotide Sequence Length', ylab='log(Prob. of matching 5 mil reads to 4.1Mb genome)', pch=20, cex=2)
 
 ```
 
@@ -129,7 +129,7 @@ size = 4100000
 n=seq(150,2000, 50)
 seq=0.25^n
 match=5000000*(size*seq)
-plot(n,log(match,base=10), xlab='Nucleotide Sequence Length', ylab='Prob. of matching 5 million reads to 4.1Mb genome', pch=20, cex=2)
+plot(n,log(match,base=10), xlab='Nucleotide Sequence Length', ylab='log(Prob. of matching 5 mil reads to 4.1Mb genome)', pch=20, cex=2)
 
 
 ```
