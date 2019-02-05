@@ -9,6 +9,14 @@ Resources for R Labs
 
 [ggplot cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf)
 
+Goals
+====================
+
+Understand the division between long and short read DNA sequencing technology.
+
+Conceptualize the scale of the difference involved in mapping long vs. short reads.
+
+Discuss how both are used for hybrid assembly of genomes
 
 Dividing Sequencing Tech
 ========================================================
