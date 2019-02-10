@@ -1,0 +1,97 @@
+---
+title: "Lab 1"
+author: "Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+## Reading Data Files
+
+Here we will explore a way to read data files and get a glimpse of the structure and variables within the data. US Census Demographic Data will be used to observe demographic and economic factors among the Unites States. 
+
+### Manipulating Data
+
+To manipulate data, we will call certain columns of the data file up. 
+
+### Observing Data Patterns
+
+Using ggplot and other graphical data codes, we can compare variables to observe patterns that occur in the data.  
+
+## Run R
+
+```{R, eval=TRUE}
+#How to read a csv text data file
+census = read.csv('/usr/share/data/kaggle/census.csv')
+head(census)
+str(census)
+```
+
+Above you will see the beginning entries of the data set, beginning alphabetically with Alabama, listing its first few demographic and economic parameters. 
+
+Using the summary(census) command, you will be able to see the min/max, median, mean, and quartiles of each variable. This can be useful for getting a gauge on how these variables are comparable to eachother. 
+
+```{R, eval = TRUE}
+summary(census)
+```
+
+To look at a specific variable from a set of data, add a '$' symbol after the data file name followed by the varaible of interest. The print command used below will being printing out all of the values for that variable but will reach a max point and omit the remaining values of that variable.
+
+```{R, eval = TRUE}
+summary(census$County)
+```
+
+Use the plot command to compare two variables. Titles and color can also be added to enhance the plot. 
+
+```{R, eval = TRUE}
+plot(census[,5:6], main="Percent of population men vs women", pch=20, cex =0.2, col = 'blue')
+```
+
+Other types of graphs ie histograms and boxplots can be created to visualize the data.
+
+```{R, eval = TRUE}
+hist(census[,'Income'])
+boxplot(census[,'Income'])
+```
+
+Density plotting allows for a smoother distribution of plot values. 
+
+```{R, eval = TRUE}
+plot(density(census[,'Women']))
+points(density(census[,'TotalPop']), type = 'l', col ='blue')
+```
+
+More complex visualizations can also be made using ggplot, ie scatterplots. Adding an alpha parameter changes the transparency of the data points.
+
+```{R, eval = TRUE}
+library(ggplot2)
+demo = census
+ggplot(data = demo) +
+  geom_point(mapping = aes(x = TotalPop, y = Unemployment, alpha=0.2, col=State)) +
+  xlab("Total County Population") + ylab("No. of Unemployed per County")
+```
+
+Looking at this scatterplot, it seems that as the total county population size increases, the number of unemployed persons decreases. There is a high density of unemployment at county populations below 20,000. 
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)

@@ -24,7 +24,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [home](https://rsh249.github.io/applied_bioinformatics)
 
+# Cool stuff:
 
+https://aeon.co/amp/videos/watch-a-single-cell-become-a-complete-organism-in-six-pulsing-minutes-of-timelapse?__twitter_impression=true
 
 # R Reminders
 
@@ -152,6 +154,10 @@ ggplot(data=census) +
   theme(axis.text.x  = element_text(angle=90))
 ```
 
+### Challenge 1:
+
+Pick a plot method appropriate for the data in the MeanCommute column. 
+
 ## Graphs for two parameters
 
 ### Continuous parameters
@@ -202,12 +208,25 @@ ggplot(data=census[1:10000,]) +
 
 ## Facetting: Multipanel plots
 
+Plus more logical subsetting using %in%
+
+
 ```{R}
-ggplot(data=census[1:10000,]) + 
+ggplot(data=census[census$State %in% c('Alabama', 'Oregon', 'New York', 'California'),]) + 
     geom_point(aes(x=Employed, y=Poverty)) +
     facet_grid(~State) + theme(axis.text.x = element_text(angle=90))
     
 ```
+
+### Challenge 2
+
+Develop a plot showing the relationship between MeanCommute and Transit. Then attempt to facet this by State for five states of your choosing.
+
+
+# Just for fun:
+
+Try installing and running the code found [here](https://github.com/marcusvolz/mathart) to create 'mathart' examples from Marcus Volz.
+
 
 # Saving your workspace:
 
@@ -220,3 +239,21 @@ save.image('workspace_1.RData')
 ```
 
 You ALSO want to save the R script file that you have been putting your code in with File-> Save(As) and using the file extension .R to identify R code files.
+
+
+# Blog
+
+Create a new blog RMarkdown document outlining the basics of plotting with ggplot and R. Then open a new file using:
+
+```{r, eval=F}
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep=' ')
+```
+
+These data are read lengths for three samples run on an Illumina sequencing instrument. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample.
+
+The sequencing generated reads of 125 base pairs and read paired-end data (recall the Illumina sequencing by synthesis process). These read lengths come from merged overlapping reads, so those reads >125bp represent molecules that were originally less than 240bp in size (required minimum 10bp overlap).
+
+Create a new figure showing some attribute of the read length distribution that can be compared between these samples and include it in your blog for this week.
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)

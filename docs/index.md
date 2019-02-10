@@ -29,7 +29,7 @@ Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup
 
 Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown 
 
-Week 3: R and Data Visualization
+Week 3: <a href='R_datavis.html'> R and Data Visualization
 
 Week 4: Advanced R (Functions and Packages)
 
@@ -64,6 +64,8 @@ Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
 Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 
 Lecture 3: <a href='seq_files.html'> Sequence Data Files
+
+Lecture 4: <a href='longreads.html'> Why Long Reads Matter
 
 ### Schedule of Readings
 
@@ -115,7 +117,7 @@ End of readings...
 
 Use the RMarkdown template provided <a href = 'https://raw.githubusercontent.com/rsh249/applied_bioinformatics/master/docs/rmarkdown_template.Rmd'> here </a>. View template output <a href = 'rmarkdown_template.html'> here </a>.
 
-Student written Blogs <a href=''>HERE
+Student written Blogs: <a href='blogs'> HERE
 
 ### Links to Projects
 
