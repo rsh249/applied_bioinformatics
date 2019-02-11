@@ -1,0 +1,42 @@
+---
+title: "Lab 3"
+author: "Gianna Desrochers"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+#The box plot below shows the differences in readlengths for the three samples. All samples with less than 30 and greater than 230 base pairs in length were nulled from the plot
+
+
+``` {r}
+library(ggplot2)
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep=' ')
+head(newdata)
+
+#scatterplot SampleID vs. Age
+ggplot(data=newdata)+ 
+  geom_boxplot(aes(x=SampleID, y=readlength))
+```
+
+  
+  
+  
