@@ -1,0 +1,183 @@
+---
+title: "Lab 2: Data Visualization in R"
+author: "Nicholas Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Introduction
+
+In this lab, we will explore the basics of plotting with ggplot and R. 
+
+#Load Packages
+
+To start, we must load a few packages:
+```{R, eval=TRUE}
+library(ggplot2)
+library(forcats)
+```
+
+#Read and View the Data
+
+Now, we shall read in some data and view it so that we can see what the data looks like.
+
+```{R, eval=TRUE}
+census = read.csv('/usr/share/data/kaggle/census.csv')
+head(census)
+```
+
+Since the data has been successfully read into R, we can now do some visualization of the data.
+
+#Visualization
+
+There are a few types of visual tools that we can use.
+
+##Scatterplot
+
+First, we can make a scatterplot of the data using the citizen and TotalPop columns.
+
+```{R, eval=TRUE}
+ggplot(data = census) + geom_point(mapping = aes(x = Citizen, y = TotalPop))
+```
+
+##Histogram
+
+We can also make a histogram of the data.
+
+```{R, eval=TRUE}
+ggplot(data=census) + geom_histogram(aes(x=Citizen), binwidth=100) + xlim(c(0,15000))
+```
+
+##Density
+
+Another type of graph that can be made using ggplot2 is a density plot.
+
+```{R, eval=TRUE}
+ggplot(data=census) + geom_density(aes(x=Citizen)) + xlim(c(0,15000))
+```
+
+##Area
+
+We can also make an Area plot.
+
+```{R, eval=TRUE}
+ggplot(data=census) + geom_area(stat='bin', bins = 30, aes(x=Citizen)) + xlim(c(0,10000))
+```
+
+##Bar Graph
+
+Bar graphs can also be made using these packages.
+
+```{R, eval=TRUE}
+ggplot(data=census) + geom_bar(aes(x=State))
+```
+
+This graph can be a little tedious to read. There are, however, some tools that we can use to make this more readable.
+
+```{R, eval=TRUE}
+ggplot(data=census) + geom_bar(aes(x=fct_infreq(State))) + xlab('') + theme(axis.text.x  = element_text(angle=90))
+```
+
+This graph is much easier to read. Rotating the labels on the x-axis and sorting the data largest to smallest made this a much better graph to use.
+
+##Continuous Parameters
+
+The next few graphs are used for datasets with continuous parameters.
+
+```{R, eval=TRUE}
+ggplot(data=census) + 
+  geom_point(aes(x=IncomePerCap, y=Poverty), alpha=0.1) +
+  geom_smooth(aes(x=IncomePerCap, y=Poverty))
+```
+
+##Contour Plot
+
+Contour Plots are also possible.
+
+```{R, eval=TRUE}
+ggplot(data=census) + 
+  geom_hex(aes(x=IncomePerCap, y=Poverty)) 
+```
+
+##Density Plots with Multiple Parameters
+
+Density Plots with more than one parameters can also be created.
+
+```{R, eval=TRUE}
+ggplot(data=census) + 
+  geom_density2d(aes(x=IncomePerCap, y=Poverty))
+```
+
+##Boxplot
+
+Boxplots can also be made.
+
+```{R, eval=TRUE}
+ggplot(data=census[1:10000,]) + 
+  geom_boxplot(aes(x=State, y=Poverty))
+```
+
+##Violin Charts
+
+Similarly to boxplots, violin charts can be made using ggplot2.
+
+```{R, eval=TRUE}
+ggplot(data=census[1:10000,]) + 
+  geom_violin(aes(x=State, y=Poverty)) 
+```
+
+#Facetting
+
+Facetting is a really useful feature, as it allows one to view multiple graphs right next to each other. Here is an example:
+
+```{R, eval=TRUE}
+ggplot(data=census[census$State %in% c('Alabama', 'Oregon', 'New York', 'California'),]) + 
+  geom_point(aes(x=Employed, y=Poverty)) +
+  facet_grid(~State) + theme(axis.text.x = element_text(angle=90))
+```
+
+The facet_grid function allows one to separate each graph based on a certain variable, which can be quite useful.
+
+#Read Length Example
+
+There is a dataset involve DNA from packrat middens that are up to 3500 years old. Using the visualization tools, we can create a figure of this data.
+
+##Read the file:
+
+First, we need to read the file into R.
+
+```{R, eval=TRUE}
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep=' ')
+```
+
+##View the file
+
+Now, lets take a look at the file and see what it looks like.
+
+```{R, eval=TRUE}
+head(newdata)
+```
+
+##Graph the data
+
+Now, a density plot can be created to compare the read length distribution between the three samples.
+
+```{R, eval=TRUE}
+ggplot(data=newdata[newdata$SampleID %in% c('GC100B', 'FRT504', 'FRT511A'),]) + geom_density(aes(x=SampleID))
+```
+
+With this density graph, we can see that sample FRT504 has the most reads, while sample GC100B has the smallest amount of reads. Sample FRT511A has about half the density of sample FRT504, meaning it has a little more reads than sample GCB100B. So, this shows that DNA fragmentation increases over time. If the DNA is fragmenting, the number of reads will increase. This is what is happening with sample FRT504. It has the highest read count, so it must be the oldest, as DNA fragmentation increases over time. Sample GC100B must be the youngest, as it has the smallest density. This means it has the lowest number of reads and the least amount of DNA fragmentation. Sample FRT511A has an intermediate amount of reads, as it has the the middle density of the three samples. It probably has not experienced a lot of DNA fragmentation, however, as its density appears to be similar to that of sample GC100B.

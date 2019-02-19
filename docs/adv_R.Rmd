@@ -1,0 +1,279 @@
+---
+title: "Advanced R"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+# Uncool stuff:
+
+https://amp.theguardian.com/environment/2019/feb/10/plummeting-insect-numbers-threaten-collapse-of-nature?__twitter_impression=true
+
+
+# Advanced R
+
+## Repeating actions with loops
+
+Many of the functions we have seen so far will automatically apply the calculation across a vector of data (vector, column of matrix or data frame). But, if you need to do some kind of action across these objects that does not work that way you will need to understand loops.
+
+Loops are programming structures that control the execution of some code in a cycle for a set number of rounds (called iterations).
+
+Example:
+
+
+```{R}
+for(i in 1:10){
+  print(i)
+} #Will print the value of i ten times and iterate i from 1 to 10 with each round
+```
+
+Instead of doing this:
+
+```{R}
+#Generate 5 random samples of numbers between 1 and 1000
+sample1=sample(1:1000,10, replace=F)
+sample2=sample(1:1000,10, replace=F)
+sample3=sample(1:1000,10, replace=F)
+sample4=sample(1:1000,10, replace=F)
+sample5=sample(1:1000,10, replace=F)
+sam.mat = cbind(sample1, sample2, sample3, sample4, sample5)
+```
+
+Use a loop:
+```{R}
+sam.mat = matrix(ncol=5, nrow=10)
+for (i in 1:5){
+  sam.mat[,i] = sample(1:1000, 10, replace=F);##<- This code is only written ONCE in a loop. Less chance for error.
+}
+```
+
+### Challenge: Loops
+
+Write a loop that counts even numbers backwards from 1000.
+
+Write a loop that generates 100 random samples of integers and then calculates and stores the median value.
+
+
+## The 'apply' functions
+
+Loops but better*.
+
+*Better == more efficient in most cases
+
+See: apply, lapply, tapply, sapply for various data types.
+
+sapply for simple operations on vectors
+```{R}
+s=c(1:10000)
+sq=sapply(s, sqrt)
+```
+
+apply for tables 
+```{R}
+m = matrix(nrow=length(s), ncol=5)
+for(i in 1:ncol(m)){
+  m[,i]=s
+}
+head(m)
+
+sum.row = apply(m, 1, sum)
+sum.col = apply(m, 2, sum)
+```
+
+
+tapply - for 'ragged' arrays --> arrays with grouping factors
+
+```{r, eval=TRUE, echo=FALSE}
+census=read.csv("/Users/rharbert/Documents/census.csv")
+```
+
+```{r, eval=FALSE}
+census = read.csv('/usr/share/data/kaggle/census.csv')
+head(census)
+
+```
+```{R}
+state.mean.poverty = tapply(census$Poverty, census$State,mean)
+```
+
+
+## Parallel Processing
+
+R has a number of useful libraries for writing parallel code. At the end of the day these are just fancy loops
+
+Logical flow of parallel computing:
+
+Open a CPU cluster (R daughter processes pool of size n)
+Split job into discrete 'queues'
+  Run job queues across each process (1:n)
+Collect results data objects
+
+We can build some example code with parallel processing using "apply" type functions:
+
+```{r}
+
+require(parallel)
+do = seq(1, 10000000)
+p = proc.time()
+l_works = sapply(do, sqrt)
+proc.time() - p
+
+nclus = 4
+cl = makeCluster(nclus, type ='SOCK'); 
+  p = proc.time()
+  splits = clusterSplit(cl, do)
+  p_works2 = parSapply(cl, splits, sqrt)
+  proc.time() - p
+stopCluster(cl)
+
+```
+
+You do want to make sure that you are sending a job big enough to justify the parallel overhead. It is very easy to make things worse.
+```{r}
+nclus = 4
+cl = makeCluster(nclus, type ='SOCK'); 
+  p = proc.time()
+  p_works2 = parSapply(cl, do, sqrt)
+  proc.time() - p; #No faster than non-parallel
+stopCluster(cl)
+
+```
+
+
+
+NOTE: parSapply returns a list of vectors. The list has nclus elements:
+
+```{r}
+length(p_works2)
+length(unlist(p_works2))
+```
+
+## If/else: Conditional statements  
+
+Often we want to tell R to execute some command on our data if a certain criteria is met. (i.e., IF we have data for state X we want to calculate some summary value)
+
+To do this we use logical operators within 'if' statements. Often within loops.
+
+```{R}
+citizenRatio = vector()
+for(i in 1:nrow(census)){
+  if(census[i,'State']=='Arizona'){
+    citizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  }
+}
+summary(citizenRatio)
+
+```
+
+Maybe we also want to do something in the cases where that condition is NOT met. For that we use 'else'
+```{R}
+AZcitizenRatio = vector()
+OtherRatio=vector()
+for(i in 1:nrow(census)){
+  if(census[i,'State']=='Arizona'){
+    AZcitizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  } else {
+    OtherRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  }
+}
+summary(AZcitizenRatio)
+summary(OtherRatio)
+```
+
+And still other times we may want to test MULTIPLE conditions and apply different actions to each:
+
+```{R}
+AZcitizenRatio = vector()
+CAcitizenRatio = vector()
+OtherRatio=vector()
+for(i in 1:nrow(census)){
+  if(census[i,'State']=='Arizona'){
+    AZcitizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  } else if(census[i,"State"]=='California') {
+    CAcitizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  } else {
+    OtherRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  }
+}
+summary(AZcitizenRatio)
+summary(CAcitizenRatio)
+summary(OtherRatio)
+```
+
+### Warning:
+
+Multiple layers of if/else statements can get confusing and difficult to understand. If you end up having an error inside this code it can be a nightmare! 
+
+
+## Functions
+
+Any time you write a bit of code that you find yourself repeating more than a couple of times you should *consider* writing that as a function instead. The more complicated the code that's repeating is, the more likely you will benefit from a function.
+
+To declare a function:
+
+```{R}
+citratio=function(x){
+  #calculate the ratio of citizens to the total pop and return the median
+  #pass census to this function 'citratio(census)'
+  #then census is refered to within as 'x'
+  
+  ratio = x$Citizen/x$TotalPop
+  med=median(ratio, na.rm=T) #Ignore missing values
+  return(med)
+}
+
+citratio(census)
+citratio(census[census$State=='Virginia',])
+
+```
+Then you can use this function anywhere after it's declaration:
+
+```{R}
+AZcitizenRatio = vector()
+CAcitizenRatio = vector()
+OtherRatio=vector()
+for(i in 1:nrow(census)){
+  if(census[i,'State']=='Arizona'){
+    AZcitizenRatio[i]=citratio(census[i,])
+  } else if(census[i,"State"]=='California') {
+    CAcitizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  } else {
+    OtherRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  }
+}
+```
+
+Did that work as expected?
+
+
+# Simulations:
+
+For your blog this week develop a simulation using R to model one of the following:
+
++ Population size over several years/generations (Model births/deaths/migrants per year), consider reproductive success (# offspring per mating pair), resources, predation, etc.
++ Simulate a card game. Draw samples from a 'deck' of 52 cards and use conditional statements to determine the next step or outcome.
++ Simulate DNA sequencing reads from a template sequence. That is, start with a template of 10,000 bases and sample 50bp reads for a predetermined number of reads.
++ Simulate or model some other phenomenon of your choosing AFTER getting it approved by your instructor.
+
+***Prof. Harbert will help you get set up for one of these that you choose***
+
+[home](https://rsh249.github.io/applied_bioinformatics)

@@ -11,8 +11,8 @@ rharbert [at] stonehill [dot] edu <br>
 Stonehill College <br>
 </center>
 ---
-
-# Lab 1:
+ 
+# Lab 1: R Basics
 <a href='blogs/nperry/Lab1.html'> nperry
 
 <a href='blogs/abaryiames/Lab1.html'> abaryiames
@@ -22,3 +22,15 @@ Stonehill College <br>
 <a href='blogs/GMD/rmarkdown2.html'> GMD
 
 <a href='blogs/npoli/Lab1.html'> npoli
+
+# Lab 2: R Datavis
+
+<a href='blogs/nperry/Lab2.html'> nperry
+
+<a href='blogs/abaryiames/Lab2.html'> abaryiames
+
+<a href='blogs/jordanc2020/lab2.html'> jordanc2020
+
+<a href='blogs/GMD/rmarkdown3.html'> GMD
+
+<a href='blogs/npoli/Lab2.html'> npoli
