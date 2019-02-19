@@ -1,4 +1,4 @@
-﻿<html>
+<html>
   <head>
     {% seo %}
   </head>
@@ -31,7 +31,7 @@ Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown
 
 Week 3: <a href='R_datavis.html'> R and Data Visualization
 
-Week 4: Advanced R (Functions and Packages)
+Week 4: <a href='adv_R.html'> Advanced R 
 
 Week 5: Nanopore Sequencing
 

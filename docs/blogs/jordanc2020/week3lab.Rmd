@@ -1,0 +1,137 @@
+---
+title: "Lab 2"
+author: "Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+
+---
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```
+
+## R Data and Visualization
+
+
+Once you read the data tables, you can create single parameter graphs, like histograms and scatterplots shown below. Single parameters can be chosen looking at your data using the head() function. 
+
+```{r ggplot1, echo=TRUE}
+library(ggplot2)
+library(forcats)
+census = read.csv('/usr/share/data/kaggle/census.csv')
+head(census)
+```
+
+
+```{r ggplot2, echo=TRUE}
+ggplot(data = census) +
+  geom_point(mapping = aes(x = Men, y = TotalPop))
+
+ggplot(data=census) +
+  geom_histogram(aes(x=Citizen), binwidth=200)+xlim(c(0,15000))
+```
+
+This scatterplot compares the number of men as a proportion of the total population. Most counties seem to be about half men and the other half of the population would be women. 
+When making histograms, always have to change the default bin width, decreasing band width may offer more detail when observing the data's distribution. You also can get rid of empty/unused spaces by putting a limit on the graph's axes to make the graph easier to read. This may also get rid of outliers and missing or close to zero values. 
+
+# Density Plots
+
+Density plots are good for visualizing the distribution of data over a continuous interval or time period. Axes limits can also be added into these plots and many more. 
+
+```{r ggplot3, echo=TRUE}
+
+ggplot(data=census) +
+  geom_density(aes(x=Citizen)) +
+  xlim(c(0,15000))
+
+ggplot(data=census) +
+  geom_area(stat='bin', bins = 50, aes(x=Citizen)) +
+  xlim(c(0,10000))
+```
+
+
+# Discrete Values
+
+Discrete values take on integer values only while continuous data can contain any value. 
+
+```{r ggplot4, echo=TRUE}
+ggplot(data=census) +
+  geom_bar(aes(x=fct_infreq(State))) +
+  xlab('') +
+  theme(axis.text.x  = element_text(angle=90))
+```
+
+The 'library(forcats)' function allows us to sort the states by count and better compare each state. Using 'theme()' rotates the axis labels so they can be read more clearly. 
+
+# Two Parameter Graphs; Continuous and Discrete Variables
+
+Continous data can take on any numerical values, such as income or poverty. Ggplot can create a graph of two continous variables and include a line that best fits the data using 'geom_smooth'.
+
+```{r ggplot5, echo=TRUE}
+ggplot(data=census) + 
+    geom_point(aes(x=IncomePerCap, y=ChildPoverty), alpha=0.1) +
+    geom_smooth(aes(x=IncomePerCap, y=ChildPoverty)) 
+
+```
+
+The trend seems to be as Income per capital increases, child poverty decreases. Other density plots can be explored through the functions 'geom_hex()' and 'geom_density2d()'. If you want to plot one discrete parameter against a continous one, then use 'geom_boxplot()', and pick a few discrete variables to compare in this boxplot. 
+
+```{r ggplot6, echo=TRUE}
+ggplot(data=census[census$State %in% c('Massachusetts', 'New York', 'Florida', 'Texas'),]) + 
+    geom_boxplot(aes(x=State, y=Poverty)) 
+```
+
+These four states seem to have a similar median percent of people under the poverty line. 
+
+```{r ggplot6.5, echo=TRUE}
+ggplot(data=census[1:10000,]) + 
+  geom_violin(aes(x=State, y=Poverty)) 
+ggplot(data=census) + 
+    geom_density2d(aes(x=IncomePerCap, y=Poverty)) 
+```
+
+# Facetting: Multipanel Plots
+
+Multipanel plots are useful when you want to compare different categorical variables in separate plots which makes it easier to see differences in discrete or continuous values. Each panel can show a difference subset of the data. 
+
+```{r ggplot7, echo=TRUE}
+ggplot(data=census[census$State %in% c('Massachusetts', 'Maine', 'Florida', 'Texas', 'Wisconsin'),]) + 
+  geom_point(aes(x=MeanCommute, y=Transit)) +
+  facet_grid(~State) + theme(axis.text.x = element_text(angle=90))
+```
+
+Massachusetts shows the highest percent of people commuting on public transportation out of those five states.
+
+## Illumina Sequence Read Length Distributions
+
+DNA was extracted from fossilized packrat midden that date back up to 3500 years ago. The three samples, GC100B, FRTSO4, and FRS11, have been analyzed by Illumina sequencing. We expect to see DNA fragmentation to increase over time, for example, the smallest fragments should be in the oldest samples (GC100B). The following figure will show the read length distribution between the three samples. 
+
+```{r ggplot8, echo=TRUE}
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep=' ')
+summary(newdata)
+
+```
+
+
+```{r ggplot9, echo=TRUE}
+str(newdata)
+ggplot(data=newdata[newdata$SampleID %in% c('FRT504', 'FRT511A', 'GC100B'),]) + 
+    geom_boxplot(aes(x=SampleID, y=readlength),outlier.colour = "red", outlier.alpha = 0.5) 
+#save.image('Workspace_3.RData')
+```
+
+Looking at this graph, there seems to be a lot of outliers in the FRT511A sample and also shows the longest median read lengths. 
+
+
+```{r ggplot10, echo=FALSE}
+#ggplot(data=newdata[newdata$SampleID %in% c('FRT504', 'FRT511A', 'GC100B'),]) +
+#  geom_dotplot(aes(x=readlength),binwidth = 1.5, stackdir = "center")
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)

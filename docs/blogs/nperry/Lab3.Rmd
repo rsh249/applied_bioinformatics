@@ -1,0 +1,113 @@
+---
+title: "Lab 3: Advanced R"
+author: "Nicholas Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Card Game Simulation
+
+In this lab, we will simulate how to create a deck of cards, as well as what a hand will look like.
+
+##Create Deck
+
+First, we need to create the deck.
+
+```{R, eval=TRUE}
+cardArray <- array(1:52)
+for (i in 1:52){
+  cardArray[i]=i
+}
+print(cardArray)
+```
+
+This code will produce a deck of 52 cards.
+
+##Shuffle Deck
+
+Now, we need to shuffle the deck so that all of the cards are in random places.
+
+```{r, eval=TRUE}
+
+for (j in cardArray){
+  randomNumber <- sample(1:52, 1)
+  temp = cardArray[j]
+  cardArray[j]=cardArray[randomNumber]
+  cardArray[randomNumber]=temp
+}
+print(cardArray)
+```
+
+##Deal Hand
+
+Now, our deck is shuffled, so we can deal out a hand.
+
+```{R, eval=TRUE}
+hand <- array(1:4)
+for (k in 1:5){
+  hand[k]=cardArray[k]
+}
+print(hand)
+```
+
+##Print Hand
+
+Now, we have our hand dealt out, so let's see what it looks like.
+
+```{R, eval=FALSE}
+for (ii in hand){
+  if (((hand[ii]%%13)==0)||((hand[ii]%%13)==1)||((hand[ii]%%13)==2)||((hand[ii]%%13)==3)||((hand[ii]%%13)==4)||((hand[ii]%%13)==5)||((hand[ii]%%13)==6)||((hand[ii]%%13)==7)||((hand[ii]%%13)==8)){
+    print((hand[ii]%%13)+2)
+  }
+  else if(hand[ii]%%13==9){
+    print("Jack")
+  }
+  else if(hand[ii]%%13==10){
+    print("Queen")
+  }
+  else if(hand[ii]%%13==11){
+    print("King")
+  }
+  else if(hand[ii]%%13==12){
+    print("Ace")
+  }
+  else{
+    print("Error")
+  }
+}
+print("of")
+for (iii in hand){
+  if (hand[iii]/13==0){
+    print("Hearts")
+  }
+  else if(hand[iii]/13==1){
+    print("Diamonds")
+  }
+  else if(hand[iii]/13==2){
+    print("Spades")
+  }
+  else if(hand[iii]){
+    print("Clubs")
+  }
+  else{
+    print("Error")
+  }
+}
+```
+
+I couldn't get this to work however. I modelled everything after 13 numbers, as that's how many different cards there are. I tried using conditional statements, along with modulus and regular division, to try to demonstrate what a single card in the hand would be. However, there appears to be an error that I do not know how to solve involving the modulus math and the if statements.
