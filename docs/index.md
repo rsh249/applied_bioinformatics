@@ -35,7 +35,7 @@ Week 4: <a href='adv_R.html'> Advanced R
 
 Week 5: Nanopore Sequencing
 
-Week 6: Python 1 + Reticulate R
+Week 6: <a href='project_proposals.html'> Project Proposal Development
 
 Week 7: *Spring Break*
 
