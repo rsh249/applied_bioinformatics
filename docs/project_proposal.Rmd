@@ -1,5 +1,5 @@
 ---
-title: "Advanced R"
+title: "Projects"
 author: "Prof. Harbert"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 

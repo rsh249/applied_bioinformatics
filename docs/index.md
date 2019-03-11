@@ -39,7 +39,7 @@ Week 6: <a href='project_proposal.html'> Project Proposal Development
 
 Week 7: *Spring Break*
 
-Week 8: Python 2
+Week 8: <a href='bash_scripting.html'> Unix and Practical Bash
 
 Week 9: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
 
