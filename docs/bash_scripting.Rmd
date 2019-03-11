@@ -106,7 +106,7 @@ We can now add any Unix command to the bash script and they will all be run in s
 
 For example open the script and modify to be:
 
-```{bash, eval=T}
+```{bash, eval=F}
 #!/bin/bash
 
 #This is a comment
@@ -233,16 +233,95 @@ du -h $datapath/*.fastq.gz | awk '{print $2 $1}'
 ```
 
 
-
-
-
-
 ## Number of records
 
-## Quality scores
+We may also want to know how many individual reads you are dealing with per file or in total.We can get a quick count using 'wc' or 'grep'.
+
+```{bash, eval=F}
+wc -l $datapath/*.fastq.gz
+```
+
+
+```{bash, eval=F}
+zgrep -c '+' $datapath/*.fastq.gz #zgrep for compressed *.fastq.gz files, works just like 'grep'
+```
 
 ## Read Length Distribution
 
+It is often useful to know how long your sequence reads are. Many of our files are MinION data, so long reads are the norm and we want to know how these are distributed. However, read lengths on Illumina data can be revealing as well.
+
+We will calculate this using 'awk':
+
+```{bash, eval=F}
+zcat ERR2173373.fastq.gz | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c
+```
+
+The output may be very long. If so you can redirect the output to a file on your account:
+
+```{bash, eval=F}
+zcat ERR2173373.fastq.gz | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > ~/readlengths.txt
+
+less ~/readlengths.txt
+
+```
+
+## Quality Stats
+
+For most DNA sequencing data I like to use a program called fastqc to quickly visualize results. There are two problems with that: 1) It provides (mostly) visual output that you would need to generate on the remote server and copy to your laptop to view (annoying), 2) It is not designed for Nanopore data.
+
+Instead we are going to try a program called nanostat (https://github.com/wdecoster/nanostat) installed via Anaconda:
+
+```{bash, eval=F}
+conda install -c bioconda nanostat #already done!
+```
+
+We can test this on your Nanopore files using:
+
+```{bash, eval=F}
+NanoStat --fastq $datapath/ERR2173373.fastq.gz
+```
+
+Note: This takes several minutes! We may not have enough time to wait around for this to run.
+
+
+# Blog 
+
+For your blog this week first develop a script that uses at least some of the tools above to look at your data files. Then add comments as placeholders for each of the programs that you need to run. In your blog write about each of the summary stats you are generating and what that tells you about your data. Also make notes of any problems you run into trying to get this to work.
+
+e.g.,:
+
+```{bash, eval=F}
+#!/bin bash
+# Spring 2019
+# Harbert
+
+# Example bash script for analysis of DNA sequence data (Harbert, 2019; doi:10001sxx2/)
+
+datapath='/usr/share/data/proj_data/example'
+outputdir='~/testout'
+
+ls -lh $datapath
+
+#more summary commands and stats:
+
+####################
+
+
+#Analysis Steps:
+#1) Clean data with porechop: remove adaptor sequences and low quality reads
+
+#2) Check for contaminants and remove (centrifuge)
+#Github for centrifuge (link here)
+#How to call centrifuge: centrifuge -i infile.fa -o report.tab
+
+
+#3) Map to reference (bwa-mem)
+
+#4) Assemble reads into contigs (Canu)
+
+#5) Call variants
+
+```
 
 
 

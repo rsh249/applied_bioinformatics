@@ -313,51 +313,6 @@ div.tocify {
 <span class="bu">echo</span> <span class="st">&quot;This is a test&quot;</span>
 
 <span class="fu">ls</span> -lh</code></pre></div>
-<pre><code>## This is a test
-## total 27M
-## -rwxrwxrwx 1 rharbert rharbert 124K Feb 25 10:49 BIO332_Project_proposal.pdf
-## -rwxrwxrwx 1 rharbert rharbert 6.8K Feb  4 15:01 R_datavis.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.6M Feb  4 15:02 R_datavis.html
-## -rwxrwxrwx 1 rharbert rharbert 8.9K Jan 28 11:52 R_lab.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 2.3M Jan 28 11:53 R_lab.html
-## -rwxrwxrwx 1 rharbert rharbert 2.0K Feb 11 13:21 R_packages.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 722K Feb 11 13:21 R_packages.html
-## -rwxrwxrwx 1 rharbert rharbert   54 Jan 11 01:48 _config.yml
-## -rwxrwxrwx 1 rharbert rharbert 7.5K Feb 25 10:22 adv_R.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.2M Feb 11 13:27 adv_R.html
-## -rwxrwxrwx 1 rharbert rharbert 6.7K Mar 11 00:39 bash_scripting.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.1M Mar 10 13:08 bash_scripting.html
-## drwxrwxrwx 1 rharbert rharbert 4.0K Feb  4 22:44 blogs
-## -rwxrwxrwx 1 rharbert rharbert  832 Feb 25 11:01 blogs.md
-## -rwxrwxrwx 1 rharbert rharbert 4.8K Jan 15 08:25 dna_seq.Rmd
-## -rwxrwxrwx 1 rharbert rharbert  15K Jan 15 08:25 dna_seq.html
-## -rwxrwxrwx 1 rharbert rharbert 5.0K Jan 15 08:25 dna_seq.md
-## drwxrwxrwx 1 rharbert rharbert 4.0K Feb  5 00:56 images
-## -rwxrwxrwx 1 rharbert rharbert 5.3K Mar 10 13:07 index.md
-## -rwxrwxrwx 1 rharbert rharbert 6.2K Jan 11 16:44 intro.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.1M Jan 11 16:44 intro.html
-## drwxrwxrwx 1 rharbert rharbert 4.0K Jan 10 15:53 libraries
-## drwxrwxrwx 1 rharbert rharbert 4.0K Feb 24 23:59 longreads-figure
-## -rwxrwxrwx 1 rharbert rharbert 6.8K Feb  5 01:19 longreads.Rpres
-## -rwxrwxrwx 1 rharbert rharbert 1.1M Feb  5 01:20 longreads.html
-## -rwxrwxrwx 1 rharbert rharbert 6.5K Feb  5 01:19 longreads.md
-## drwxrwxrwx 1 rharbert rharbert 4.0K Feb  4 23:28 longreads_files
-## -rwxrwxrwx 1 rharbert rharbert 143K Feb 19 09:06 nanopore_report.pdf
-## -rwxrwxrwx 1 rharbert rharbert  14M Jan 28 10:55 newfile.txt
-## -rwxrwxrwx 1 rharbert rharbert 2.6K Mar  9 21:36 project_proposal.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.1M Mar  9 21:36 project_proposal.html
-## -rwxrwxrwx 1 rharbert rharbert 5.1K Nov 28 13:18 python2.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 2.4K Jan 14 12:13 rmarkdown_template.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.1M Jan 14 12:13 rmarkdown_template.html
-## -rwxrwxrwx 1 rharbert rharbert 6.7K Jan 29 07:11 seq_files.Rmd
-## -rwxrwxrwx 1 rharbert rharbert  16K Jan 29 07:11 seq_files.html
-## -rwxrwxrwx 1 rharbert rharbert 6.7K Jan 29 07:11 seq_files.md
-## -rwxrwxrwx 1 rharbert rharbert    0 Jan 21 11:24 sort.txt
-## drwxrwxrwx 1 rharbert rharbert 4.0K Feb  4 23:16 testpres-figure
-## -rwxrwxrwx 1 rharbert rharbert  557 Feb  4 23:16 testpres.Rpres
-## -rwxrwxrwx 1 rharbert rharbert  843 Feb  4 23:16 testpres.md
-## -rwxrwxrwx 1 rharbert rharbert 8.7K Jan 21 14:08 unix_intro.Rmd
-## -rwxrwxrwx 1 rharbert rharbert 1.2M Jan 21 14:08 unix_intro.html</code></pre>
 </div>
 <div id="script-organization" class="section level2">
 <h2>Script Organization</h2>
@@ -430,14 +385,64 @@ div.tocify {
 </div>
 <div id="number-of-records" class="section level2">
 <h2>Number of records</h2>
-</div>
-<div id="quality-scores" class="section level2">
-<h2>Quality scores</h2>
+<p>We may also want to know how many individual reads you are dealing with per file or in total.We can get a quick count using ‘wc’ or ‘grep’.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">wc</span> -l <span class="va">$datapath</span>/*.fastq.gz</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">zgrep</span> -c <span class="st">'+'</span> <span class="va">$datapath</span>/*.fastq.gz <span class="co">#zgrep for compressed *.fastq.gz files, works just like 'grep'</span></code></pre></div>
 </div>
 <div id="read-length-distribution" class="section level2">
 <h2>Read Length Distribution</h2>
-<p><a href="https://rsh249.github.io/applied_bioinformatics">home</a></p>
+<p>It is often useful to know how long your sequence reads are. Many of our files are MinION data, so long reads are the norm and we want to know how these are distributed. However, read lengths on Illumina data can be revealing as well.</p>
+<p>We will calculate this using ‘awk’:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">zcat</span> ERR2173373.fastq.gz <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{if(NR%4==2) print length($1)}'</span> <span class="kw">|</span> <span class="fu">sort</span> -n <span class="kw">|</span> <span class="fu">uniq</span> -c</code></pre></div>
+<p>The output may be very long. If so you can redirect the output to a file on your account:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">zcat</span> ERR2173373.fastq.gz <span class="kw">|</span> <span class="fu">awk</span> <span class="st">'{if(NR%4==2) print length($1)}'</span> <span class="kw">|</span> <span class="fu">sort</span> -n <span class="kw">|</span> <span class="fu">uniq</span> -c <span class="op">&gt;</span> ~/readlengths.txt
+
+<span class="fu">less</span> ~/readlengths.txt</code></pre></div>
 </div>
+<div id="quality-stats" class="section level2">
+<h2>Quality Stats</h2>
+<p>For most DNA sequencing data I like to use a program called fastqc to quickly visualize results. There are two problems with that: 1) It provides (mostly) visual output that you would need to generate on the remote server and copy to your laptop to view (annoying), 2) It is not designed for Nanopore data.</p>
+<p>Instead we are going to try a program called nanostat (<a href="https://github.com/wdecoster/nanostat" class="uri">https://github.com/wdecoster/nanostat</a>) installed via Anaconda:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">conda</span> install -c bioconda nanostat <span class="co">#already done!</span></code></pre></div>
+<p>We can test this on your Nanopore files using:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">NanoStat</span> --fastq <span class="va">$datapath</span>/ERR2173373.fastq.gz</code></pre></div>
+<p>Note: This takes several minutes! We may not have enough time to wait around for this to run.</p>
+</div>
+</div>
+<div id="blog" class="section level1">
+<h1>Blog</h1>
+<p>For your blog this week first develop a script that uses at least some of the tools above to look at your data files. Then add comments as placeholders for each of the programs that you need to run. In your blog write about each of the summary stats you are generating and what that tells you about your data. Also make notes of any problems you run into trying to get this to work.</p>
+<p>e.g.,:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin bash</span>
+<span class="co"># Spring 2019</span>
+<span class="co"># Harbert</span>
+
+<span class="co"># Example bash script for analysis of DNA sequence data (Harbert, 2019; doi:10001sxx2/)</span>
+
+<span class="va">datapath=</span><span class="st">'/usr/share/data/proj_data/example'</span>
+<span class="va">outputdir=</span><span class="st">'~/testout'</span>
+
+<span class="fu">ls</span> -lh <span class="va">$datapath</span>
+
+<span class="co">#more summary commands and stats:</span>
+
+<span class="co">####################</span>
+
+
+<span class="co">#Analysis Steps:</span>
+<span class="co">#1) Clean data with porechop: remove adaptor sequences and low quality reads</span>
+
+<span class="co">#2) Check for contaminants and remove (centrifuge)</span>
+<span class="co">#Github for centrifuge (link here)</span>
+<span class="co">#How to call centrifuge: centrifuge -i infile.fa -o report.tab</span>
+
+
+<span class="co">#3) Map to reference (bwa-mem)</span>
+
+<span class="co">#4) Assemble reads into contigs (Canu)</span>
+
+<span class="co">#5) Call variants</span></code></pre></div>
+<p><a href="https://rsh249.github.io/applied_bioinformatics">home</a></p>
 </div>
 
 
