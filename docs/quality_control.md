@@ -36,7 +36,7 @@ In the wider world of Bioinformatics the king of QC is [fastqc](https://www.bioi
 However, fastqc has trouble with Nanopore data and ONT specific tools exist.
 
 Tools:
-- [MinIONQC](https://github.com/roblanf/minion_qc) -- Operates directly on the summary files, not the fast5 or fastq. 
+- [MinIONQC](https://github.com/roblanf/minion_qc) -- Operates directly on the summary files, not the fast5 or fastq. We do not have any of those files yet.
 - [NanoPlot](https://github.com/wdecoster/NanoPlot) / [NanoStat](https://github.com/wdecoster/nanostat) / [NanoFilt](https://github.com/wdecoster/nanofilt)
 - [poretools](https://academic.oup.com/bioinformatics/article/30/23/3399/207172) -- output some quality stats, also converts to other file types.
 - Others??
@@ -85,7 +85,7 @@ Top 5 longest reads and their mean basecall quality score
 ```
 
 
-NanoPlot
+NanoPlot -- Summary stats and plots
 ========================================================
 
 Visualize quality metrics
@@ -95,20 +95,55 @@ Visualize quality metrics
 NanoPlot --fastq $datapath/SRR5805004.fastq --outdir nanoplots
 ```
 
-[All output plots](images/nanoplots)
-
-NanoPlot -- Read Length Distribution
-========================================================
-
-![Read length dist](images/nanoplots/HistogramReadlength.png)
-
-NanoPlot -- Quality vs. Read Length
-========================================================
-
-![Qual vs dist](images/nanoplots/LengthvsQualityScatterPlot_kde.png)
+[Output page](images/nanoplots/NanoPlot-report.html)
 
 
 
 NanoFilt
 ========================================================
+
+Filter reads on quality, read length, GC content, and trimming off the start or end of reads (to ensure adapter removal).
+
+
+```bash
+cat $datapath/SRR5805004.fastq | NanoFilt -q 10 -l 500 > filt.re
+ads.fq
+
+less filt.reads.fq
+
+```
+
+NanoFilt
+========================================================
+
+Always look at your data before decidign on filtering settings. There is no magic setting that will work for every study.
+
+Be aware of all of the options:
+
+
+```bash
+NanoFilt -h
+```
+
+poretools
+========================================================
+
+poretools operates directly on fast5 files that have basecalling done.
+
+Can generate a variety of informational output:
+
+
+```bash
+poretools -h 
+#typical command
+#poretools command path/to/fast5/experimentfiles
+```
+
+Next Week
+========================================================
+
+Guppy Basecalling for oryza and snake_venom projects
+
+
+
 
