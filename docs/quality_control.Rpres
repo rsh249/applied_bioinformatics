@@ -38,6 +38,7 @@ However, fastqc has trouble with Nanopore data and ONT specific tools exist.
 Tools:
 - [MinIONQC](https://github.com/roblanf/minion_qc) -- Operates directly on the summary files, not the fast5 or fastq. We do not have any of those files yet.
 - [NanoPlot](https://github.com/wdecoster/NanoPlot) / [NanoStat](https://github.com/wdecoster/nanostat) / [NanoFilt](https://github.com/wdecoster/nanofilt)
+- [porechop](https://github.com/rrwick/Porechop) Adapter removal
 - [poretools](https://academic.oup.com/bioinformatics/article/30/23/3399/207172) -- output some quality stats, also converts to other file types.
 - Others??
 
@@ -118,6 +119,13 @@ Be aware of all of the options:
 
 ```{bash, eval=F}
 NanoFilt -h
+```
+
+porechop
+========================================================
+
+```{bash, eval=F}
+porechop -i $datapath/SRR5805004.fastq  -o out.fq #Remove adapters from fastq file, write to out.fq
 ```
 
 poretools

@@ -784,7 +784,7 @@ hljs.initHighlightingOnLoad();
   <div class="slides">
 
 <section data-state="section" data-transition="default" data-transition-speed="default">
-<h1>Quality Control for Nanopore Data</h1><p>Prof. Harbert<br/>11 March, 2019</p>
+<h1>Quality Control for Nanopore Data</h1><p>Prof. Harbert<br/>12 March, 2019</p>
 
 <div class="slideContent" >
 
@@ -836,6 +836,7 @@ hljs.initHighlightingOnLoad();
 <ul>
 <li><a href="https://github.com/roblanf/minion_qc">MinIONQC</a> &ndash; Operates directly on the summary files, not the fast5 or fastq. We do not have any of those files yet.</li>
 <li><a href="https://github.com/wdecoster/NanoPlot">NanoPlot</a> / <a href="https://github.com/wdecoster/nanostat">NanoStat</a> / <a href="https://github.com/wdecoster/nanofilt">NanoFilt</a></li>
+<li><a href="https://github.com/rrwick/Porechop">porechop</a> Adapter removal</li>
 <li><a href="https://academic.oup.com/bioinformatics/article/30/23/3399/207172">poretools</a> &ndash; output some quality stats, also converts to other file types.</li>
 <li>Others??</li>
 </ul>
@@ -924,6 +925,15 @@ less filt.reads.fq
 <p>Be aware of all of the options:</p>
 
 <pre><code class="bash">NanoFilt -h
+</code></pre>
+
+</div>
+
+</section>
+<section data-transition="default" data-transition-speed="default">
+<h3>porechop</h3>
+<div class="slideContent" >
+<pre><code class="bash">porechop -i $datapath/SRR5805004.fastq  -o out.fq #Remove adapters from fastq file, write to out.fq
 </code></pre>
 
 </div>
