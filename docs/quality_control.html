@@ -834,7 +834,7 @@ hljs.initHighlightingOnLoad();
 <p>Tools:</p>
 
 <ul>
-<li><a href="https://github.com/roblanf/minion_qc">MinIONQC</a> &ndash; Operates directly on the summary files, not the fast5 or fastq. </li>
+<li><a href="https://github.com/roblanf/minion_qc">MinIONQC</a> &ndash; Operates directly on the summary files, not the fast5 or fastq. We do not have any of those files yet.</li>
 <li><a href="https://github.com/wdecoster/NanoPlot">NanoPlot</a> / <a href="https://github.com/wdecoster/nanostat">NanoStat</a> / <a href="https://github.com/wdecoster/nanofilt">NanoFilt</a></li>
 <li><a href="https://academic.oup.com/bioinformatics/article/30/23/3399/207172">poretools</a> &ndash; output some quality stats, also converts to other file types.</li>
 <li>Others??</li>
@@ -891,6 +891,11 @@ Top 5 longest reads and their mean basecall quality score
 <section data-transition="default" data-transition-speed="default">
 <h3>NanoPlot -- Summary stats and plots</h3>
 <div class="slideContent" >
+<p>Visualize quality metrics</p>
+
+<pre><code class="bash">NanoPlot --fastq $datapath/SRR5805004.fastq --outdir nanoplots
+</code></pre>
+
 <p><a href="images/nanoplots/NanoPlot-report.html">Output page</a></p>
 
 </div>
@@ -899,6 +904,50 @@ Top 5 longest reads and their mean basecall quality score
 <section data-transition="default" data-transition-speed="default">
 <h3>NanoFilt</h3>
 <div class="slideContent" >
+<p>Filter reads on quality, read length, GC content, and trimming off the start or end of reads (to ensure adapter removal).</p>
+
+<pre><code class="bash">cat $datapath/SRR5805004.fastq | NanoFilt -q 10 -l 500 &gt; filt.re
+ads.fq
+
+less filt.reads.fq
+
+</code></pre>
+
+</div>
+
+</section>
+<section data-transition="default" data-transition-speed="default">
+<h3>NanoFilt</h3>
+<div class="slideContent" >
+<p>Always look at your data before decidign on filtering settings. There is no magic setting that will work for every study.</p>
+
+<p>Be aware of all of the options:</p>
+
+<pre><code class="bash">NanoFilt -h
+</code></pre>
+
+</div>
+
+</section>
+<section data-transition="default" data-transition-speed="default">
+<h3>poretools</h3>
+<div class="slideContent" >
+<p>poretools operates directly on fast5 files that have basecalling done.</p>
+
+<p>Can generate a variety of informational output:</p>
+
+<pre><code class="bash">poretools -h 
+#typical command
+#poretools command path/to/fast5/experimentfiles
+</code></pre>
+
+</div>
+
+</section>
+<section data-transition="default" data-transition-speed="default">
+<h3>Next Week</h3>
+<div class="slideContent" >
+<p>Guppy Basecalling for oryza and snake_venom projects</p>
 
 </div>
 

@@ -67,6 +67,8 @@ Lecture 3: <a href='seq_files.html'> Sequence Data Files
 
 Lecture 4: <a href='longreads.html'> Why Long Reads Matter
 
+Lecture 5: <a href='quality_control.html'> Nanopore Quality Control
+
 ### Schedule of Readings
 
 Week 1 (January 17)
