@@ -783,7 +783,7 @@ hljs.initHighlightingOnLoad();
   <div class="reveal">
   <div class="slides">
 
-<section data-state="section" data-transition="default" data-transition-speed="default">
+<section data-state="section" data-transition="linear" data-transition-speed="default">
 <h1>Quality Control for Nanopore Data</h1><p>Prof. Harbert<br/>12 March, 2019</p>
 
 <div class="slideContent" >
@@ -791,7 +791,7 @@ hljs.initHighlightingOnLoad();
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>First</h3>
 <div class="slideContent" >
 <p>Presentations Thursday. Give us the 5 minute pitch for your project covering:</p>
@@ -806,7 +806,7 @@ hljs.initHighlightingOnLoad();
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>Nanopore Quality</h3>
 <div class="slideContent" >
 <p>We will be exploring Nanopore read quality and filtering. This is always an important step with any sequencing data.</p>
@@ -824,7 +824,7 @@ hljs.initHighlightingOnLoad();
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>QC Software</h3>
 <div class="slideContent" >
 <p>In the wider world of Bioinformatics the king of QC is <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">fastqc</a>. </p>
@@ -844,7 +844,7 @@ hljs.initHighlightingOnLoad();
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>NanoStat</h3>
 <div class="slideContent" >
 <p>Example run:</p>
@@ -855,7 +855,7 @@ hljs.initHighlightingOnLoad();
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>NanoStat -- Output</h3>
 <div class="slideContent" >
 <pre><code class="bash">General summary:
@@ -889,7 +889,7 @@ Top 5 longest reads and their mean basecall quality score
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>NanoPlot -- Summary stats and plots</h3>
 <div class="slideContent" >
 <p>Visualize quality metrics</p>
@@ -902,7 +902,7 @@ Top 5 longest reads and their mean basecall quality score
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>NanoFilt</h3>
 <div class="slideContent" >
 <p>Filter reads on quality, read length, GC content, and trimming off the start or end of reads (to ensure adapter removal).</p>
@@ -917,10 +917,10 @@ less filt.reads.fq
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>NanoFilt</h3>
 <div class="slideContent" >
-<p>Always look at your data before decidign on filtering settings. There is no magic setting that will work for every study.</p>
+<p>Always look at your data before deciding on filtering settings. There is no magic setting that will work for every study.</p>
 
 <p>Be aware of all of the options:</p>
 
@@ -930,7 +930,7 @@ less filt.reads.fq
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>porechop</h3>
 <div class="slideContent" >
 <pre><code class="bash">porechop -i $datapath/SRR5805004.fastq  -o out.fq #Remove adapters from fastq file, write to out.fq
@@ -939,12 +939,12 @@ less filt.reads.fq
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>poretools</h3>
 <div class="slideContent" >
-<p>poretools operates directly on fast5 files that have basecalling done.</p>
+<p>poretools operates directly on fast5 files that have basecalls.</p>
 
-<p>Can generate a variety of informational output:</p>
+<p>Can generate a variety of informat:</p>
 
 <pre><code class="bash">poretools -h 
 #typical command
@@ -954,7 +954,7 @@ less filt.reads.fq
 </div>
 
 </section>
-<section data-transition="default" data-transition-speed="default">
+<section data-transition="linear" data-transition-speed="default">
 <h3>Next Week</h3>
 <div class="slideContent" >
 <p>Guppy Basecalling for oryza and snake_venom projects</p>
@@ -1013,7 +1013,7 @@ function commandsForSlide(indexh) {
       rollingLinks: false,
       
       theme: 'simple', 
-      transition: 'default',
+      transition: 'linear',
       transitionSpeed: 'default',
       rtl: false,
       width: 960,

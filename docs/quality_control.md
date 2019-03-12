@@ -3,7 +3,6 @@ Quality Control for Nanopore Data
 author: Prof. Harbert
 date: 12 March, 2019
 autosize: true
-transition: rotate
 
 First
 ========================================================
@@ -117,7 +116,7 @@ less filt.reads.fq
 NanoFilt
 ========================================================
 
-Always look at your data before decidign on filtering settings. There is no magic setting that will work for every study.
+Always look at your data before deciding on filtering settings. There is no magic setting that will work for every study.
 
 Be aware of all of the options:
 
@@ -137,9 +136,9 @@ porechop -i $datapath/SRR5805004.fastq  -o out.fq #Remove adapters from fastq fi
 poretools
 ========================================================
 
-poretools operates directly on fast5 files that have basecalling done.
+poretools operates directly on fast5 files that have basecalls.
 
-Can generate a variety of informational output:
+Can generate a variety of informat:
 
 
 ```bash
