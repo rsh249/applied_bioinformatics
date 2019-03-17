@@ -1,0 +1,16 @@
+2019-03-11 22:15:14,496 NanoPlot 1.20.0 started with arguments Namespace(N50=False, alength=False, bam=None, barcoded=False, color='#4CB391', cram=None, downsample=None, dpi=100, drop_outliers=False, fasta=None, fastq=['/usr/share/data/proj_data/bacterial_resistance//SRR5805004.fastq'], fastq_minimal=None, fastq_rich=None, font_scale=1, format='png', listcolors=False, loglength=False, maxlength=None, minlength=None, minqual=None, no_N50=False, outdir='nanoplots', percentqual=False, pickle=None, plots=['kde', 'dot'], prefix='', raw=False, readtype='1D', runtime_until=None, store=False, summary=None, threads=24, title=None, verbose=False)
+2019-03-11 22:15:14,496 Python version is: 3.6.8 |Anaconda, Inc.| (default, Dec 30 2018, 01:22:34)  [GCC 7.3.0]
+2019-03-11 22:15:14,538 Nanoplotter: valid output format png
+2019-03-11 22:15:14,549 Nanoget: Starting to collect statistics from plain fastq file.
+2019-03-11 22:15:58,828 Reduced DataFrame memory usage from 0.670166015625Mb to 0.39093017578125Mb
+2019-03-11 22:15:58,840 Nanoget: Gathered all metrics of 29280 reads
+2019-03-11 22:15:58,869 Calculated statistics
+2019-03-11 22:15:58,870 Using sequenced read lengths for plotting.
+2019-03-11 22:15:58,875 Nanoplotter: Valid color #4CB391.
+2019-03-11 22:15:58,876 Nanoplotter: Creating length plots for Read length.
+2019-03-11 22:15:58,877 Nanoplotter: Using 29280 reads maximum of 46833bp.
+2019-03-11 22:16:00,495 Created length plots
+2019-03-11 22:16:00,498 Nanoplotter: Creating Read lengths vs Average read quality plots using statistics from 29280 reads.
+2019-03-11 22:16:03,906 Created LengthvsQual plot
+2019-03-11 22:16:03,907 Writing html report.
+2019-03-11 22:16:06,069 Finished!

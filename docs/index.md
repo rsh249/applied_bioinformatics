@@ -35,11 +35,11 @@ Week 4: <a href='adv_R.html'> Advanced R
 
 Week 5: Nanopore Sequencing
 
-Week 6: Python 1 + Reticulate R
+Week 6: <a href='project_proposal.html'> Project Proposal Development
 
 Week 7: *Spring Break*
 
-Week 8: Python 2
+Week 8: <a href='bash_scripting.html'> Unix and Practical Bash
 
 Week 9: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
 
@@ -66,6 +66,8 @@ Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 Lecture 3: <a href='seq_files.html'> Sequence Data Files
 
 Lecture 4: <a href='longreads.html'> Why Long Reads Matter
+
+Lecture 5: <a href='quality_control.html'> Nanopore Quality Control
 
 ### Schedule of Readings
 

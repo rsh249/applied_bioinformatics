@@ -1,0 +1,64 @@
+---
+title: "Lab_4"
+author: "Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+
+## DNA Sequencing Simulation
+
+In this lab, we will simulate DNA sequencing reads from a template sequence. That is, start with a template of 10,000 bases and sample 50bp reads for a predetermined number of reads, 100 in this case.
+
+
+# Generating DNA template sequence and creating a set
+
+
+```{r dna1, echo=TRUE}
+seqX <- sample(c("A","C","G","T"),10000,rep=TRUE,prob=c(0.4,0.1,0.1,0.4))
+
+set = NULL
+for (i in 1:100)
+  set = c(set, paste(sample(seqX[1:100], 50, replace=F), collapse=""))
+set
+
+```
+Here I made a set of 50 base pair long reads samples from the seqX generated above it, but I'm not sure if the loop pulls the 50 continuous base pairs we are looking for from seqX, 
+
+So I also made a loop to potentially store these reads in a matrix but I'm not sure how to relate the number values sampled to the corresponding letter in that position.
+
+
+# Choosing random samples with a loop
+
+
+```{r dna2, echo=TRUE}
+seqX <- sample(c("A","C","G","T"),10000,rep=T,prob=c(0.4,0.1,0.1,0.4))
+
+
+n = 100 #number to sample from vector
+samples = 50 #length of sample
+
+sam.mat = matrix(nrow=n, ncol=samples)
+for (i in 1:100){
+  x = sample(1:10000,1)
+  sam.mat[i,1]= x
+}
+print(sam.mat)
+```
+
+
+# Visuals
+
+We can generate a bar graph shows that each base is well represented by our model and the artificial sequence follows the A-T and G-C ratios of real DNA sequences.
+
+```{r dna3, echo=TRUE}
+freqX <- table(seqX)/length(seqX)
+barplot(freqX,col=1:4,main="Compositional bias of seqX",xlab="Base",ylab="Base proportion")
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)

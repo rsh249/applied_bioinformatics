@@ -1,0 +1,166 @@
+---
+title: "Lab 3"
+author: "Alex Baryiames"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+# Blog
+
+Here's a cool graph on the US census data
+
+
+## Run R
+
+```{R, eval=TRUE}
+census = read.csv('/usr/share/data/kaggle/census.csv')
+#loops
+#Count to ten
+for(i in 1:100){
+  x = sqrt(i)
+  print(x)
+  }
+
+
+sample1=sample(1:1000,10, replace=F)
+sample2=sample(1:1000,10, replace=F)
+sample3=sample(1:1000,10, replace=F)
+sample4=sample(1:1000,10, replace=F)
+sample5=sample(1:1000,10, replace=F)
+sam.mat = cbind(sample1, sample2, sample3, sample4, sample5)
+head(sam.mat)
+
+#loops
+x = 100; #number to sample
+samples=100
+sam.mat=matrix(nrow=x, ncol=samples)
+for(i in 1000:0){
+  
+}
+
+
+#Apply
+s=c(1:1000)
+for(i in 1:length(s)){
+  print(sqrt(s[i]))
+}
+
+#Better way to do this:
+a = sapply(s, sqrt)
+#lapply: Just makes things in a list!
+la = lapply(s, sqrt)
+
+#More Apply
+
+m = matrix(nrow=length(s), ncol=5)
+for(i in 1:ncol(m)){
+  m[,i]=s
+}
+head(m)
+
+ap = apply(m, 1, max)
+
+#Parallel Processing
+require(parallel)
+do = seq(1, 10000000)
+p = proc.time()
+l_works = sapply(do, sqrt)
+proc.time() - p
+# WOW look how long that took!
+
+nclus = 4
+cl = makeCluster(nclus, type ='SOCK'); 
+p = proc.time()
+splits = clusterSplit(cl, do)
+p_works2 = parSapply(cl, splits, sqrt)
+proc.time() - p
+stopCluster(cl)
+#That was intense! Look how fast it was, it took almost 1/4 the amount of time
+
+nclus = 32
+cl = makeCluster(nclus, type ='SOCK'); 
+p = proc.time()
+splits = clusterSplit(cl, do)
+p_works2 = parSapply(cl, splits, sqrt)
+proc.time() - p
+stopCluster(cl)
+# That took pretty much the same time because 1.1 seconds is practically the amount of time it takes for R to read the code and communicate witht the server. 
+
+#Conditional statements
+citizenRatio = census$Citizen/census$TotalPop
+for(i in 1:nrow(census)){
+  census[1,'Citzen']/census[i,'TotalPop']
+}
+
+AZcitizenRatio = vector()
+CAcitizenRatio = vector()
+otherRatio=vector()
+for(i in 1:nrow(census)){
+  if(census[i,'State']=='Arizona'){
+    AZcitizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  } else if (census[i,'State']=='California') {
+    CAcitizenRatio[i]=census[i,'Citizen']/census[i,'TotalPop']
+  } else {
+    otherRatio[i] = census[i,'Citizen']/census[i,'TotalPop']
+  }
+}
+summary(AZcitizenRatio)
+summary(CAcitizenRatio)
+summary(otherRatio)
+
+#Defining Functions
+citratio <- function(x){
+  ratio = x$Citizen/x$TotalPop
+  med = median(ratio, na.rm = TRUE)
+  return(med)
+}
+
+citratio(census)
+
+citratio(census[census$State=='California',])
+
+#Homework question
+
+
+t = as.vector(10) #years
+n = 2 #Initial Pop
+K = 1000 #Capacity
+r = .2 #Rate
+
+pop = vector()
+for(i in 1:1000){
+  pop[i] = K/(1+((K-n)/n)*exp(-r*i))
+}
+plot(pop)
+
+
+
+```
+
+I tried to model population growth, so I used the logistic growth equation. This equation takes into account resources as well as immigration and emigration, although it is lumped into the variable 'r' (r = growth rate). This model could be improved if I wrote my own function for the variable r. I tried to set that up but I was having trouble setting up the syntax of integrating two functions into a loop. I'm going to keep trying to get that working though!
+
+
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
