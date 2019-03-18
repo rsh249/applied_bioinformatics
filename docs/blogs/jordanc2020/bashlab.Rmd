@@ -1,0 +1,136 @@
+---
+title: "Bash Lab"
+author: "Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+### Spring 2019
+
+```{bash, include=FALSE, eval=F}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bash script for analysis of DNA sequence data of:
+
+Michael, T.P., Jupe, F., Bemm, F., Motley, S.T., Sandoval, J.P., Lanz, C., Loudet, O., Weigel, D. and Ecker, J.R., 2018. High contiguity Arabidopsis thaliana genome assembly with a single nanopore flow cell. Nature communications, 9(1), p.541.
+
+
+## Data Files: 
+
+https://www.ebi.ac.uk/ena/data/view/PRJEB21270
+ENA ID: PRJEB21270
+
+## Programs used: 
+
+minimap, miniasm, Canu, racon, bwa, pilon, QUAST, FreeBayes, RepeatMasker, Assemblytics, Mummer
+
+
+# Summary commands and stats: 
+
+## Setting bash variables
+
+This allows for a more simplified way of coding
+
+```{bash1, eval=F}
+datapath='/usr/share/data/proj_data/thale_cress'
+logfile='log.txt'
+touch $logfile
+
+echo $datapath > $logfile
+
+ls -lh $datapath
+
+```
+
+## File Accounting
+
+Using the commands below will allow you to determine the number of files in your directory. Grep will look for how many files contain the name fastq and count how many times it appears in the directory. We then want to save the number of files as a bash variable and use echo to relay how many data files in a complete sentence.
+
+```{bash2, eval=F}
+numfiles=$(ls -l $datapath | grep "fastq" | wc -l)
+echo "There are $numfiles files in $datapath"
+```
+
+## File size
+
+Use these commands to get the file size.
+
+```{bash3, eval=F}
+du -h $datapath/*fastq*
+```
+
+## Number of records
+
+To figure out how many individual reads you are dealing with per file, or in total, we will be using 'wc' or 'grep'
+
+```{bash4, eval=F}
+wc -l /usr/share/data/proj_data/thale_cress//ERR2173371_1.fastq
+```
+
+This will count the number of lines but this number needs to be divided by 4 because each read entry consists of 4 lines. A better way is to use grep. Use 'z' in front of grep or cat to unzip the gz files.
+
+```{bash5, eval=F}
+grep -c "$@ERR" /usr/share/data/proj_data/thale_cress//ERR2173371_1.fastq
+zgrep -c "$@ERR" $datapath/*.fastq.gz
+```
+
+## Read Length Distribution 
+
+Used to determine how long your sequence reads are, we expect to see long reads because most of the files are MinION data. Short reads are often seen in Illumina data files. This will also create a read length text file that stores the read lengths. To view this file use "less ~/readlengths.txt"
+
+```{bash6, eval=F}
+cat /usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > ~/readlengths.txt
+```
+
+# Quality Stats
+
+We are going to use nanostat, (https://github.com/wdecoster/nanostat) installed via Anacondato, calculate various statistics from a long read sequencing dataset in fastq files. The general summary will include mean read length, read quality, number of reads, and a few other basecalling statistics. Warning: This step takes some time.
+
+```{bash7, eval=F}
+jcallahan@neotoma1:~$ #The following commands are done in the home directory rather than the projects folder
+NanoStat -t 6 --fastq $datapath/*.fastq.gz >> $logfile #Generates stats for all files ending in ".fastq.gz" and puts them in a logfile
+NanoStat -t 6 --fastq /usr/share/data_proj_data/thale_cress/ERR2173373.fastq.gz #Generates stats for specific file
+```
+
+# Analysis Steps
+
+## ONT assembly and correction
+
+1) Minimap was used to map and assemble ONT reads without an error correction stage. Recommended parameters: (-Sw5 -L100 -m0).
+
+2) Miniasm was then used to create genome assembly graphs (GFA) to put together unpolished/uncorrected contig sequences from the raw read overlaps
+Miniasm also trims reads and generates unitig sequences aka high confidence contigs, which were then extracted from the GFA files.
+
+3) Canu assemblies were generated using the complete canu pipeline through correction, trimming, and assembly stages. Default parameters were also used.
+Once the three stages are complete, canu spits out the best overlap graph (BOG), contigs, an assembly graph, summary stats and identifies sequencing errors.
+
+4) Racon used minimap overlaps to generate high-quality consensus sequences and applied three times for further polishing.
+This was done using mapping info from minimap to build a partial-order alignment (POA) graph.
+
+5) The resulting assembly was then polished using the Burrows-Wheeler Alignment tool (BWA) to align short sequencing reads, in this study Illumina PCR-free 2 x 250 bp reads, against a large reference sequence, allowing mismatches and gaps.
+
+6) Pilon futher polishes the assemblies by calling sequence variants of multiple sizes, correcting bases, fixing mis-assemblies and filling gaps. 
+This step allows for the identification of small variants with high accuracy and biologically relevant genes by generating more contiguous genomes with fewer errors.
+
+7) QUAST generated genome stats to compare assembly quality and calculate various metrics like N50 or the # of ORFs.
+
+## Genome assembly validation and comparison
+
+8) Genome assemblies were validated with a variant calling based approach. Illumina short reads were mapped against each assembly with bwa and variations called with FreeBayes.
+
+9) Genomewide quality values (Q) for SNPs, insertions, and deletions were calculated as Q = −10×log10(total length of variants / total length of sites (DP >3)). Only biallelic variants were considered for quality validation. 
+
+10) Assemblies were repeat masked using RepeatMasker, which screens DNA sequences for interspersed repeats and low complexity DNA sequences. The program spits out a detailed annotation of the repeats that are present in the query sequence as well as a modified version of the query sequence in which all the annotated repeats have been masked.
+
+11) KBS-Mac-74 specific centromere and rDNA repeats were identified in the PBfal assembly with blastn using repesentative sequence from Col-0 TAIR10. The KBS-Mac-74 specific repeats were then used to search all four assemblies.
+
+12) Whole genome alignments generated with Mummer.
+
+13) Structural variation between assembled genomes and TAIR10 were detected (Assemblytics) based on whole genome alignments.
+
+14) For SG3/SG3i analysis, the complete genomic region for At4g30720 was blasted against the KBS-Mac-74 ONTmin round 4 assembly; 50 kb upstream and downstream of the two At4g30720 KBS-Mac-74 ONTmin hits were used to align to the Col-0 TAIR10 assembly to identify insertions, deletions, and rearrangement. (major goal for this project)
+
+[home](https://rsh249.github.io/applied_bioinformatics)

@@ -1,0 +1,262 @@
+---
+title: "Lab 4: Practical Bash"
+author: "Nicholas Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Goals of the lab
+
+In today's lab, we will look at some tools to preliminarily look at the sequencing data obtained.
+
+##Preliminary Information
+```{bash, eval=FALSE}
+#!/bin/bash
+
+# Nicholas Perry
+# Applied Bioinformatics Spring 2019
+# Hargreaves, A.D. and Mulley, J.F., 2015. Assessing the utility of the Oxford Nanopore MinION for snake venom gland cD$# ERS094900, SRX543069.
+# poretools, poRe, proovread-flex, nanocorrect, nanopolish, BWA-MEM, TransRate, TransDecoder, BLAST+, CLUSTAl
+```
+
+The above code designates the script as a bash script. The other information are comments about where the data is being obtained from, as well as what programs will be used.
+
+##Create Files and Paths
+
+```{bash, eval=FALSE}
+# Need to edit from here since using thale_cress data
+
+datapath=/usr/share/data/proj_data/thale_cress
+logfile='logfile.txt'
+
+touch $logfile
+#creates blank version of file
+
+echo "This is the path to the data:" > $logfile
+echo $datapath >> $logfile
+#This puts the path to the files into a log file.
+
+cat logfile
+```
+
+This code creates a path to the data that we will be using for the analysis. It will have to be edited in the future for my data. A log file is also created, so that all of the outputs may be placed inside of it.
+
+###Results
+
+This is the path to the data:
+/usr/share/data/proj_data/thale_cress
+
+Using the cat function, we can see what the datapath is and know where our data is coming from.
+
+##Count Number of Files
+
+```{bash, eval=FALSE}
+echo "There number of data files is:" >> $logfile
+numfiles=$(ls -l $datapath | grep "fastq" | wc -l)
+echo $numfiles >> $logfile
+#This counts how many data files there are.
+```
+
+The above code will count how many files are present that contain sequence data. Using grep "fastq", a file count will only be done on files containing sequence data.
+
+###Results
+
+There are 5 files present containing sequence data. So, this allows us to see how many files we will have to work with.
+
+##Size of Files
+
+```{bash, eval=FALSE}
+echo "The sizes for each file are:" >> $logfile
+filesize=$(du -h $datapath/*.fastq*)
+for i in $filesize;
+do echo $i >> $logfile
+done;
+#This code says how many big each of the files are.
+```
+
+This code will allow us to see how big each of the files are. By doing this, we can see which files may take longer to run since they may be a bigger size.
+
+###Results
+14G
+/usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq
+2.0G
+/usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq.gz
+2.7G
+/usr/share/data/proj_data/thale_cress/ERR2173372_1.fastq.gz
+3.0G
+/usr/share/data/proj_data/thale_cress/ERR2173372_2.fastq.gz
+3.2G
+/usr/share/data/proj_data/thale_cress/ERR2173373.fastq.gz
+
+These are the results of getting the sizes of the data files. From doing this, we know that ERR2173371_1.fastq is the largest file, at 14G. This file will probably take the longest to run an analysis on. The other files are all zipped, and are a lot smaller in size as a result.
+
+##Read Counts
+
+```{bash, eval=FALSE}
+echo "The number of total reads are:" >> $logfile
+numberOfRecords=$(wc -l $datapath/*.fastq.gz)
+echo $numberOfRecords >> $logfile
+#This will allow us to see how many reads we are dealing with.
+```
+
+This will allow us to see how many reads are present in all of the data files. This is important because it allows us to see if we are dealing with a large or short amount of reads.
+
+###Results
+
+The number of total reads are:
+8132004 /usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq.gz 
+10642680 /usr/share/data/proj_data/thale_cress/ERR2173372_1.fastq.gz 
+12138487 /usr/share/data/proj_data/thale_cress/ERR2173372_2.fastq.gz 
+13084872 /usr/share/data/proj_data/thale_cress/ERR2173373.fastq.gz 
+43998043 total
+
+The output tells us how many reads are present in each zipped fastq file, as well as in total. Sample ERR2173373 has the highest number of reads, with there being 43998043 total reads present.
+
+##Alternate Read Count Method
+```{bash, eval=FALSE}
+echo "To confirm the number of reads, we can also use another set of code:" >> $logfile
+confirmNumberOfRecords=$(zgrep -c '+' $datapath/*.fastq.gz)
+echo $confirmNumberOfRecords >> $logfile
+#Using zgrep, we will be able to confirm the number of reads present.
+```
+
+This code may allow us to get a better read count since zgrep is designed to work with zipped files.
+
+###Results
+
+To confirm the number of reads, we can also use another set of code:
+/usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq.gz:613080 /usr/share/data/proj_data/thale_cress/ERR2173372_1.fastq.gz:16841951 /usr/share/data/proj_data/thale_cress/ERR2173372_2.fastq.gz:16841951 /usr/share/data/proj_data/thale_cress/ERR2173373.fastq.gz:599831
+
+The results here are interesting, as a different read count was obtained. Now, it is showing that sample ERR2173373 has the lowest read count. This is probably more accurate, since zgrep is better for zipped files.
+
+##Read Distribution
+
+```{bash, eval=FALSE}
+echo "The read distribution for file ERR2173372_1.fastq.gz is:" >> $logfile
+zcat $datapath/ERR2173372_1.fastq.gz | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > ~/readlengths.txt
+less ~/readlengths.txt >> $logfile
+#This will allow one to get a general idea of what the read distribution for one of the files is
+```
+
+Getting the read distribution is important because it allows us to see how long each read is.
+
+##Results
+
+The read distribution for file ERR2173372_1.fastq.gz is:
+16841951 250
+
+This allows us to see how many reads are present, and what their length is. There are 16841951 reads present, each with a mean length of 250 bases.
+
+##Quality Stats
+
+```{bash, eval=FALSE}
+echo "Let's look at some quality stats for one of the files:" >> $logfile
+NanoStat --fastq $datapath/ERR2173372_1.fastq.gz
+#This will allow one to see some quality statistics on the data so as to gather ner information.
+```
+
+Obtaining quality statistics is important becuase it allows us to see how good our data is. NanoStat can tell us how effective our sequencing was.
+
+##Results
+
+General summary:
+
+Mean read length:                  250.0
+
+Mean read quality:                  29.3
+
+Median read length:                250.0
+
+Median read quality:                34.6
+
+Number of reads:            16,841,951.0
+
+Read length N50:                   250.0
+
+Total bases:             4,210,487,750.0
+
+Number, percentage and megabases of reads above quality cutoffs
+
+Q5:    16763362 (99.5%) 4190.8Mb
+
+Q7:    16587192 (98.5%) 4146.8Mb
+
+Q10:   16173322 (96.0%) 4043.3Mb
+
+Q12:   15869068 (94.2%) 3967.3Mb
+
+Q15:   15432676 (91.6%) 3858.2Mb
+
+Top 5 highest mean basecall quality scores and their read lengths
+
+1:      39.0 (250)
+
+2:      38.9 (250)
+
+3:      38.9 (250)
+
+4:      38.9 (250)
+
+5:      38.9 (250)
+
+Top 5 longest reads and their mean basecall quality score
+
+1:      250 (5.2)
+
+2:      250 (30.2)
+
+3:      250 (28.4)
+
+4:      250 (26.8)
+
+5:      250 (35.7)
+
+These results allow us to see that the mean read length was 250.0, that there were 16841951 reads present, which reads were the longest, and which reads had the highest quality. This is very important because it can show us which reads we should spend more time studying.
+
+##Exit
+
+```{bash, eval=FALSE}
+exit
+```
+
+This will be at the end of the script and cause it to exit.
+
+#Analysis
+
+```{bash, eval=FALSE}
+#Analysis Steps
+
+#1) To get the files into .fastq and .fasta formats, poretools and poRe will be used.
+
+#2) To correct for hybrid errors using short-read sequencing data, proovread-flex will be used.
+
+#3) Nanocorrect will be used for de novo correction.
+
+#4) Nanopolish will be used to correct for electrical signal events that were recorded in the .fast5 file from the MinION rea$
+
+#5) To evaluate sequence accuracy, BWA-MEM will be used.
+
+#6) To determine assembly quality, TransRate will be used.
+
+#7) To predict protein-coding open-reading frames, TransDecoder will be used.
+
+#8) Use BLAST+ to query against a reference venom gland transcriptome assembly.
+
+#9) Align and annotate sequences using CLUSTAL.
+```
+
+These are the programs that I will use in my analysis, as well as what each of them does.
