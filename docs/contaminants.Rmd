@@ -49,7 +49,7 @@ targdata2=/var/lib/MinKNOW/data/Ecoli_clean2/1/20190315_2017_MN30146_FAK49314_66
 
 cat $targdata1 $targdata2 > input.fq
 targdata=input.fq
-kraken2 --db $minikraken  --threads 12 --use-names --report kreport.tab --fastq-input $targdata kraken.out
+kraken2 --db $minikraken  --threads 12 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
 
 less kreport.tab
 
@@ -73,9 +73,9 @@ Centrifuge works by building an efficient Burrows-Wheeler index of the reference
 ### Setting up an analysis
 
 ```{bash, eval=F}
-$centdb=/usr/share/data/centstandard
+centdb=/usr/share/data/centstandard/abv
 
-centrifuge -p 12 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
+centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
 ```
 
 

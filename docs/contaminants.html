@@ -249,7 +249,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Detecting Contamination in Nanopore Sequencing</h1>
 <h4 class="author"><em>Prof. Harbert</em></h4>
-<h4 class="date"><em>18 March, 2019</em></h4>
+<h4 class="date"><em>19 March, 2019</em></h4>
 
 </div>
 
@@ -277,7 +277,7 @@ div.tocify {
 
 <span class="fu">cat</span> <span class="va">$targdata1</span> <span class="va">$targdata2</span> <span class="op">&gt;</span> input.fq
 <span class="va">targdata=</span>input.fq
-<span class="ex">kraken2</span> --db <span class="va">$minikraken</span>  --threads 12 --use-names --report kreport.tab --fastq-input <span class="va">$targdata</span> kraken.out
+<span class="ex">kraken2</span> --db <span class="va">$minikraken</span>  --threads 12 --use-names --report kreport.tab --fastq-input <span class="va">$targdata</span> <span class="op">&gt;</span> kraken.out
 
 <span class="fu">less</span> kreport.tab
 
@@ -296,9 +296,9 @@ div.tocify {
 <p>Centrifuge works by building an efficient Burrows-Wheeler index of the reference data and aligning each read in your dataset to the index. The best match(es) are reported for each read so that you can see how many and which reads match to which group of organisms. Centrifuge differs from Kraken in that explicit alignments of the sequence reads are performed and allow for both mutations and gaps between the reference and test data which may produce somewhat higher accuracy.</p>
 <div id="setting-up-an-analysis-1" class="section level3">
 <h3>Setting up an analysis</h3>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">$centdb</span>=<span class="ex">/usr/share/data/centstandard</span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">centdb=</span>/usr/share/data/centstandard/abv
 
-<span class="ex">centrifuge</span> -p 12 -q -x <span class="va">$centdb</span> -U <span class="va">$targdata</span> -S out.centclass --report-file creport.tab --out-fmt tab</code></pre></div>
+<span class="ex">centrifuge</span> -p 2 -q -x <span class="va">$centdb</span> -U <span class="va">$targdata</span> -S out.centclass --report-file creport.tab --out-fmt tab</code></pre></div>
 </div>
 </div>
 </div>
