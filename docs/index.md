@@ -69,6 +69,8 @@ Lecture 4: <a href='longreads.html'> Why Long Reads Matter
 
 Lecture 5: <a href='quality_control.html'> Nanopore Quality Control
 
+Lecture 6: <a href='assemble.html'> Assembling with Canu
+
 ### Schedule of Readings
 
 Week 1 (January 17)
