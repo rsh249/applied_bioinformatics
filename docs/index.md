@@ -41,7 +41,7 @@ Week 7: *Spring Break*
 
 Week 8: <a href='bash_scripting.html'> Unix and Practical Bash
 
-Week 9: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
+Week 9: <a href='contaminants.html'> Detecting Contamination
 
 Week 10: Data Workshop 2: Genome Assembly + Viewing
 
@@ -68,6 +68,8 @@ Lecture 3: <a href='seq_files.html'> Sequence Data Files
 Lecture 4: <a href='longreads.html'> Why Long Reads Matter
 
 Lecture 5: <a href='quality_control.html'> Nanopore Quality Control
+
+Lecture 6: <a href='assemble.html'> Assembling with Canu
 
 ### Schedule of Readings
 

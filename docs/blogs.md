@@ -45,4 +45,7 @@ Stonehill College <br>
 
 <a href='blogs/GMD/rmarkdown5.html'> GMD
 
+<a href='blogs/nperry/Lab4.html'> nperry
+
+<a href='blogs/jordanc2020/bashlab.html'> jordanc2020
 
