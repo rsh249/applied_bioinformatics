@@ -1,0 +1,216 @@
+---
+title: "Lab 5: Detecting Contamination in Nanopore Sequencing"
+author: "Nicholas Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Detecting Contamination
+
+Many times, when data is sequenced, there is some form of contamination involved. There are many potential sources of this contamination, such as microbes present in the reagents used or previously sequenced organisms showing up in the current sequence. There are some programs that allow one to see the potential contamination that may be present. These include Kraken and Centrifuge.
+
+#Kraken
+
+It is important to note that I do not currently have any data to run Kraken on, as my data has not been base-called as of yet. So, I am running this on another set of data. Specifically, I am using the thale_cress data, also known as Arabidopsis thaliana. When I get my data, I can modify the path used to my data instead of the thale_cress data.
+
+##Code
+
+```{bash, eval=FALSE}
+datapath=/usr/share/data/proj_data/thale_cress/
+minikraken=/usr/share/data/minikraken2
+targdata=$datapath/ERR2173371_1.fastq
+kraken2 --db $minikraken  --threads 12 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+```
+
+To avoid typing in the path to the data every time, I created a variable called datapath. This would direct me to the data that I was using. I also created a path to the Kraken database so that I did not have to type the path in every time. The targdata variable designates which file I am going to run Kraken on. It is important to note that this file has to be a fastq file. Finally, I ran the command for kraken. I called Kraken by calling it through kraken2, specifying the kraken database, designating how many threads would be used, using names of other sequenced organisms, creating a kreport.tab file, and designating the fastq-input file. I redirected all of this into the file kraken.out, so I could view everything in one file.
+
+##Results
+
+```{bash, eval=FALSE}
+less kreport.tab
+```
+
+Using the less command with the kreport.tab file will allow us to review the results of kraken. The output is presented below:
+
+ 53.88  330349  330349  U       0                                         unclassified
+ 
+ 46.12  282731  181     R       1                                         root
+ 
+ 45.99  281976  6699    R1      131567                                    cellular organisms
+ 
+ 33.49  205339  0       D       2759                                      Eukaryota
+ 
+ 33.49  205339  0       D1      33154                                     Opisthokonta
+ 
+ 33.49  205339  0       K       33208                                     Metazoa
+ 
+ 33.49  205339  0       K1      6072                                      Eumetazoa
+ 
+ 33.49  205339  0       K2      33213                                     Bilateria
+ 
+ 33.49  205339  0       K3      33511                                     Deuterostomia
+ 
+ 33.49  205339  0       P       7711                                      Chordata
+ 
+ 33.49  205339  0       P1      89593                                     Craniata
+ 
+ 33.49  205339  0       P2      7742                                      Vertebrata
+ 
+ 33.49  205339  0       P3      7776                                      Gnathostomata
+ 
+ 33.49  205339  0       P4      117570                                    Teleostomi
+ 
+ 33.49  205339  0       P5      117571                                    Euteleostomi
+ 
+ 33.49  205339  0       P6      8287                                      Sarcopterygii
+ 
+ 33.49  205339  0       P7      1338369                                   Dipnotetrapodomorpha
+ 
+ 33.49  205339  0       P8      32523                                     Tetrapoda
+ 
+ 33.49  205339  0       P9      32524                                     Amniota
+ 
+ 33.49  205339  0       C       40674                                     Mammalia
+ 
+ 33.49  205339  0       C1      32525                                     Theria
+ 
+ 33.49  205339  0       C2      9347                                      Eutheria
+ 
+ 33.49  205339  0       C3      1437010                                   Boreoeutheria
+ 
+ 33.49  205339  0       C4      314146                                    Euarchontoglires
+ 
+ 33.49  205339  0       O       9443                                      Primates
+ 
+ 33.49  205339  0       O1      376913                                    Haplorrhini
+ 
+ 33.49  205339  0       O2      314293                                    Simiiformes
+ 
+ 33.49  205339  0       O3      9526                                      Catarrhini
+ 
+ 33.49  205339  0       O4      314295                                    Hominoidea
+
+
+The above output indicates which organisms were matched with the sequence data for thale_cress. It is important to note, however, that the database created for kraken does not have any plant genomes present. So, that is why no plants are references, and 53.88% is unclassifed. What the database was able to discover was that there was some Eukaryotic genomes present. Kraken also found sequences that correspond to other organisms, such as Primates, Tetrapods, and Gnathostomes. There is significant contamination present in these DNA sequences, as 33.49% of the genome of thale_cress has been shown to overlap with genomes from other organisms.
+
+#Centrifuge
+
+Similarly to Kraken, Centrifuge was run on data that was not my own.
+
+##Code
+
+```{bash, eval=FALSE}
+centdb=/usr/share/data/centstandard/abv
+
+centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
+```
+
+The targdata variable from kraken was reused here, as I was running Centrifuge on the same data. I created a variable called centdb so that I would not have to specify the path to the centrifuge database every time. I called centrifuge, specified that I was using 2 threads using the -p argument, specified that the files being used were in fastq format using the -q argument, specifed the centrifuge database using -x, specified the target data using -U, and then specified the output files that would be outputted.
+
+##Results
+
+Similarly to Kraken, we can view the output file using the less command on the file creport.tab
+
+```{bash, eval=FALSE}
+less creport.tab
+```
+
+The output is listed below:
+
+name    taxID   taxRank genomeSize      numReads        numUniqueReads  abundance
+
+Bacteria        2       superkingdom    0       1       0       0.0
+
+Azorhizobium    6       genus   5369772 4       0       0.0
+
+Azorhizobium caulinodans        7       species 5369772 2       0       0.0
+
+Buchnera aphidicola     9       species 599772  219     157     0.0
+
+Pelobacter      18      genus   3665893 2       0       0.0
+
+Pelobacter carbinolicus 19      species 3665893 1       0       0.0
+
+Shewanella putrefaciens 24      species 4749735 323     214     0.0
+
+Myxococcales    29      order   11206461        9       0       0.0
+
+Myxococcus      32      genus   9720703 2       0       0.0
+
+Myxococcus macrosporus  35      species 8973512 51      31      0.0
+
+Stigmatella     40      genus   10260756        1       0       0.0
+
+Stigmatella aurantiaca  41      species 10260756        1       0       0.0
+
+Cystobacter fuscus      43      species 12349744        55      44      0.0
+
+Archangium gephyra      48      species 12489432        82      62      0.0
+
+Chondromyces crocatus   52      species 11388132        65      46      0.0
+
+Sorangium cellulosum    56      species 13907952        164     107     0.0
+
+Vitreoscilla    59      genus   0       1       0       0.0
+
+Vitreoscilla filiformis 63      species 3787551 26      21      0.0
+
+Lysobacter enzymogenes  69      species 6096022 32      22      0.0
+
+Cyclobacterium marinum  104     species 6221273 2       0       0.0
+
+Planctomycetales        112     order   5798047 52      0       0.0
+
+Gemmata 113     genus   0       125     0       0.0
+
+Gemmata obscuriglobus   114     species 8998893 607     74      0.0
+
+Rubinisphaera brasiliensis      119     species 6006602 7       0       0.0
+
+Planctopirus limnophila 120     species 5460085 19      0       0.0
+
+Pirellula staleyi       125     species 6196199 14      0       0.0
+
+Planctomycetaceae       126     family  5887628 101     0       0.0
+
+Isosphaera      127     genus   5529304 99      0       0.0
+
+Isosphaera pallida      128     species 5529304 1       0       0.0
+
+Spirochaetales  136     order   1607452 3       0       0.0
+
+Spirochaetaceae 137     family  2382539 2       0       0.0
+
+Borrelia        138     genus   1110205 29      0       0.0
+
+Borreliella burgdorferi 139     species 1329613 389     183     0.0
+
+Borrelia hermsii        140     species 1156143 24      0       0.0
+
+Borrelia turicatae      142     species 1165365 232     32      0.0
+
+Spirochaeta thermophila 154     species 2516433 2       0       0.0
+
+Treponema       157     genus   2293276 10      0       0.0
+
+Brachyspira hyodysenteriae      159     species 3055339 472     25      0.0
+
+Leptospiraceae  170     family  4932539 1       0       0.0
+
+
+Above, we can see that the sequences of many other species are present inside the genome of thale_cress. Similarly to Kraken, there are no plants present in the Centrifuge database, which is why no plants show up. However, through Centrifuge, we can see significant amounts of contamination. There are many species of bacteria present that have genomes similar to the reference, such as Pelobacter carbinolicus. This indicates that the thale_cress sequence potentially contains sequences from other species, and is not completely pure.
