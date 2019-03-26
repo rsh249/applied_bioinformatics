@@ -1,0 +1,46 @@
+---
+title: 'Lab 2: Data Visualization'
+author: "Nicholas Poli"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+
+```{r setup, include=FALSE}
+#library(reticulate)
+#use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+# Adding File Census
+
+Using the code, census = read.csv('/usr/share/data/kaggle/census.csv'), I was ab le to uplaod the data from the file being used in order to create plots like the histogram using ggplot. Head command was used to print first six lines of file being used. Librsry was used to make ggplot functions accessible. Edit to 'newdata' was done to shorten samples and make it quikcer to process/ upload. Facetting was done to get multipanel plots of specific samples rather than a full ggplot which gives a larger, less specific plot of the data.
+
+```{R, eval=TRUE}
+
+newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep = ' ')
+newdata = newdata[sample(1:nrow(newdata), 500000, replace=F),]
+head(newdata)
+library(ggplot2)
+ggplot(data = newdata) +
+  geom_histogram(aes(x = readlength), binwidth = 20)
+ggplot(data = newdata) +
+  geom_histogram(aes(x = readlength), binwidth = 20) +
+  facet_grid( ~ SampleID)
+
+
+```
+
