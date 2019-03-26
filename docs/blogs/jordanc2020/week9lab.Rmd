@@ -1,0 +1,112 @@
+---
+title: "Detecting Contamination"
+author: "Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+There are often contaminating sequences in data that can disrupt downstream analysis of data so it is important to identify any contamination from bacteria, viruses, or other sources. Kraken and centrifuge identifies the possible origins of each read and other helpful information pertaining to the homogeny of the reads. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#knitr::include_graphics(./path to file)
+```
+
+# Kraken(2)
+
+Kraken assigns taxonomic labels by building a reference database of unique short nucleotide sequence molecules known as kmers and matching your data to exact kmers within the database. Longer kmer sequences are more likely to matched with a unique taxa because there are more specific to a certain taxa with increasing kmer length. 
+
+To run kraken, assign bash variables for each data file and the kraken database. The kraken2 command calls the kraken database and uses multithreading to provide simultaneous execution of two or more parts of a program to maximum utilize the CPU time. 
+
+```{bash, eval=FALSE, echo=TRUE}
+#Bash variables for:
+#kraken database
+minikraken=/usr/share/data/minikraken2
+targdata1=/usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq
+targdata2=/usr/share/data/proj_data/thale_cress/ERR2173372_1.fastq.gz
+targdata3=/usr/share/data/proj_data/thale_cress/ERR2173372_2.fastq.gz
+targdata4=/usr/share/data/proj_data/thale_cress/ERR2173373.fastq.gz
+
+cat $targdata1 $targdata2 $targdata3 $targdata4 > input.fq
+targdata=input.fq
+
+kraken2 --db $minikraken  --threads 12 --kraken1.1 --report kreport.tab --fastq-input $targdata > kraken.out 
+
+#To read the data file created by kraken2
+less kreport.tab
+
+#OR
+#you can use grep to look for specific domains, families, classes, species, etc. 
+
+grep "Eukar" kreport.tab
+```
+
+## Reading kraken output
+
+The first column of the data file refers to the percentage of fragments covered by the clade at this specific taxon. The second column is the number of fragments in this clade, the third column is the number of fragments rooted directly to that taxon. The fourth column refers to the following code, (U)nclassified, (R)oot, (D)omain, (K)ingdom, (P)hylum, (C)lass, (O)rder, (F)amily, (G)enus, or (S)pecies. The fifth column is the NCBI taxonomix ID number and the sixth column is the scientific name.
+
+```{r, eval=TRUE, echo=TRUE}
+colsToKeep <- c("V1", "V6")
+kreport=data.table::fread('~/krakencress/kreport.tab', select=colsToKeep)
+print(kreport[1:100,])
+#V1 refers to the percentage of the data that pertains to the specific classification in the second column labeled V6.
+```
+
+# Centrifuge
+
+Centrifuge builds a Burrows-Wheeler index of the reference data and aligns each read in the dataset to the index. For each read, the best matches are all reported and reads are matched to groups of organism that they'd belong to. Centrifuge allows for both mutations and gaps between the reference and test data, which kraken does not. 
+
+To call centrifuge, set bash variables to the data file path and the centrifuge database. Then use the centrifuge command to produce a table that looks like the one depicted below.
+
+```{bash, eval=FALSE, echo=TRUE}
+
+targdata=/usr/share/data/proj_data/thale_cress/ERR2173371_1.fastq
+centdb=/usr/share/data/centstandard/abv
+centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
+
+#To look at the data file created by centrifuge
+less creport.tab
+
+```
+
+
+```{r, eval=TRUE, echo=TRUE}
+data.table::fread('~/centcress/creport.tab')
+```
+
+
+## Possible contamination 
+
+Possible contamination can include human DNA by handling samples without gloves or by other means of interacting with the DNA samples. This is evident in this data because a significant number of reads mapped to homo sapiens. Another possible contamination is bacteria, as a number of reads are labeled to bacteria such as Buchnera aphidicola, where numReads = 219, and the number of unique reads = 157 in the centrifuge report. Below are possible commands to filter out some contamination for each program.
+
+```{bash, eval=FALSE, echo=TRUE}
+#To look at options for each program
+
+kraken2 -h
+
+--confidence FLOAT 
+#confidence score threshold (default: 0.0); must be in [0,1].
+
+#or 
+
+--minimum-base-quality NUM  
+#Minimum base quality used in classification (def: 0, only effective with FASTQ input).
+
+centrifuge -h
+
+# for the classification part of centrifuge you can increase the min length required that the partial hits must achieve to be labeled. 
+--min-hitlen <int>
+#minimum length of partial hits (default 22, must be greater than 15)
+
+#The QSEQ filter enables sequence quantification processing of next generation sequencing.
+--qc-filter
+ #filter out reads that are bad according to QSEQ filter
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
