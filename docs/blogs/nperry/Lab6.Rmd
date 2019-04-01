@@ -1,0 +1,152 @@
+---
+title: "Lab 6: Data Workshop: MinION Sequencing"
+author: "Nicholas Perry, Nicholas Poli, Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Number of reads
+
+```{bash, eval=FALSE}
+grep -c "@" *.fastq
+```
+
+For the sink data, there are 10648 reads.
+
+##Set the datapath
+
+```{bash, eval=FALSE}
+datapath='/var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_MN30146_FAK53074_d7dc2974/fastq_pass_demult/barcode01'
+```
+
+##Number of Records
+
+```{bash, eval=FALSE}
+ls -l $datapath | wc -l
+```
+
+There are 18 records present in the sink data.
+
+##File Size
+
+```{bash, eval=FALSE}
+du -h $datapath/*.fastq
+```
+
+The one file is 7.0M.
+
+##Number of Records
+
+```{bash, eval=FALSE}
+wc -l $datapath/*.fastq
+```
+
+There are 42952 records.
+
+##Read Length Distribution
+
+```{bash, eval=FALSE}
+cat $datapath/*.fastq | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > readlengths.txt
+
+less readlengths.txt
+```
+
+In this data, the longest read is 47393 bases. There are mostly short reads present. The peak distribution is between 175 and 200 bases.
+
+##Kraken
+
+```{bash, eval=FALSE}
+minikraken=/usr/share/data/minikraken2
+targdata=$datapath/fastq_runid_db81c1aadf5c13882a08f54a68cdaf7de8e4a031_0.fastq
+kraken2 --db $minikraken  --threads 12 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+less /var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_MN30146_FAK53074_d7dc2974/fastq_pass_demult/barcode01/kreport.tab
+```
+
+Kraken showed that there was primarily bacteria in the sink. Specifically, it found a lot of E. coli matches. Most of the reads did not map, however, as it said they were unclassified.
+
+##NanoPlot
+
+```{bash, eval=FALSE}
+NanoPlot --fastq /var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_M
+N30146_FAK53074_d7dc2974/fastq_pass_demult/barcode01/fastq_runid_db81c1aadf5c13882a08f54a68cdaf7de8e4a031_0.fastq --outd
+ir nanoplots
+```
+
+NanoPlot showed that there was a lot of small reads, poor quality reads, and a poor yield by length. There were only a few long reads around 1500-4300 bases. After log transformation, there were very short read lengths, but some of the short reads had a good quality.
+
+##NanoStat
+
+```{bash, eval=FALSE}
+datapath=/var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_MN30146_FAK53074_d7dc2974/fastq_pass_demult/barcode01
+
+NanoStat --fastq $datapath/*.fastq
+```
+
+##Centrifuge with Smaller Database
+
+```{bash, eval=FALSE}
+targdata=$datapath/fastq_runid_db81c1aadf5c13882a08f54a68cdaf7de8e4a031_0.fastq
+centdb=/usr/share/data/centstandard/abv
+centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
+```
+
+Once centrifuge creates the report, use R studio to read the data report.
+
+```{R, eval=FALSE}
+#Creating a data table to read centrifuge data
+ctable = read.delim(creport.tab, header = TRUE, sep = "\t")
+head (ctable)
+#Sorting by column name
+sort(ctable$numReads)
+order(ctable$numReads, decreasing=TRUE)
+head (ctable)
+ctable[order(ctable$numreads, decreasing=TRUE),]
+sortreads= ctable[order(ctable$numReads, decreasing=TRUE),]
+
+head(sortreads)
+sortreads[1:15,]
+#prints the first 15 rows and reports other possible bacteria found in the sample
+```
+
+From this table, we observed that the percentage of the reads mapping to ecoli was about 84%
+8,919 reads mapping to ecoli divided by the total number of reads (10,648)
+
+##Centrifuge with Larger Database
+
+```{bash, eval=FALSE}
+centdb=/usr/share/data/centrifuge/centref
+targdata=$datapath/fastq_runid_db81c1aadf5c13882a08f54a68cdaf7de8e4a031_0.fastq
+```
+
+For the large centrifuge database, there are less reads that map to E. coli, some that map to Schistoma (probably contamination), some viruses showing up, and a goldfish genome.
+
+##Canu
+
+```{bash, eval=FALSE}
+mkdir canusink1
+canu -p sinkdata -d canusink1  genomeSize=4.8m maxThreads=8  -nanopore-raw $datapath/fastq_runid_db81c1aadf5c13882a08f54a68cdaf7de8e4a031_0.fastq > logcanu01 &
+#the log file will be written in whatever directory you run this command in
+```
+
+The Canu assembly failed almost instantly due to Read coverage (0.16) is too low to be useful. 
+This could be caused by an incorrect genomeSize or poor quality reads that could not be sufficiently corrected.
+
+##Summary
+
+	The exploration of the sink dataset showed that the data generated was not that great. Through some exploration, we were able to see that many of the reads generated were small, with only a few long reads being generated. Most of the reads tended to fall around the 200 base pair length. Upon further examination of the data, we were able to see that many of the short reads actually had decent quality. However, these reads most definitely had some contamination, as Kraken showed that there was Schistoma and goldfish genomes present in our data, which would not make any sense. Schistoma is not present in this area, which means that the data was not that accurate and contained some contamination. Overall, we were able to successfully sequence some data, albeit with not great quality.
+	The quality of the canu assembly was too poor and read coverage was reported to be too low to continue with the analysis. For future canu assemblies, sequencing a larger amount of sample will increase the coverage and allow for a better canu assembly. Also, there are library preparations that may filter out the short read sequences that interfere with the available pores. In essence, we need longer reads that will uniquely map to specific genomes. For future analyses, further DNA purification may be appropriate as there were small traces of DNA from foreign species in the sample. The presence of Schistoma DNA within the sample support the idea to purify further because it is a foreign, tropical species of flatworm uncommon to this region.
