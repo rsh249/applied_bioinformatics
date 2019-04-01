@@ -79,10 +79,11 @@ Week 7 (March 7) NO READINGS -- Spring Break
 
 Week 8: <a href='bash_scripting.html'> Unix and Practical Bash
 
-Lecture 6: <a href='assemble.html'> Assembling with Canu
+Lecture 5: <a href='quality_control.html'> NanoPlots -- Visualize Sequencing Quality
 
 Week 8 (March 14) NO READINGS -- Project Proposal Presentations DUE
 
+Lecture 6: <a href='assemble.html'> Assembling with Canu
 
 Week 9: <a href='contaminants.html'> Detecting Contamination
 
