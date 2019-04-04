@@ -1,0 +1,328 @@
+---
+title: "Practical Bash"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+# Developing your project workflow
+
+Today we will look at how we run programs on the Unix commandline. As most of the bioinformatic software you will be using for your Projects is run this way, it is important to be comfortable working this way. It is also a good time to talk about managing your projects for documentation and reproducibility.
+
+# Bash
+
+The scripts you will be writing today are in a common format that ties together many bioinformatics workflows. This is also a common format for submitting computational jobs in High Performance Computing (HPC) environments that enforce queueing software.
+
+"Bash" scripting is a common name for any Unix shell script. Some people will use it specifically to refer to the Bourne Again SHell, but you may encounter other variants of the Unix shell. We will use Bash but most of what we use will be fully transferable if you ever encounter another shell.
+
+Unix commands that we have seen so far run programs ('R', 'top') interact with the file system ('cd', 'ls', 'cp') and read files ('grep', 'wc', 'cat'). 
+
+We will use bash scripts to explore the data for your projects today and ultimately you will build an entire analysis pipeline to do your project. We will try to keep together but some of your data may be incompatible with some of this exploration. Also, if your files are particularly large it may take more time than expected.
+
+## Exploring Sequence Data
+
+Things I want to know about your data files:
+
++ How many files are there?
++ What size is each file? What's the total amount of storage used?
++ How many sequence reads are there in each? ('wc' or 'grep')
++ Peek at quality scores (try fastqc)
++ What is the read-length distribution? ('awk')
+
+Your project data are on the server at:
+
+```{bash, eval=F}
+cd /usr/share/data/proj_data
+ls #Look for your project codename and 'cd' into that directory.
+
+#in your directory try:
+ls -lh
+
+```
+
+
+
+# Scripting
+
+Anything that you can run by typing at the Unix command prompt (i.e., *most* bioinformatics software) can, and should, be written in a Bash script. This way you will be able to manage complex commands and workflows without worrying about mis-typing a command or getting things out of order. Also, you can automate your analysis; as soon as one part is done the next will start to run.
+
+## Setting up your script
+
+Go back to your user directory:
+
+```{bash, eval=F}
+cd ~
+mkdir project_codename
+cd project_codename
+```
+
+Create a new file using 'nano'
+
+```{bash, eval=F}
+nano bash_proj
+
+```
+
+In the nano prompt type:
+
+```{bash, eval=F}
+#!/bin/bash
+
+#This is a comment
+
+echo "This is a test"
+
+```
+
+And then type "Ctrl+o" to save changes and "Ctrl+x" to exit. (You can type just "Ctrl+x" and answere "Y" when asked to save)
+
+Then to RUN the script:
+
+```{bash, eval=F}
+bash bash_proj
+
+```
+
+You should see output that says "This is a test"
+
+We can now add any Unix command to the bash script and they will all be run in sequence when we run the script.
+
+For example open the script and modify to be:
+
+```{bash, eval=F}
+#!/bin/bash
+
+#This is a comment
+
+echo "This is a test"
+
+ls -lh
+
+
+```
+
+## Script Organization
+
+A good script is designed to be re-used. I don't care about how efficient your code is or if it is formatted cleanly. What makes a document like this useful to yourself and others is whether it can be understood. This means that you need to clearly provide the details of how to use the script and what it is doing along the way.
+
+Open your script again and add comment lines (Start each line with '#') to the top with the following information about your project:
+
++ Your name
++ Current Term/Year
++ Citation of the paper you are emulating 
++ Source of data (SRA or ENA id preferred but URL good too)
++ Pre-requisite programs list
+
+## Setting Variables
+
+A good starting point of any script is to set up bash variables with the path to your data (and eventually any reference data).
+
+You set a bash variable like this: (try it on the command line first)
+
+```{bash, eval=F}
+var='value'
+```
+
+And call as:
+
+```{bash, eval=F}
+echo $var
+```
+
+Add the path to your data (e.g., '/usr/share/.....') to the top of the script
+
+```{bash, eval=F}
+datapath='/usr/share/data/proj_data/thale_cress'
+
+#then check it with:
+echo $datapath
+
+#and try and use it in a command:
+ls -lh $datapath
+
+```
+
+## Testing
+
+As you work on your script and add commands it is usually a good idea to test frequently.
+
+Recall that you run a script as:
+
+```{bash, eval=F}
+bash bash_proj
+```
+
+## Logging
+
+It can be useful to create a log file and output important information or milestones to the log.
+
+In your script try:
+
+```{bash, eval=F}
+logit='log.txt'
+echo "Logging to $logit"
+
+touch $logit #Not strictly necessary, but can be useful to create an empty file early on.
+
+echo "Output test" > $logit #the > symbol redirects the echo output to the file indicated
+
+```
+
+Then look at the "log.txt" file.
+
+```{bash, eval=F}
+cat 'log.txt'
+```
+
+Keep this in mind as you work on your pipeline. Logging major landmarks after each program can give vital information about your analysis WHEN it fails when you're not watching.
+
+# Exploring your data 
+
+From here out, keep notes about what each command does. Your blog post this week will involve adding this to your bash script and writing up how and why it works.
+
+## File accounting
+
+How many files do you have in your directory? (We will worry about whether we have everything there later)
+
+
+```{bash, eval=F}
+datapath='/usr/share/data/proj_data/thale_cress/'
+ls -l $datapath | wc -l
+```
+
+We want to save the number of files as a bash variable:
+
+```{bash, eval=F}
+datapath='/usr/share/data/proj_data/thale_cress/'
+numfiles=$(ls -l $datapath | wc -l)
+echo $numfiles
+```
+
+
+## File size
+
+We can get the file size of each file with:
+
+```{bash, eval=F}
+du -h $datapath/*.fastq.gz
+```
+
+And can parse the file sizes using 'awk' (more on this later):
+Print the file name first, then the file size. Or any other combination of info you want here.
+
+```{bash, eval=F}
+du -h $datapath/*.fastq.gz | awk '{print $2 $1}'
+
+```
+
+
+## Number of records
+
+We may also want to know how many individual reads you are dealing with per file or in total.We can get a quick count using 'wc' or 'grep'.
+
+```{bash, eval=F}
+wc -l $datapath/*.fastq.gz
+```
+
+
+```{bash, eval=F}
+zgrep -c '+' $datapath/*.fastq.gz #zgrep for compressed *.fastq.gz files, works just like 'grep'
+```
+
+## Read Length Distribution
+
+It is often useful to know how long your sequence reads are. Many of our files are MinION data, so long reads are the norm and we want to know how these are distributed. However, read lengths on Illumina data can be revealing as well.
+
+We will calculate this using 'awk':
+
+```{bash, eval=F}
+zcat ERR2173373.fastq.gz | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c
+```
+
+The output may be very long. If so you can redirect the output to a file on your account:
+
+```{bash, eval=F}
+zcat ERR2173373.fastq.gz | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > ~/readlengths.txt
+
+less ~/readlengths.txt
+
+```
+
+## Quality Stats
+
+For most DNA sequencing data I like to use a program called fastqc to quickly visualize results. There are two problems with that: 1) It provides (mostly) visual output that you would need to generate on the remote server and copy to your laptop to view (annoying), 2) It is not designed for Nanopore data.
+
+Instead we are going to try a program called nanostat (https://github.com/wdecoster/nanostat) installed via Anaconda:
+
+```{bash, eval=F}
+conda install -c bioconda nanostat #already done!
+```
+
+We can test this on your Nanopore files using:
+
+```{bash, eval=F}
+NanoStat --fastq $datapath/ERR2173373.fastq.gz
+```
+
+Note: This takes several minutes! We may not have enough time to wait around for this to run.
+
+
+# Blog 
+
+For your blog this week first develop a script that uses at least some of the tools above to look at your data files. Then add comments as placeholders for each of the programs that you need to run. In your blog write about each of the summary stats you are generating and what that tells you about your data. Also make notes of any problems you run into trying to get this to work.
+
+e.g.,:
+
+```{bash, eval=F}
+#!/bin bash
+# Spring 2019
+# Harbert
+
+# Example bash script for analysis of DNA sequence data (Harbert, 2019; doi:10001sxx2/)
+
+datapath='/usr/share/data/proj_data/example'
+outputdir='~/testout'
+
+ls -lh $datapath
+
+#more summary commands and stats:
+
+####################
+
+
+#Analysis Steps:
+#1) Clean data with porechop: remove adaptor sequences and low quality reads
+
+#2) Check for contaminants and remove (centrifuge)
+#Github for centrifuge (link here)
+#How to call centrifuge: centrifuge -i infile.fa -o report.tab
+
+
+#3) Map to reference (bwa-mem)
+
+#4) Assemble reads into contigs (Canu)
+
+#5) Call variants
+
+```
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)

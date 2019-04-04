@@ -23,94 +23,97 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 # Outline:
 
-### Labs:
+### Labs/Lectures:
 
 Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup
 
-Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown 
-
-Week 3: <a href='R_datavis.html'> R and Data Visualization
-
-Week 4: <a href='adv_R.html'> Advanced R 
-
-Week 5: Nanopore Sequencing
-
-Week 6: <a href='project_proposal.html'> Project Proposal Development
-
-Week 7: *Spring Break*
-
-Week 8: Python 2
-
-Week 9: Data Workshop 1: Cleaning and Preprocessing Nanopore Data
-
-Week 10: Data Workshop 2: Genome Assembly + Viewing
-
-Week 11: Data Workshop 3: Metagenomics and contaminant detection
-
-Week 12: Project Workshop 1
-
-Week 13: Project Workshop 2
-
-Week 14: Project Presentations
-
-
-
-
-
-### Lecture Notes
-
 Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
 
-Lecture 2: <a href='unix_intro.html'> The Unix Command Line
-
-Lecture 3: <a href='seq_files.html'> Sequence Data Files
-
-Lecture 4: <a href='longreads.html'> Why Long Reads Matter
-
-### Schedule of Readings
-
-Week 1 (January 17)
+Reading 1 (January 17)
 <a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community
 
 <a href="https://doi.org/10.1093/jxb/erx289"> A world of opportunities with nanopore sequencing
 
-Week2 (January 24)
+
+Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown 
+
+Lecture 2: <a href='unix_intro.html'> The Unix Command Line
+
+Reading2 (January 24)
 <a href="https://dx.doi.org/10.7171%2Fjbt.17-2801-009">  Real-Time DNA Sequencing in the Antarctic Dry Valleys Using the Oxford Nanopore Sequencer
 
-Week 3 (January 31)
+
+Week 3: <a href='R_datavis.html'> R and Data Visualization
+
+Lecture 3: <a href='seq_files.html'> Sequence Data Files
+
+Reading 3 (January 31)
 <a href="https://doi.org/10.1038/s41598-017-18364-0"> Nanopore DNA Sequencing and Genome Assembly on the International Space Station
 
-Week 4 (February 7)
+
+Week 4: <a href='adv_R.html'> Advanced R 
+
+Lecture 4: <a href='longreads.html'> Why Long Reads Matter
+
+Reading 4 (February 7)
 <a href="https://doi.org/10.1186/s12864-018-5348-8"> Assembly of chloroplast genomes with long- and short-read data: a comparison of approaches using Eucalyptus pauciflora as a test case
 
 Oxford Nanopore Plant Genome White Paper (See eLearn for copy)
 
-Week 5 (February 14)
+
+Week 5: *Nanopore Sequencing*
+
+Reading 5 (February 14)
 <a href="https://doi.org/10.1186/s13059-018-1462-9"> From squiggle to basepair: computational approaches for improving nanopore sequencing read accuracy
 
-Week 6 (February 21) NO READINGS -- Sequencing Lab Week
 
-Week 7 (February 28) NO READINGS -- Project Development Week
+Week 6: <a href='project_proposal.html'> Project Proposal Development
 
-Week 8 (March 7) NO READINGS -- Spring Break
+Week 6 (February 28) NO READINGS -- Project Development Week
 
-Week 9 (March 14) NO READINGS -- Project Proposals DUE
 
-Week 10 (March 21) 
+Week 7: *Spring Break*
+
+Week 7 (March 7) NO READINGS -- Spring Break
+
+
+Week 8: <a href='bash_scripting.html'> Unix and Practical Bash
+
+Lecture 5: <a href='quality_control.html'> NanoPlots -- Visualize Sequencing Quality
+
+Week 8 (March 14) NO READINGS -- Project Proposal Presentations DUE
+
+Lecture 6: <a href='assemble.html'> Assembling with Canu
+
+Week 9: <a href='contaminants.html'> Detecting Contamination
+
+Reading 6 (March 21) 
 <a href="https://doi.org/10.1038/nbt.4060"> Nanopore sequencing and assembly of a human genome with ultra-long reads
 
-Week 11 (March 28)
+
+Week 10: MinION Sequencing (Attempt 'n')
+
+Reading 7 (March 28)
 <a href="https://doi.org/10.1126/science.aau9343"> Metagenomic sequencing at the epicenter of the Nigeria 2018 Lassa fever outbreak
 
-<a href="https://nanoporetech.com/resource-centre/metagenomic-nanopore-sequencing-rna-viruses-lab-field"> Video:  Liana Kafetzopoulou - Metagenomic nanopore sequencing: RNA viruses from lab to field 
+<a href="https://nanoporetech.com/resource-centre/metagenomic-nanopore-sequencing-rna-viruses-lab-field"> Video:  Liana Kafetzopoulou - Metagenomic nanopore sequencing: RNA viruses from lab to field
 
-Week 12 (April 4)
+
+Week 11: <a href='explore.html'> Data Workshop: MinION Sequencing
+
+Reading 8 (April 4)
 <a href = "https://doi.org/10.1101/487033"> Ultra-deep, long-read nanopore sequencing of mock microbial community standards
 
-Week 13 (April 11)
+
+Week 12: Data Workshop 3: Metagenomics and contaminant detection
+
+Reading 9 (April 11)
 <a href = "https://www.nature.com/articles/d41586-018-05462-w"> New human gene tally reignites debate
 
-End of readings...
+
+Week 13: Project Workshop 1
+
+Week 14: Project Presentations
 
 
 ### Links to Blogs

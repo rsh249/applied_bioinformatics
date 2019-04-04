@@ -41,4 +41,11 @@ Stonehill College <br>
 
 <a href='blogs/jordanc2020/Lab4.html'> jordanc2020
 
+# Lab 4: Practical Bash
+
+<a href='blogs/GMD/rmarkdown5.html'> GMD
+
+<a href='blogs/nperry/Lab4.html'> nperry
+
+<a href='blogs/jordanc2020/bashlab.html'> jordanc2020
 

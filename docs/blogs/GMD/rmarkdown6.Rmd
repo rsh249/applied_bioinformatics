@@ -1,0 +1,49 @@
+---
+title: "Kraken and Centrifuge Blog"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Kraken2
+#Setting up an analysis: add the following on ubuntu:
+#get to folder containing data (oryza) and then do the following:
+##set a variable
+##make directory 
+##minikraken=/usr/share/data/minikraken2
+## targdata=/usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+
+#**can make a text file with the previous and following coding as a shortcut, use command bash followed by file name to run
+
+
+#run kraken with the following:
+
+##kraken2 --db $minikraken  --threads 6 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+
+##then do: wc -l $targdata 2649820 /usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+#this will give you the possible contamination within your sample, and gives taxonomy of what organism was found in the oryza sample. 
+
+#centrifuge
+#put the following coding:
+## centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass
+##ls into creport.tab and then cat creport.tab to see results
+## can use R to organize data
+
+#centrifuge output using R: 
+#                        name taxID taxRank genomeSize numReads numUniqueReads
+#19     Sorangium cellulosum    56 species   13907952     1484            876
+#181        Escherichia coli   562 species    7379307     2240            799
+#386   Staphylococcus aureus  1280 species    5769964     1187            656
+#85  Pseudomonas fluorescens   294 species    6526868     1188            497
+#140 Acinetobacter baumannii   470 species    4011582     1507            490
+#81   Pseudomonas aeruginosa   287 species    6508174     1656            486
+
+
+
+
+
+```
+

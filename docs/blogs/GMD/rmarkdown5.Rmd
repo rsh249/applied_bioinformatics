@@ -1,0 +1,58 @@
+---
+title: "Rmarkdown5"
+output: html_document
+---
+
+```{bash, eval=F}
+#!/bin bash
+# Spring 2019
+#Gianna Desrochers
+
+#Choi JY, Groen S, Zaaijer S, Purugganan. Nanopore sequence-based genome assembly o$
+#PREJEB28274
+
+#Albacore, NanoPack, Porechop, Canu, bbmap stats.sh, BBTools, BUSCO, FASTQ, bwa-mem$
+var='value'
+echo $var
+
+datapath=/usr/share/data/proj_data/thale_cress
+
+echo $datapath
+
+ls -lh $datapath
+
+logit=log.txt
+
+echo "Logging to $logit"
+
+touch $logit
+
+echo "Output test" > $logit
+cat log.txt
+
+exit
+
+datapath='/usr/share/data/proj_data/example'
+outputdir='~/testout'
+
+ls -lh $datapath
+
+#more summary commands and stats:
+
+#Analysis Steps:
+#1) raw signal intensity data used for base calling using Albacore
+#2)Base-called reads passed the Albacore filter and used by Porechop to cut adapters at the ends of reads
+#3)Genome assembly done using Canu 
+#4)Genome assembly statistics calculated using bbmap stats.sh from BBTools suite
+#5)Genome completeness evaluated via BUSCO
+#6)Adapter trimmed FASTQ reads aligned to the unpolished draft genome assembly using bwa-mem 
+#7)Nanopolish used for polishing the genome
+#8)Program minimap used to align FASTQ reads for draft genome assembly, used by RACON to polish draft genome
+#8) ran 8 rounds of RACON and then 7 rounds of Pilon
+
+
+#Sequencing data: European Nucleotide Archive under bioproject ID PRJEB28274
+#How to call centrifuge: centrifuge -i infile.fa -o report.tab
+
+```
+

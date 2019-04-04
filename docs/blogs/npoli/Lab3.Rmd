@@ -1,0 +1,104 @@
+---
+title: 'Advanced R Blog'
+author: "Nicholas Poli"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    theme: united
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+
+```{r setup, include=FALSE}
+#library(reticulate)
+#use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+# Adding File for Deck to Create Matrix
+
+Using the code, deck <- matrix(rep(seq(1, 13), 4), ncol = 4), I was able to simulate a deck of cards and put them into a matrix four columns and thirteen rows.
+
+```{R, eval=TRUE}
+
+deck <- matrix(rep(seq(1, 13), 4), ncol = 4)
+
+```
+
+# Naming Columns and Vectors
+
+I was able to name the columns and give values to the samples in each row using the 'c' command for multiple vectors and the command, colnames(deck).
+
+```{R, eval=TRUE}
+
+colnames(deck) <- c("spades", "clubs", "hearts", "diamonds")
+deck[c(1, 11:13), ] <- c("A", "J", "Q", "K")
+draw <- NA
+
+```
+
+# Uploading the Matrix
+
+Uploaded the Matrix to the console using the command "deck"
+
+```{R, eval=TRUE}
+
+deck
+
+```
+
+# Sample size and number of simulations
+
+This sets the sample size and number of simulations to be produced from the samples when calculating the amount of full houses to be drawn.
+
+```{R, eval=TRUE}
+
+sample <- 10000
+sims <- 100
+
+```
+
+# Setting Arrays and Vectors
+
+By adding plugging these commands into the console, a full house will now be replace a zero with a one every time it is drawn. Creating a vector of zeroes will be replaced by the average probability of a full house being drawn.
+
+```{R, eval=TRUE}
+
+full.house <- array(0, c(sample, sims))
+full.house.prob <- rep(0, sims)
+
+```
+
+# Plotting the Simulation
+
+Using the "for" comands to start a loop, this basically tells the console that a sample size 'n' is taken 'k' times. Set it so 5 cards are drawn from the deck (this variable can be changed). "If" command creates a rule that when two unique ranks of a card are in a hand, you have a full house. Then you take the mean number of full houses and plot.
+
+```{R, eval=TRUE}
+
+for (k in 1:sims) {
+
+    for (n in 1:sample) {
+
+        draw <- sample(deck, 5)
+
+        if (length(unique(draw)) == 2) 
+            full.house[n, k] <- 1
+    }
+
+    full.house.prob[k] <- mean(full.house[, k])
+}
+
+plot(density(full.house.prob))
+
+```
+[home](https://rsh249.github.io/applied_bioinformatics)

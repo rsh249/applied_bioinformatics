@@ -1,0 +1,69 @@
+---
+title: "Nanopore Data Workshop"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Nanopore Sequencing
+
+Last week's MinION run produced enough data to work on. It was not perfect, but there are enough reads of decent length (*I think*) to explore some of our samples. The goal of today's lab is to work in teams of 2-3 to examine and pepare an analysis of some of our sample data.
+
+### Sequencing overview
+
+The MinKNOW sequencing report can be found [here]('images/rapid-barcode-report.pdf').
+
+This run used the Rapid Barcoding kit (SQK-RBK004) for sample preparation on S1 -- Sink Drain Biosample, S2 -- E.coli culture sampleA, S3 -- Unknown Lichen, S6 -- E. coli culture sampleB, S9 -- Mutant tomato, and S10 -- WT M82 Tomato. These were processed with Barcodes 01 - 06 respectively.
+
+The raw data can be found at: 
+
+```{bash, eval=F}
+ls /var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_MN30146_FAK53074_d7dc2974/
+```
+
+And the demultiplexed reads are in the subfolder 'fastq_pass_demult'
+
+This run produced ~500k reads and a total of ~600Mbp of data. This is dominated by *short* sequence reads of <500bp, but has a significant portion of data with longer, more appropriate Nanopore read lengths. Much of the sequencing time was spent with pores in the "Adapter" phase indicating inefficiencies in the library preparation. Refueling the flowcell after ~14 hours with 70ul of 50:50 SQB and water temporarily recovered sequencing capacity and nearly doubled the output.
+
+
+## Today's lab
+
+Work in groups of 2 or 3. Pick a sample to work on in more depth (recommend: merge E.coli sampless into one, metagenomics on the sink or lichen, explore alignments of tomato data)
+
+Programs you should consider using (that we have seen):
+
++ Check sample quality using NanoPlots
++ Filter reads with NanoFilt (filter on Length and Quality)
++ Check for contamination (Kraken2, Centrifuge) 
++ Assemblies with Canu
+
+Programs you may consider using that are NEW (or with new functions) to you:
+
++ Kraken or Centrifuge Metagenomics (Can you split Lichen data into putative fungi and algal components?)
++ Centrifuge with expanded database (Already set up)
++ BLAST alignments
++ grep or awk to filter reads files further.
+
+
+# Blog
+
+Work in your groups to generate a preliminary report on the sample(s) you chose to analyze today. This may involve waiting for some processes to finish (i.e., Canu assemblies). Include any plots that your workflow created and create graphics in R for any relevant data (example: top Kraken2 classifications, %reads in Canu contigs, reads lost by filtering on length). If you create R graphics please include the code used in the Rmarkdown blog document. Include a copy of your analysis commands or script in your blog as well.
+
+Write a 1-2 paragraph summary of the results of your preliminary analysis. Include suggested next-steps.
+
+
+
+
+
+
