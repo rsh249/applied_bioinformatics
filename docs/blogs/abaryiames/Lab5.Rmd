@@ -1,0 +1,124 @@
+---
+title: "Lab 3"
+author: "Alex Baryiames"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Blog 5 - Bash script for data visulization and project workflow
+
+
+
+```{bash, eval=F}
+#!/bin/bash
+
+# Alex Baryiames, Spring Semester 2019
+# Wick, R.R., Judd, L.M., Gorrie, C.L. and Holt, K.E., 2017. Completing bacterial genome assemblies with multiplex MinION sequencing. Microbial genomics, 3(10).
+# Data Source: https://melbourne.figshare.com/ndownloader/articles/5170831/versions/1, https://melbourne.figshare.com/ndownloader/articles/5170843/versions/1
+# SRA IDs: SAMEA3357010, SAMEA3357043, SAMN07211279, SAMN07211280, SAMEA3357223, SAMEA3357193, SAMEA3357346, SAMEA3357374, SAMEA3357320, SAMN07211281, SAMN07211282, SAMEA3357405
+# Program List: Trim Galore, Albacore, Porechop, Unicycler, Canu, SPAdes, Pilon, Nanopolish, ABySS, Velvet
+
+echo "This is a test of the emergency broadcast system"
+
+datapathO='/usr/share/data/proj_data/pneumonia/5170843'
+datapathI='/usr/share/data/proj_data/pneumonia/517083'
+logfile='log.txt'
+touch $logfile
+echo $datapath > $logfile
+
+ls -lh $datapath
+
+NanoStat -t 6 --fastq $datapathO/barcode01* > ONTstat
+NanoStat -t 6 --fastq $datapathI/barcode01* > Illstat
+
+#These commands exist to help visualize the data provided by the authors of the paper. Included in these data are the average read length from the sequencing data as well as min length, max length, and file size. This can help analize data manipulation if it is included in bash commands that work with the data. It is then possible to check every step to make sure that the results are expected. 
+#The issue I'm running into is that there are 12 different files I need to visualize from two different sequencing platforms for a total of 24 files.  I need to find a better way to automatically analize all 24 files and write them to a single document.
+
+
+
+#Annotated Pipeline
+
+##############################################################################################
+
+#ONT Read Processing -
+# Basecalling by Albacore using the --barcoding option.
+
+# This step converts electrical data to a base-called sequence. Barcoding is a method to separate many samples from a single run.
+
+
+
+#ONT primer trimming -
+# Adapter sequences were trimmed from the reads using Porechop, while also using barcoding binning.
+
+#This step removes the nucleotide adapter sequences so that they don't interfere with data analysis
+
+
+
+#ONT subsampling -
+# Samples were reduced to a maximum of 500Mbp using an in-house script (fastq_to_fastq.py)
+
+#This step discards sequences with low read quality based on their qscores
+
+
+
+#ONT-only Assembly -
+# Subsampled ONT reads were assembled using Canu and Unicycler:
+	#Canu: canu -p canu -d out_dir genomeSize=5.5m -nanopore-raw long.fastq.gz
+	#Unicycler: unicycler -l long.fastq.gz -o out_dir
+
+#These commands use the read data as an input, and outputs a genome sequence
+
+
+
+#Hybrid Assembly -
+#SPAdes: spades.py -1 short_1.fastq.gz -2 short_2.fastq.gz --nanopore long.fastq.gz -o out_dir --careful
+#Canu+Pilon:
+#canu -p canu -d out_dir genomeSize=5.5m -nanopore-raw long.fastq.gz
+#Then fives rounds of Pilon:
+#bowtie2 --local --very-sensitive-local -I 0 -X 2000 -x before_polish.fasta -1 short_1.fastq.gz -2 short_2.fastq.gz | samtools sort -o alignments.bam -T reads.tmp -; samtools index alignments.bam
+#java -jar ~/pilon-1.22.jar --genome before_polish.fasta --frags alignments.bam --changes --output after_polish --outdir out_dir --fix all
+#Unicycler: unicycler -1 short_1.fastq.gz -2 short_2.fastq.gz -l long.fastq.gz -o out_dir
+
+#These steps use the ONT read as a template sequence and aligns the illumina reads to it
+
+
+
+
+#Polishing with Nanopolish -
+#python nanopolish_makerange.py draft.fa | parallel --results nanopolish.results -P 8 nanopolish variants --consensus polished.{1}.fa -w {1} -r reads.fa -b reads.sorted.bam -g draft.fa -t 4 --min-candidate-frequency 0.1
+#python nanopolish_merge.py polished.*.fa > polished_genome.fa
+
+
+#Polishing removes mistakes such as indels and mismatched basepairs
+
+
+
+
+#Error Rate Estimation -
+#Each sample should be assembled independently with Velvet and ABySS using the shell command (assemblied_for_error_rate_estimation.sh)
+#Use MUMmer to select for 10+ kbp contigs where they agree and then use them with BLAST
+#BLAST these contigs and run the shell command assembly_accuracies.sh
+
+#The purpose of these steps is to compare the sequence reads based on their sequencing platforms. 
+
+exit
+
+```
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+

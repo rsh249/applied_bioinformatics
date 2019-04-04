@@ -1,0 +1,62 @@
+---
+title: "Lab 3"
+author: "Alex Baryiames"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Blog 6 - Kraken vs Centrifuge
+
+
+
+```{bash, eval=F}
+# Run Centrifuge (Change input and output files to your liking)
+
+centdb=/usr/share/data/centstandard/abv
+centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
+
+
+
+#Run Kraken (Change input and output files to your liking)
+
+minikraken=/usr/share/data/minikraken2
+kraken2 --db $minikraken  --threads 12 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+
+
+
+
+
+```
+
+
+#Centrifuge Output
+```{bash, eval=T}
+head /home/abaryiames/Lab_Projects/pneumonia_script/centrifuge/creport.tab
+```
+
+
+#Kraken Output
+```{bash, eval=T}
+head /home/abaryiames/Lab_Projects/pneumonia_script/kreport.tab
+```
+
+
+#Conclusion
+For the most part, no significant source of contamination was found in the data. Both programs were able to accuratly resolve that the sequences were from K. pneumonia, and the second highest matches were from close relatives in the klebsiella genus. 
+
+[home](https://rsh249.github.io/applied_bioinformatics)
