@@ -249,47 +249,109 @@ div.tocify {
 
 <h1 class="title toc-ignore">Nanopore Data Workshop</h1>
 <h4 class="author"><em>Prof. Harbert</em></h4>
-<h4 class="date"><em>07 April, 2019</em></h4>
+<h4 class="date"><em>08 April, 2019</em></h4>
 
 </div>
 
 
 <p><a href="https://rsh249.github.io/applied_bioinformatics">home</a></p>
-<div id="nanopore-sequencing" class="section level2">
-<h2>Nanopore Sequencing</h2>
-<p>Last week’s MinION run produced enough data to work on. It was not perfect, but there are enough reads of decent length (<em>I think</em>) to explore some of our samples. The goal of today’s lab is to work in teams of 2-3 to examine and pepare an analysis of some of our sample data.</p>
-<div id="sequencing-overview" class="section level3">
-<h3>Sequencing overview</h3>
-<p>The MinKNOW sequencing report can be found <a href="'images/rapid-barcode-report.pdf'">here</a>.</p>
-<p>This run used the Rapid Barcoding kit (SQK-RBK004) for sample preparation on S1 – Sink Drain Biosample, S2 – E.coli culture sampleA, S3 – Unknown Lichen, S6 – E. coli culture sampleB, S9 – Mutant tomato, and S10 – WT M82 Tomato. These were processed with Barcodes 01 - 06 respectively.</p>
-<p>The raw data can be found at:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">ls</span> /var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_MN30146_FAK53074_d7dc2974/</code></pre></div>
-<p>And the demultiplexed reads are in the subfolder ‘fastq_pass_demult’</p>
-<p>This run produced ~500k reads and a total of ~600Mbp of data. This is dominated by <em>short</em> sequence reads of &lt;500bp, but has a significant portion of data with longer, more appropriate Nanopore read lengths. Much of the sequencing time was spent with pores in the “Adapter” phase indicating inefficiencies in the library preparation. Refueling the flowcell after ~14 hours with 70ul of 50:50 SQB and water temporarily recovered sequencing capacity and nearly doubled the output.</p>
+<div id="first-setup" class="section level1">
+<h1>First: Setup</h1>
+<p>Create variable pointing to the class <em>E. coli</em> assembly and raw data.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">datapath=</span>/usr/share/data/proj_data/ecoli_lab
+<span class="va">reads=$datapath</span>/oxford.fasta
+<span class="va">assembly=$datapath</span>/ecoli-oxford3/ecoli.contigs.fasta</code></pre></div>
+<p>Then create a directory for polish testing. We will work in here today.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">mkdir</span> polishtest
+<span class="bu">cd</span> polishtest</code></pre></div>
+</div>
+<div id="first-look-genome-assembly" class="section level1">
+<h1>First Look: Genome Assembly</h1>
+<p>Once you have contigs the challenge becomes viewing the assembly and understanding how well this characterizes the genome.</p>
+<p>Today we will be exploring some of the tools for visualizing and improving upon our Nanopore assemblies.</p>
+<div id="quast-genome-stats-and-visualization" class="section level2">
+<h2>Quast: Genome stats and visualization</h2>
+<p>One very useful tool for examining genome statistics is Quast. This helps visualize how much and which parts of the genome our contigs cover.</p>
+<p>Example Run:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">
+<span class="co">#get reference genome:</span>
+<span class="co">### Check a reference</span>
+
+<span class="fu">wget</span> ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
+<span class="fu">gunzip</span> GCF_000005845.2_ASM584v2_genomic.fna.gz
+<span class="va">refdata=</span>GCF_000005845.2_ASM584v2_genomic.fna
+
+<span class="ex">quast.py</span> <span class="va">$assembly</span> -R <span class="va">$refdata</span> --nanopore <span class="va">$reads</span> -o quast_test_output_base</code></pre></div>
+<p>Check out a copy here:</p>
 </div>
 </div>
-<div id="todays-lab" class="section level2">
-<h2>Today’s lab</h2>
-<p>Work in groups of 2 or 3. Pick a sample to work on in more depth (recommend: merge E.coli sampless into one, metagenomics on the sink or lichen, explore alignments of tomato data)</p>
-<p>Programs you should consider using (that we have seen):</p>
+<div id="polishing" class="section level1">
+<h1>Polishing</h1>
+<p>After we get a look at one genome output we can attempt to improve upon this via genome polishing. There are several methods for this with Nanopore data but we will focus here on the minimap -&gt; racon process.</p>
+<p>Here we are using the raw nanopore reads. However, if you have Illumina data USE THOSE TO POLISH THE CONTIGS!</p>
+<div id="the-minimapracon-method" class="section level2">
+<h2>The minimap/racon method</h2>
+<p>minimap2: <a href="https://github.com/lh3/minimap2" class="uri">https://github.com/lh3/minimap2</a> racon: <a href="https://github.com/isovic/racon" class="uri">https://github.com/isovic/racon</a></p>
+<div id="iteration-1" class="section level3">
+<h3>Iteration 1:</h3>
+<p>Map reads to assembly using minimap:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">minimap</span> -Sw5 -L100 -m0 -t2 <span class="va">$assembly</span> <span class="va">$reads</span> <span class="op">&gt;</span> mapIT01.paf</code></pre></div>
+<p>Where: + “-t2” specifies 2 threads (optional for this small example) + “Sw5” ????? + “-m0” specifies to never merge chains. + “-L100” requires matches to be at least 100 base pairs in length.</p>
+<p>Then we take those mapped data and generate a consensus sequence over the assembly using racon.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">racon</span> -t 2 <span class="va">$reads</span> mapIT01.paf <span class="va">$assembly</span> <span class="op">&gt;</span> mapIT01.fa</code></pre></div>
+</div>
+<div id="iteration-2" class="section level3">
+<h3>Iteration 2:</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">minimap</span> -Sw5 -L100 -m0 mapIT01.fa <span class="va">$reads</span> <span class="op">&gt;</span> mapIT02.paf
+<span class="ex">racon</span> -t 2 <span class="va">$reads</span> mapIT02.paf mapIT01.fa <span class="op">&gt;</span> mapIT02.fa</code></pre></div>
+</div>
+<div id="iteration-3" class="section level3">
+<h3>Iteration 3</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">
+<span class="ex">minimap</span> -Sw5 -L100 -m0 mapIT02.fa <span class="va">$reads</span> <span class="op">&gt;</span> mapIT03.paf
+<span class="ex">racon</span> -t 2 <span class="va">$reads</span> mapIT03.paf mapIT02.fa <span class="op">&gt;</span> mapIT03.fa</code></pre></div>
+</div>
+<div id="differences-dnadiff" class="section level3">
+<h3>Differences: dnadiff</h3>
+<p>*From mummer: <a href="https://github.com/mummer4/mummer" class="uri">https://github.com/mummer4/mummer</a></p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">dnadiff</span> -p ref <span class="va">$refdata</span> <span class="va">$datapath</span>/ecoli-oxford3/ecoli.contigs.fasta
+
+<span class="ex">dnadiff</span> -p one <span class="va">$refdata</span> mapIT01.fa
+
+<span class="ex">dnadiff</span> -p two <span class="va">$refdata</span> mapIT02.fa
+
+<span class="ex">dnadiff</span> -p three <span class="va">$refdata</span> mapIT03.fa</code></pre></div>
+<p>Then look at the *.report files</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">less</span> ref.report</code></pre></div>
+<p>Look at %Identity between runs but also look at the number of SNPs and indels reported. How is polishing changing this (already very good) assembly?</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">grep</span> <span class="st">&quot;TotalSNPs&quot;</span> *.report
+<span class="fu">grep</span> <span class="st">&quot;TotalIndels&quot;</span> *.report</code></pre></div>
+</div>
+</div>
+</div>
+<div id="other-polishing" class="section level1">
+<h1>Other polishing</h1>
+<p>pilon:<a href="https://github.com/broadinstitute/pilon" class="uri">https://github.com/broadinstitute/pilon</a> **Another consensus caller like racon</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">###WARNING: This fails on pilon for java reasons.</span><span class="al">###</span><span class="co"> UNDER CONSTRUCTION</span>
+
+<span class="fu">cp</span> <span class="va">$assembly</span> ./
+<span class="ex">bwa</span> index ecoli.contigs.fasta
+<span class="ex">bwa</span> mem -t 4 ecoli.contigs.fasta <span class="va">$reads</span> <span class="kw">|</span> <span class="ex">samtools</span> view - -Sb <span class="kw">|</span> <span class="ex">samtools</span> sort - -@4 -o WGS.sorted.bam
+
+<span class="ex">samtools</span> index WGS.sorted.bam
+
+<span class="ex">pilon</span> --genome <span class="va">$assembly</span> --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
+
+<span class="fu">ls</span> -lh pilonpolish</code></pre></div>
+<p>NanoPolish:<a href="https://github.com/jts/nanopolish" class="uri">https://github.com/jts/nanopolish</a> **Seems to require access to the original fast5 files</p>
 <ul>
-<li>Check sample quality using NanoPlots</li>
-<li>Filter reads with NanoFilt (filter on Length and Quality)</li>
-<li>Check for contamination (Kraken2, Centrifuge)</li>
-<li>Assemblies with Canu</li>
-</ul>
-<p>Programs you may consider using that are NEW (or with new functions) to you:</p>
-<ul>
-<li>Kraken or Centrifuge Metagenomics (Can you split Lichen data into putative fungi and algal components?)</li>
-<li>Centrifuge with expanded database (Already set up)</li>
-<li>BLAST alignments</li>
-<li>grep or awk to filter reads files further.</li>
+<li>TRY: <a href="https://github.com/jts/nanopolish#computing-a-new-consensus-sequence-for-a-draft-assembly" class="uri">https://github.com/jts/nanopolish#computing-a-new-consensus-sequence-for-a-draft-assembly</a></li>
 </ul>
 </div>
-<div id="blog" class="section level1">
-<h1>Blog</h1>
-<p>Work in your groups to generate a preliminary report on the sample(s) you chose to analyze today. This may involve waiting for some processes to finish (i.e., Canu assemblies). Include any plots that your workflow created and create graphics in R for any relevant data (example: top Kraken2 classifications, %reads in Canu contigs, reads lost by filtering on length). If you create R graphics please include the code used in the Rmarkdown blog document. Include a copy of your analysis commands or script in your blog as well.</p>
-<p>Write a 1-2 paragraph summary of the results of your preliminary analysis. Include suggested next-steps.</p>
+<div id="challenge" class="section level1">
+<h1>Challenge:</h1>
+<p>Working in two groups attempt to set up the polishing protocol above for completed genome assemblies. Currently, as a group we have assemblies completed for <em>Arabidopsis</em> and pneumonia. Work on these as groups to examine the minimap/racon polishing.</p>
+<p>Submit as group rmarkdown blog again this week.</p>
 <p><a href="https://rsh249.github.io/applied_bioinformatics">home</a></p>
 </div>
 

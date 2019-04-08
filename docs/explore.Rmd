@@ -16,6 +16,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
 ## Nanopore Sequencing
 
 Last week's MinION run produced enough data to work on. It was not perfect, but there are enough reads of decent length (*I think*) to explore some of our samples. The goal of today's lab is to work in teams of 2-3 to examine and pepare an analysis of some of our sample data.
@@ -64,6 +68,6 @@ Write a 1-2 paragraph summary of the results of your preliminary analysis. Inclu
 
 
 
-
+[home](https://rsh249.github.io/applied_bioinformatics)
 
 

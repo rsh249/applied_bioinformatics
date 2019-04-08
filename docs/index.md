@@ -105,13 +105,13 @@ Reading 8 (April 4)
 <a href = "https://doi.org/10.1101/487033"> Ultra-deep, long-read nanopore sequencing of mock microbial community standards
 
 
-Week 12: Data Workshop 3: Metagenomics and contaminant detection
+Week 12: <a href='polishing.html'> Data Workshop 2: Assembly viewing and polishing
 
 Reading 9 (April 11)
 <a href = "https://www.nature.com/articles/d41586-018-05462-w"> New human gene tally reignites debate
 
 
-Week 13: Project Workshop 1
+Week 13: Project Workshop
 
 Week 14: Project Presentations
 

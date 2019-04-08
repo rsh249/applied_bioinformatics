@@ -1,0 +1,196 @@
+---
+title: "Nanopore Data Workshop"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+
+
+# First: Setup
+
+Create variable pointing to the class _E. coli_ assembly and raw data.
+
+```{bash, eval=F}
+datapath=/usr/share/data/proj_data/ecoli_lab
+reads=$datapath/oxford.fasta
+assembly=$datapath/ecoli-oxford3/ecoli.contigs.fasta
+
+
+```
+
+Then create a directory for polish testing. We will work in here today.
+
+```{bash, eval=F}
+mkdir polishtest
+cd polishtest
+```
+
+
+# First Look: Genome Assembly
+
+Once you have contigs the  challenge becomes viewing the assembly and understanding how well this characterizes the genome.
+
+Today we will be exploring some of the tools for visualizing and improving upon our Nanopore assemblies.
+
+## Quast: Genome stats and visualization
+
+One very useful tool for examining genome statistics is Quast. This helps visualize how much and which parts of the genome our contigs cover.
+
+Example Run:
+
+```{bash, eval=F}
+
+#get reference genome:
+### Check a reference
+
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
+gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
+refdata=GCF_000005845.2_ASM584v2_genomic.fna
+
+quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base
+
+
+```
+
+Check out a copy here:
+
+
+
+# Polishing
+
+After we get a look at one genome output we can attempt to improve upon this via genome polishing. There are several methods for this with Nanopore data but we will focus here on the minimap -> racon process.
+
+Here we are using the raw nanopore reads. However, if you have Illumina data USE THOSE TO POLISH THE CONTIGS!
+
+
+## The minimap/racon method
+minimap2: https://github.com/lh3/minimap2
+racon: https://github.com/isovic/racon 
+
+
+### Iteration 1:
+
+Map reads to assembly using minimap:
+
+```{bash, eval=F}
+minimap -Sw5 -L100 -m0 -t2 $assembly $reads > mapIT01.paf
+
+```
+
+Where:
++ "-t2" specifies 2 threads (optional for this small example)
++ "Sw5" ????? 
++ "-m0" specifies to never merge chains.
++ "-L100" requires matches to be at least 100 base pairs in length.
+
+Then we take those mapped data and generate a consensus sequence over the assembly using racon.
+
+```{bash, eval=F}
+racon -t 2 $reads mapIT01.paf $assembly > mapIT01.fa
+
+```
+
+### Iteration 2:
+
+```{bash, eval=F}
+minimap -Sw5 -L100 -m0 mapIT01.fa $reads > mapIT02.paf
+racon -t 2 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+```
+
+### Iteration 3
+
+```{bash, eval=F}
+
+minimap -Sw5 -L100 -m0 mapIT02.fa $reads > mapIT03.paf
+racon -t 2 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
+
+```
+
+
+
+
+
+### Differences: dnadiff 
+
+*From mummer: https://github.com/mummer4/mummer 
+
+```{bash, eval=F}
+dnadiff -p ref $refdata $datapath/ecoli-oxford3/ecoli.contigs.fasta
+
+dnadiff -p one $refdata mapIT01.fa
+
+dnadiff -p two $refdata mapIT02.fa
+
+dnadiff -p three $refdata mapIT03.fa
+```
+
+
+Then look at the *.report files
+
+```{bash, eval=F}
+less ref.report
+```
+      
+Look at %Identity between runs but also look at the number of SNPs and indels reported. How is polishing changing this (already very good) assembly?
+
+
+```{bash, eval=F}
+grep "TotalSNPs" *.report
+grep "TotalIndels" *.report
+```
+
+
+# Other polishing
+
+pilon:https://github.com/broadinstitute/pilon **Another consensus caller like racon
+
+
+```{bash, eval=F}
+###WARNING: This fails on pilon for java reasons.### UNDER CONSTRUCTION
+
+cp $assembly ./
+bwa index ecoli.contigs.fasta
+bwa mem -t 4 ecoli.contigs.fasta $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+samtools index WGS.sorted.bam
+
+pilon --genome $assembly --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
+
+ls -lh pilonpolish
+
+```
+
+NanoPolish:https://github.com/jts/nanopolish **Seems to require access to the original fast5 files
+
++ TRY: https://github.com/jts/nanopolish#computing-a-new-consensus-sequence-for-a-draft-assembly
+
+
+
+# Challenge:
+
+Working in two groups attempt to set up the polishing protocol above for completed genome assemblies. Currently, as a group we have assemblies completed for _Arabidopsis_ and pneumonia. Work on these as groups to examine the minimap/racon polishing.
+
+Submit as group rmarkdown blog again this week.
+
+
+
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
