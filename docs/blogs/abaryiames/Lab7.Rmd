@@ -1,0 +1,141 @@
+---
+title: "Lab 7"
+author: "Alex Baryiames and Giana Desrochers"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For our experiment, an unknown lichen sample was sequenced using ONT’s Minion. Before the conclusions can be drawn, it is important to understand statistics such as the quality, number, and length of the reads. Using various packages, we analyzed the results of our sequencing data. 
+
+ 
+
+#Command line  
+
+ 
+
+```{bash, eval=F} 
+
+#!/bin/bash 
+
+ 
+
+#Set directory 
+
+datapath=/var/lib/MinKNOW/data/rapid_barcode/rapid_barcode/20190325_1834_MN30146_FAK53074_d7dc2974/fastq_pass_demult/barcode03/*.fastq 
+
+ 
+
+#Run Nanostat 
+
+NanoStat --fastq $datapath 
+
+ 
+
+#Run Kraken 
+
+minikraken=/usr/share/data/minikraken2 
+
+kraken2 --db $minikraken  --threads 12 --use-names --report kreport.tab --fastq-input $datapath > kraken.out 
+
+For sorting data: kreport=read.delim('kreport.tab', sep='\t') 
+
+head(kreport) 
+
+ 
+
+#Run Centrifuge 
+
+centdb=/usr/share/data/centrifuge/centref 
+
+centrifuge -p 2 -q -x $centdb -U $datapath -S out.centclass --report-file creport.tab --out-fmt tab 
+
+For sorting data: creport=read.delim(‘creport.tab’, header=T, sep=’\t’) 
+
+ 
+
+ 
+
+#Run NanoPlot 
+
+NanoPlot --fastq $datapath --outdir nanoplots 
+
+ 
+
+#Run Canu 
+
+canu -p lichen -d ecoli-lichen genomeSize=4m maxThreads=12 overlapper=mhap utgReAlign=true -nanopore-raw $datapath & 
+
+``` 
+
+ 
+
+``` {bash, eval=T} 
+
+#!/bin/bash 
+
+#Nanostat Data 
+
+less /home/abaryiames/Lab_Projects/lichen/NanoStat.txt 
+
+``` 
+
+The nanostat data gives a general summary of the read statistics. The mean read length was 230 bases, which is very low for nanopore sequencing. This means that most of the data is too small to be accurately matched to the correct organism. However, there was also long read data represented int the data. The top five longest reads were between 18653 and 10730 bases, so those reads could be matched to the correct organism.  
+
+
+ 
+
+
+``` {r, eval=TRUE}  
+
+library(htmltools) 
+
+#setwd("~/Lab_Projects/lichen/nanoplots") 
+
+htmltools::includeHTML("~/Lab_Projects/lichen/nanoplots/NanoPlot-report.html")
+
+```
+
+# nanoplot
+
+Nanoplot was useful for gathering more summary statistics for our data. As seen in the second graph, (Histogram of read lengths after log transformation) most of the reads were from 100-300bp long. This means that the read data was not suitable for accurate species identification. The reads were short enough that they will align with a wide variety of sequences in a database instead of aligning specifically to a single species. Using the results from nanoplot, the data of this sequencing run will not be specific enough to correctly identify the unknown sample, unless one of the few long reads matches.
+
+
+ 
+
+# centrifuge
+
+
+``` {R, eval=TRUE}
+#setwd("~/Lab_Projects/lichen")
+creport=read.delim('~/Lab_Projects/lichen/creport.tab', sep = "\t")
+creport[order(creport$numReads, decreasing = TRUE),]
+
+``` 
+
+After running centrifuge with against the expanded database, the data shows that the number of short reads caused non-specific matches. Most of the reads aligned to “root” which is not a species. The second most abundant alignment was for E. coli, which would not be expected in a lichen sample. The sequencing was run barcoded with 9 samples, including E. coli and tomato genomes. The results of centrifuge yielded matches for the tomato and E. coli genome, so contamination was present and was responsible for most of the strong matches. The other species would not make sense for lichen and have a low number of reads.  
+
+
+
+
+Kraken2 is a taxonomic classification system that assigns taxonomic labels to short DNA reads. This database includes complete bacterial, archaeal, and viral genomes. This program compares the k-mers within a sequence to the k-mers within its database to classify what organisms contain the same sequences.  The assembly data had the two greatest values of sequences classified to fall under the classification of “root” and “cellular organisms”.  “root” means that there is not a species it aligns with, and “cellular organisms” means that the sequences match that of some cellular organisms. 
+
+Canu is an assembly used to assemble a genome. This program detects overlaps in high-noise sequences, corrects sequences, trims the corrected sequences, and assembles the trimmed, corrected sequences into a genome. By running Canu, it was found that the quality was lower than expected, which may be due to contamination. The genome size was set to 4mbp, which is much less than the real genome, but still showed that this size  
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
