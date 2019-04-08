@@ -158,6 +158,7 @@ grep "TotalIndels" *.report
 # Other polishing
 
 pilon:https://github.com/broadinstitute/pilon **Another consensus caller like racon
+Tutorial: https://denbi-nanopore-training-course.readthedocs.io/en/latest/polishing/pilon/pilon.html
 
 
 ```{bash, eval=F}
