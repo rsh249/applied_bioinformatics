@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Nicholas Perry
+# Applied Bioinformatics Spring 2019
+# Hargreaves, A.D. and Mulley, J.F., 2015. Assessing the utility of the Oxford Nanopore MinION for snake venom gland cDNA sequencing. PeerJ, 3, p.e1441.
+# ERS094900, SRX543069 
+# poretools, poRe, proovread-flex, nanocorrect, nanopolish, BWA-MEM, TransRate, TransDecoder, BLAST+, CLUSTAl
+
+
+
+# Need to edit from here since using thale_cress data
+
+datapath=/usr/share/data/proj_data/thale_cress
+logfile='logfile.txt'
+
+touch $logfile
+#creates blank version of file
+
+echo "This is the path to the data:" > $logfile
+echo $datapath >> $logfile
+#This puts the path to the files into a log file.
+
+echo "There number of data files is:" >> $logfile
+numfiles=$(ls -l $datapath | grep "fastq" | wc -l)
+echo $numfiles >> $logfile
+#This counts how many data files there are.
+
+echo "The sizes for each file are:" >> $logfile
+filesize=$(du -h $datapath/*.fastq*)
+for i in $filesize;
+do echo $i >> $logfile
+done;
+#This code says how many big each of the files are.
+
+echo "The number of total reads are:" >> $logfile
+numberOfRecords=$(wc -l $datapath/*.fastq.gz)
+echo $numberOfRecords >> $logfile
+#This will allow us to see how many reads we are dealing with.
+
+echo "To confirm the number of reads, we can also use another set of code:" >> $logfile
+confirmNumberOfRecords=$(zgrep -c '+' $datapath/*.fastq.gz)
+echo $confirmNumberOfRecords >> $logfile
+#Using zgrep, we will be able to confirm the number of reads present.
+
+echo "The read distribution for file ERR2173372_1.fastq.gz is:" >> $logfile
+zcat $datapath/ERR2173372_1.fastq.gz | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > ~/readlengths.txt
+less ~/readlengths.txt >> $logfile
+#This will allow one to get a general idea of what the read distribution for one of the files is
+
+echo "Let's look at some quality stats for one of the files:" >> $logfile
+NanoStat --fastq $datapath/ERR2173372_1.fastq.gz
+#This will allow one to see some quality statistics on the data so as to gather ner information.
+
+
+#Analysis Steps
+
+#1) To get the files into .fastq and .fasta formats, poretools and poRe will be used.
+
+#2) To correct for hybrid errors using short-read sequencing data, proovread-flex will be used.
+
+#3) Nanocorrect will be used for de novo correction.
+
+#4) Nanopolish will be used to correct for electrical signal events that were recorded in the .fast5 file from the MinION read.
+
+#5) To evaluate sequence accuracy, BWA-MEM will be used.
+
+#6) To determine assembly quality, TransRate will be used.
+
+#7) To predict protein-coding open-reading frames, TransDecoder will be used.
+
+#8) Use BLAST+ to query against a reference venom gland transcriptome assembly.
+
+#9) Align and annotate sequences using CLUSTAL.
+
+
+
+exit
