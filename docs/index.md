@@ -9,12 +9,12 @@ Contact Info:<br>
 Rob Harbert, 
 rharbert [at] stonehill [dot] edu <br>
 Stonehill College <br>
+
+
+
+
+<image src='images/minion_class_2019.png' width='100%'><br><br>
 </center>
-
-
-
-<image src='images/minion_class_2019.png' width='80%'><br><br>
-
 
 ---
 
