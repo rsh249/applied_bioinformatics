@@ -16,7 +16,9 @@ Stonehill College <br>
 <br>
 <br>
 <br>
-<center><image src='images/minion_class_2019.jpg' height="400" ;"></center>
+<center>
+<image src='images/minion_class_2019.jpg' height="400">
+</center>
 <br>
 <br>
 <br>
