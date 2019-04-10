@@ -21,10 +21,12 @@ The 2019 spring semester course will focus on generating and analyzing genomic D
 Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.com/products/minion"> here. 
 
 ---
+
+
 <br>
 <br>
-<br>
-<br>
+
+
 
 
 <image src='images/minion_class_2019.png' width='80%'>
@@ -32,8 +34,9 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 <br>
 <br>
-<br>
-<br>
+
+
+
 ---
 
 
