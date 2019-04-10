@@ -10,6 +10,12 @@ Rob Harbert,
 rharbert [at] stonehill [dot] edu <br>
 Stonehill College <br>
 </center>
+
+
+
+<image src='images/minion_class_2019.png' width='80%'>
+
+
 ---
 
 # Course Description:
@@ -19,25 +25,6 @@ This course explores the growing field of Bioinformatics through hands-on and pr
 The 2019 spring semester course will focus on generating and analyzing genomic DNA sequence data produced by the Oxford Nanopore MinION device. DNA sequencing is generating massive amounts of data that are revolutionizing the way that we do biological research in nearly every area. The MinION is a benchtop, real-time DNA sequencer that is revolutionizing the field of genomics. We will be generating data and exploring bioinformatics tools available to process Nanopore data. Students will work on team and individual research associated with these data.
 
 Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.com/products/minion"> here. 
-
----
-
-
-<br>
-<br>
-
-
-
-
-<image src='images/minion_class_2019.png' width='80%'>
-
-
-<br>
-<br>
-
-
-
----
 
 
 # Outline:
