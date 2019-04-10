@@ -20,7 +20,7 @@ The 2019 spring semester course will focus on generating and analyzing genomic D
 
 Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.com/products/minion"> here. 
 
-
+---
 <br>
 <br>
 <br>
@@ -34,22 +34,22 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 <br>
 <br>
 <br>
- 
+---
 # Outline:
 
 ### Labs/Lectures:
 
-Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup </a><br>
+Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup 
 
-Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech</a><br>
+Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
 
 Reading 1 (January 17)
-<a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community</a><br>
+<a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community
 
-<a href="https://doi.org/10.1093/jxb/erx289"> A world of opportunities with nanopore sequencing</a><br>
+<a href="https://doi.org/10.1093/jxb/erx289"> A world of opportunities with nanopore sequencing
 
 
-Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown </a><br>
+Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown 
 
 Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 
