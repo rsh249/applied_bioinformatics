@@ -39,17 +39,17 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 ### Labs/Lectures:
 
-Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup
+Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup </a><br>
 
-Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
+Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech</a><br>
 
 Reading 1 (January 17)
-<a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community
+<a href="https://doi.org/10.1186/s13059-016-1103-0"> The Oxford Nanopore MinION: delivery of nanopore sequencing to the genomics community</a><br>
 
-<a href="https://doi.org/10.1093/jxb/erx289"> A world of opportunities with nanopore sequencing
+<a href="https://doi.org/10.1093/jxb/erx289"> A world of opportunities with nanopore sequencing</a><br>
 
 
-Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown 
+Week 2: <a href='R_lab.html'> R, RStudio, and RMarkdown </a><br>
 
 Lecture 2: <a href='unix_intro.html'> The Unix Command Line
 
