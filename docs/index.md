@@ -19,6 +19,8 @@ Stonehill College <br>
 
 ---
 
+
+
 # Course Description:
 
 This course explores the growing field of Bioinformatics through hands-on and project based learning. Students will develop basic computational skills to process common biological data streams including programming in R and/or Python. The class will develop skills through a combination of hands-on tech tutorials, a survey of current bioinformatics literature, and group and individual project development.  The course will be hyper-focused around one main technology or research question but will introduce and develop computational skills that are widely transferable across Bioinformatics.
