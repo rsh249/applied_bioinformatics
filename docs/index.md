@@ -25,11 +25,11 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 <br>
 <br>
 <br>
-<center>
 
-<image src='images/minion_class_2019.png' height="400">
 
-</center>
+<image src='images/minion_class_2019.png' width='80%'>
+
+
 <br>
 <br>
 <br>
