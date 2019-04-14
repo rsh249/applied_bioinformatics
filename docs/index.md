@@ -10,7 +10,16 @@ Rob Harbert,
 rharbert [at] stonehill [dot] edu <br>
 Stonehill College <br>
 </center>
+
+
+<image src='images/minion_class_2019.png' width='100%'></image><br><br>
+
+
+
+
 ---
+
+
 
 # Course Description:
 
@@ -25,7 +34,7 @@ Learn more about the Oxford Nanopore technology <a href="https://nanoporetech.co
 
 ### Labs/Lectures:
 
-Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup
+Week 1: <a href='intro.html'> Introductions + Computing Basics + Git Setup 
 
 Lecture 1: <a href='dna_seq.html'> DNA Sequencing Tech
 

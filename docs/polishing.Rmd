@@ -165,12 +165,18 @@ Tutorial: https://denbi-nanopore-training-course.readthedocs.io/en/latest/polish
 ###WARNING: This fails on pilon for java reasons.### UNDER CONSTRUCTION
 
 cp $assembly ./
-bwa index ecoli.contigs.fasta
-bwa mem -t 4 ecoli.contigs.fasta $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+aslocal=ecoli.contigs.fasta #or name of assembly contigs
+bwa index $aslocal #call local copy of assembly file by name here because bwa needs write access
+bwa mem -t 4 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
 
 samtools index WGS.sorted.bam
 
-pilon --genome $assembly --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
+#grab pilon jar file
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+
+#run java pilon to control memory and thread use
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
 
 ls -lh pilonpolish
 

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#Gianna Desrochers
+
+#Spring_2019
+
+#Choi JY, Groen S, Zaaijer S, Purugganan. Nanopore sequence-based genome assembly of the basmati rice. August 20,2018
+
+#PREJEB28274
+
+#Albacore, NanoPack, Porechop, Canu, bbmap stats.sh, BBTools, BUSCO, FASTQ, bwa-mem, Nanopolish, minimap, Pilon, Racon
+
+datapath=/usr/share/data/proj_data/oryza/merge_data
+echo $datapath
+
+ls -lh $datapath
+
+logit=log.txt
+
+echo "Logging to $logit"
+
+touch $logit
+
+echo "Output test" > $logit
+cat log.txt
+
+#NanoPlot --fastq $datapath/final.fastq --outd nanoplot_oryza_FAH27966
+canu -p oryza_FAH27966 -d canu_oryza genomeSize=380m maxThreads=16 maxMemory=200g overlapper=mhap utgReAlign=true stopOnLowCoverage=5 -nanopore-raw $datapath/final.fastq
+
+exit

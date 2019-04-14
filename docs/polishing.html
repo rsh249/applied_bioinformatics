@@ -249,7 +249,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Nanopore Data Workshop</h1>
 <h4 class="author"><em>Prof. Harbert</em></h4>
-<h4 class="date"><em>08 April, 2019</em></h4>
+<h4 class="date"><em>09 April, 2019</em></h4>
 
 </div>
 
@@ -335,12 +335,18 @@ div.tocify {
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">###WARNING: This fails on pilon for java reasons.</span><span class="al">###</span><span class="co"> UNDER CONSTRUCTION</span>
 
 <span class="fu">cp</span> <span class="va">$assembly</span> ./
-<span class="ex">bwa</span> index ecoli.contigs.fasta
-<span class="ex">bwa</span> mem -t 4 ecoli.contigs.fasta <span class="va">$reads</span> <span class="kw">|</span> <span class="ex">samtools</span> view - -Sb <span class="kw">|</span> <span class="ex">samtools</span> sort - -@4 -o WGS.sorted.bam
+<span class="va">aslocal=</span>ecoli.contigs.fasta <span class="co">#or name of assembly contigs</span>
+<span class="ex">bwa</span> index <span class="va">$aslocal</span> <span class="co">#call local copy of assembly file by name here because bwa needs write access</span>
+<span class="ex">bwa</span> mem -t 4 <span class="va">$aslocal</span> <span class="va">$reads</span> <span class="kw">|</span> <span class="ex">samtools</span> view - -Sb <span class="kw">|</span> <span class="ex">samtools</span> sort - -@4 -o WGS.sorted.bam
 
 <span class="ex">samtools</span> index WGS.sorted.bam
 
-<span class="ex">pilon</span> --genome <span class="va">$assembly</span> --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
+<span class="co">#grab pilon jar file</span>
+<span class="fu">wget</span> https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+
+<span class="co">#run java pilon to control memory and thread use</span>
+<span class="ex">java</span> -Xmx64G -jar pilon-1.23.jar --genome <span class="va">$aslocal</span> --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
 
 <span class="fu">ls</span> -lh pilonpolish</code></pre></div>
 <p>NanoPolish:<a href="https://github.com/jts/nanopolish" class="uri">https://github.com/jts/nanopolish</a> **Seems to require access to the original fast5 files</p>
