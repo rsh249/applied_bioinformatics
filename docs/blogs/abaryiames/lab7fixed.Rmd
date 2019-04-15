@@ -1,0 +1,72 @@
+---
+title: "Lab 7"
+author: "Alex Baryiames and Nick Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{bash, eval = FALSE}
+datapath=/usr/share/data/proj_data/pneumonia/
+reads=$datapath/5170843/barcode01.fastq.gz
+assembly=/home/abaryiames/Lab_Projects/pneumonia_script/barcode01/canu_dir/canu.contigs.fasta
+```
+Setting Variables for polish tests.
+
+```{bash, eval = FALSE}
+#Iteration One
+minimap -Sw5 -L100 -m0 -t2 $assembly $reads > mapIT01.paf
+racon -t 16 $reads mapIT01.paf $assembly > mapIT01.fa
+
+#Iteration Two
+minimap -Sw5 -L100 -m0 mapIT01.fa $reads > mapIT02.paf
+racon -t 2 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+
+#Iteration Three
+minimap -Sw5 -L100 -m0 mapIT02.fa $reads > mapIT03.paf
+racon -t 2 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
+```
+Polishing step. Racon compares the assembly to the reference genome, and then each subsequent iteration to the referece. This should remove indels, and mismatched pairs.
+
+# dnadiff
+```{bash, eval = FALSE}
+abaryiames@neotoma1:~/Lab_Projects/polishtest$ dnadiff -p ref $refdata /usr/share/data/proj_data/pneumonia/5170843/barcode01.fastq
+Building alignments
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "ref.ntref" of length 5682329
+# construct suffix tree for sequence of length 5682329
+# (maximum reference length is 536870908)
+# (maximum query length is 4294967295)
+# process 56823 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /usr/bin/anaconda/opt/mummer-3.23/mummer ref.ntref 2.71
+# reading input file "/usr/share/data/proj_data/pneumonia/5170843/barcode01.fastq" of length 1351868820
+# matching query-file "/usr/share/data/proj_data/pneumonia/5170843/barcode01.fastq"
+# against subject-file "ref.ntref"
+# COMPLETETIME /usr/bin/anaconda/opt/mummer-3.23/mummer ref.ntref 2053.46
+# SPACE /usr/bin/anaconda/opt/mummer-3.23/mummer ref.ntref 2553.91
+4: FINISHING DATA
+postnuc: tigrinc.cc:337: int Read_String(FILE*, char*&, long int&, char*, int): Assertion `Len > 0 && Line [Len - 1] == '\n'' failed.
+Aborted (core dumped)
+ERROR: postnuc returned non-zero
+ERROR: Failed to run nucmer, aborting.
+
+```
+We tried to run dnadiff with the parameters seen above. Unfortunatly, the run failed. If it had run sucessfully, we would have been able to view a report with grep to see the amount of SNPs and indels in the assembely.
+
+[home](https://rsh249.github.io/applied_bioinformatics)
