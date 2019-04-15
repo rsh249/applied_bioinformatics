@@ -1,0 +1,91 @@
+---
+title: "Workshop Day + Functional Genome Annotation"
+author: "Prof. Harbert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+# Project Schedule (IMPORTANT DUE DATES)
+
+1) April 25th -- Project Blog due in Git repository
+2) April 29th -- Project Presentations (during lab)
+3) April 30th -- Project Code due in Git repository
+4) May 1st -- Term Paper detailing your research project DUE*
+
+
+*Term paper due date up for discussion
+
+
+
+# Workshop Day 1
+
+Today's lab you will be working on your project code. Now is the time to address remaining issues and work towards a final product.
+
+## Workshop Peer Review
+
+Split into groups assigned by your instructor. Take 10-15 minutes to prepare a "chalk-talk" to present to your group mates. This talk is an informal presentation of your work so far and should include:
+
++ A brief introduction to your study
++ A flow-chart (drawn on the board) of the programs and data involved.
++ Discuss where you are in this process for feedback.
+
+
+# Gene Annotation
+
+OK, so you have a genome. Now what? Depending on your research question you may want to know what genes you have and where they are. 
+
+## Gene prediction
+
+There are many software tools to predict gene sequences. Some are described [here](https://www.biobam.com/genefinding/). Below is an example with Prodigal, a tool from scientists at the Oak Ridge National Laboratory.
+
+### Prodigal gene prediction
+
+Prodigal is available on the server as 'prodigal.linux
+
+Run as:
+
+```{bash, eval=F}
+prodigal.linux -i ~/path/to/assembled.contigs.fa -o prodigal.test -a proteins.faa
+
+```
+
+This will produce two files: 1) prodigal.test is a file with the genome coordinates for each coding sequence it finds, and 2) is a fasta file of probable protein sequences.
+
+## Annotation
+
+Once you have those predicted protein sequences you will want to find out what those proteins might do. The general process involves identifying homologous proteins in the database(s) and identifying likely functional groups for your unknown proteins. Homology is established either by sequence similarity (BLAST), or phylogenetics (clustering and protein family tree building) to identify orthologs. The sequence similarity approach is, by far, the simplest strategy and the most often implemented.
+
+Unfortunately, the programs that do this analysis (that I have found so far) are either: a) web-based (Not compatible with a command line workflow. Also, slow.), or b) Require a software license ($$$$).
+
+There are two options you may want to consider that work reasonably well in this capacity.
+
+First, the GOFEAT web-tool is a very easy-to-use platform that will annotate that protein fasta file directly. The GOFEAT [paper](https://www.nature.com/articles/s41598-018-20211-9.pdf) outlines the workflow. Go to: http://computationalbiology.ufpa.br/gofeat/ and upload your proteins.faa file to try it out. The results are extensive so some exploration will be required.
+
+Second, ***Under construction***. The most commonly used tool for annotation appears to be BLAST2Go. The standard GUI tool is available for free, but the command line (HPC) version requires a software license beyond the free trial. BLAST2GO will search for your proteins against the NCBI 'nr' (non-redundant) protein database (or another database of your choosing) for similar sequences. Then the software will identify GO (gene-ontology) terms that are associated with each of your protein sequences from a variety of ontology databses. Then BLAST2GO organizes your results for relatively easy parsing of functional annotations.
+
+If you want to try BLAST2GO set an appointment with your instructor to use the GUI version.
+
+# Blog
+
+This week start working on a blog representation of your project. This is NOT due until the last day of classes.
+
+
+
+[home](https://rsh249.github.io/applied_bioinformatics)
