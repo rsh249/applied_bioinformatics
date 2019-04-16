@@ -261,18 +261,20 @@ div.tocify {
 <p>Useful links:</p>
 <p><a href="https://www.biostars.org/p/56246/">Sorting out mapped and unmapped reads with samtools</a></p>
 <p><a href="ftp://ftp.ncbi.nih.gov/genomes/">NCBI genomes ftp</a></p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">assembly=</span><span class="st">&quot;~/oryza_project/39947_ref_IRGSP-1.0_chrPltd.fa&quot;&quot;</span>
-<span class="st">reads=/usr/share/data/proj_data/oryza/merge_data/final.fastq</span>
-<span class="st">cp </span><span class="va">$assembly</span><span class="st"> ./</span>
-<span class="st">aslocal=39947_ref_IRGSP-1.0_chrPltd.fa</span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">wget</span> ftp://ftp.ncbi.nlm.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+<span class="fu">gunzip</span> 39947_ref_IRGSP-1.0_chrPltd.fa.gz
 
-<span class="st">bwa index </span><span class="va">$aslocal</span><span class="st"> </span>
-<span class="st">bwa mem -t 48 </span><span class="va">$aslocal</span><span class="st"> </span><span class="va">$reads</span><span class="st"> | samtools view -F 4 -Sb | samtools sort - -@4 -o WGS.sorted.bam</span>
+<span class="va">reads=</span>/usr/share/data/proj_data/oryza/merge_data/final.fastq
 
-<span class="st">samtools index WGS.sorted.bam</span>
-<span class="st">samtools fastq WGS.sorted.bam &gt; output.fastq </span></code></pre></div>
+<span class="va">aslocal=</span>39947_ref_IRGSP-1.0_chrPltd.fa
+
+<span class="ex">bwa</span> index <span class="va">$aslocal</span> 
+<span class="ex">bwa</span> mem -t 8 <span class="va">$aslocal</span> <span class="va">$reads</span> <span class="kw">|</span> <span class="ex">samtools</span> view -F 4 -Sb <span class="kw">|</span> <span class="ex">samtools</span> sort - -@4 -o WGS.sorted.bam
+
+<span class="ex">samtools</span> index WGS.sorted.bam
+<span class="ex">samtools</span> fastq WGS.sorted.bam <span class="op">&gt;</span> output.fastq </code></pre></div>
 <p>Then run canu as normal:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">canu</span> -p plast -d plast_canu genomeSize=1m maxThreads=8  -nanopore-raw output.fastq</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">canu</span> -p plast -d plast_canu genomeSize=135k maxThreads=8  -nanopore-raw output.fastq</code></pre></div>
 <p><a href="https://rsh249.github.io/applied_bioinformatics">home</a></p>
 </div>
 

@@ -31,13 +31,15 @@ Useful links:
 [NCBI genomes ftp](ftp://ftp.ncbi.nih.gov/genomes/)
 
 ```{bash, eval=F}
-assembly="~/oryza_project/39947_ref_IRGSP-1.0_chrPltd.fa""
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+
 reads=/usr/share/data/proj_data/oryza/merge_data/final.fastq
-cp $assembly ./
+
 aslocal=39947_ref_IRGSP-1.0_chrPltd.fa
 
 bwa index $aslocal 
-bwa mem -t 48 $aslocal $reads | samtools view -F 4 -Sb | samtools sort - -@4 -o WGS.sorted.bam
+bwa mem -t 8 $aslocal $reads | samtools view -F 4 -Sb | samtools sort - -@4 -o WGS.sorted.bam
 
 samtools index WGS.sorted.bam
 samtools fastq WGS.sorted.bam > output.fastq 
@@ -47,7 +49,7 @@ samtools fastq WGS.sorted.bam > output.fastq
 Then run canu as normal:
 
 ```{bash, eval=F}
-canu -p plast -d plast_canu genomeSize=1m maxThreads=8  -nanopore-raw output.fastq
+canu -p plast -d plast_canu genomeSize=135k maxThreads=8  -nanopore-raw output.fastq
 ```
 
 
