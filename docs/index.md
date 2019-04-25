@@ -120,7 +120,9 @@ Reading 9 (April 11)
 <a href = "https://www.nature.com/articles/d41586-018-05462-w"> New human gene tally reignites debate
 
 
-Week 13: Project Workshop
+Week 13: <a href='annotation.html'> Project Workshop + Gene Annotation
+
+Week 13b: <a href='plastmap.html'> Filtering raw reads for plastid genome assembly.
 
 Week 14: Project Presentations
 
