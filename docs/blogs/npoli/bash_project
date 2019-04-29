@@ -1,0 +1,92 @@
+#Nick Poli
+#2019
+#Lemon JK, Khil PP, Frank KM, Dekker JP. 2017. Rapid nanopore sequencing of plasmids and resistance gene detection in clinical isolates. J Clin Microbiol 55:3530 –3543. https://doi.org/10.1128/JCM.01069-17.
+#https://jcm.asm.org/content/55/12/3530
+#Illumina MiSeq, MinION, 2D reads by Metrichor web-based service, 1D reads by MinKNOW, polish by canu racon and pilon, SPAdes, circlator, quast, Resfinder web software, circos
+
+datapath=/usr/share/data/proj_data/bacterial_resistance
+logfile='log.txt'
+
+touch $logfile
+
+echo $datapath > $logfile
+
+ls -lh $datapath
+
+fastq=SRR5805004
+
+genomesize=4.8m  #Need to adjust genome size for bacterial species
+
+mkdir $fastq
+
+cd $fastq
+
+head $datapath/$fastq.fastq
+
+#cat $datapath/$fastq.fastq | NanoFilt -q 7 -l1000 > $fastq.filt.fq
+
+reads=$fastq.filt.fq
+
+#canu -p $fastq -d canuassembly genomeSize=$genomesize maxThreads=16  corMinCoverage=0 corOutCoverage=1000 -nanopore-raw $reads
+
+#Setup three iterations of minimap and racon polishing with nanopore data ($reads.filt.fq file)
+
+#similarities betweem polish programs, then with different bacterial species
+
+assembly=canuassembly/SRR5805004.contigs.fasta
+
+minimap -Sw5 -L100 -m0 -t2 $assembly $reads > mapIT01.paf
+
+racon -t 2 $reads mapIT01.paf $assembly > mapIT01.fa
+
+minimap -Sw5 -L100 -m0 mapIT01.fa $reads > mapIT02.paf
+racon -t 2 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+
+minimap -Sw5 -L100 -m0 mapIT02.fa $reads > mapIT03.paf
+racon -t 2 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
+
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/005/845/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz
+gunzip GCF_000005845.2_ASM584v2_genomic.fna.gz
+refdata=GCF_000005845.2_ASM584v2_genomic.fna
+
+#Run these commands before DNA Diff
+
+refdata=~/project_bacterial/GCF_000005845.2_ASM584v2_genomic.fna
+
+assembly=canuassembly/SRR5805004.contigs.fasta
+
+#Must run these commands below to assign for quast
+
+fastq=SRR5805004
+
+reads=$fastq.filt.fq
+
+#Visualize with quast
+
+quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base
+
+#DNAdiff
+
+dnadiff -p ref $refdata $assembly
+
+dnadiff -p one $refdata mapIT01.fa
+
+dnadiff -p two $refdata mapIT02.fa
+
+dnadiff -p three $refdata mapIT03.fa
+
+#Visulaize with quast using third iteration polish data
+
+quast.py mapIT03.fa -R $refdata --nanopore $reads -o quast_test_output_03
+
+#Visualize with iteration one and two to see if how/where 4% genome increase occurs
+
+quast.py mapIT01.fa -R $refdata --nanopore $reads -o quast_test_output_01
+
+quast.py mapIT02.fa -R $refdata --nanopore $reads -o quast_test_output_02
+
+#Unicylcer to do a hybrid assembly of nanopore and illumina data
+
+fastq-dump SRR5805007
+
+unicycler -s SRR5805007.fastq -l SRR5805004/$reads -o unicycler_hybrid_assemblies --threads 16
