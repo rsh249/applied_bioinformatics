@@ -135,7 +135,7 @@ Student written Blogs: <a href='blogs'> HERE
 
 ### Links to Projects
 
-Student project directories <a href='https://github.com/rsh249/applied_bioinformatics/projects'>HERE
+<a href='projects/snake_venom/project_blog.html'> Snake venom transcriptomics using R7.3 cDNA sequencing </a>
 
 
 
