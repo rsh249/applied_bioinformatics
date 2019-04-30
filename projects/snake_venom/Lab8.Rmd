@@ -17,6 +17,10 @@ output:
 
 This is my Project Blog. This is all of the code that I currently have working, as well as the figures that I have made.
 
+Link to Original Study:
+
+[snake_venom](https://doi.org/10.7717/peerj.1441)
+
 #Preliminary Step
 
 ```{bash, eval=FALSE}
