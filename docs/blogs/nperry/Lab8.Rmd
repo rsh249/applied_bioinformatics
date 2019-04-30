@@ -15,7 +15,7 @@ output:
 
 #Introduction
 
-This is where I am currently at for my project. This is all of the code that I currently have working, as well as the figures that I have made.
+This is my Project Blog. This is all of the code that I currently have working, as well as the figures that I have made.
 
 #Preliminary Step
 
@@ -135,7 +135,29 @@ Using Pilon, I was able to polish the genomes of the Eco6_4x8 reads and the Eco8
 prodigal.linux -i /home/nperry/nperry/snake_venom/snake_venom/snake_venom.contigs.fasta -o prodigal.test -a proteins.faa
 ```
 
-I am using this to predict the genes from the original assembly. This is still in progress, as blast2go has not been used yet.
+```{R, eval=TRUE}
+getwd()
+setwd("/home/nperry/b2gWorkspace")
+library(plyr)
+library(ggplot2)
+library(forcats)
+proteins <- read.delim("blast2go_go_table.txt", header=TRUE, stringsAsFactors = FALSE)
+proteins_split <- strsplit(proteins$GO.Names, ";")
+unlist_proteins_split <- unlist(proteins_split)
+gocounts <- count(unlist(proteins_split))
+gocounts[order(gocounts$freq, decreasing = TRUE),]
+counts <- gocounts[order(gocounts$freq, decreasing = TRUE),]
+tophits = counts[1:25, 'x']
+topproteins <- as.data.frame(unlist_proteins_split[unlist_proteins_split %in% tophits])
+colnames(topproteins)=c("GoNames")
+ggplot(data=topproteins) +
+    geom_bar(aes(x=fct_infreq(GoNames))) +
+    xlab('') +
+    theme(axis.text.x  = element_text(angle=90, size = 5))
+```
+
+
+I am using this to predict the genes from the original assembly. The figure shows which of the predicted proteins had the highest counts.
 
 #Transrate
 
@@ -211,6 +233,14 @@ This is the read distribution for Eco8_48hr, which had the lowest number of read
 library(ggplot2)
 getwd()
 setwd("/home/nperry/nperry/snake_venom/")
+
+
+
+
+
+
+
+
 eco8_4x8<-read.delim("readlength5.file", header=FALSE, sep=" ", stringsAsFactors = FALSE)
 eco8_4x8$V2=as.numeric(eco8_4x8$V2)
 ggplot(data=eco8_4x8) + geom_histogram(aes(x=eco8_4x8$V2), binwidth=100) + xlim(0,6000)+xlab("Sequence Length")+ggtitle("Eco8_4x8 Read Length Distribution")
