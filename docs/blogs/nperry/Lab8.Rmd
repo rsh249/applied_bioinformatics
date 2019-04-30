@@ -173,15 +173,16 @@ cd pilonpolish
 transrate --assembly pilon.fasta
 ```
 
-I ran Transrate on the snake_venom_contigs file, along with each of the polished files for Eco6_4x8. I have not done this for the Eco8 file yet. Transrate assesses the quality of the assembly.
+I ran Transrate on the snake_venom_contigs file, along with each of the polished files for Eco6_4x8 and Eco_8. Transrate assesses the quality of the assembly.
 
 #NanoStat
 
 ```{bash, eval=FALSE}
 NanoStat --fasta Eco6_4x8hr_reads.fasta > ns.file
+NanoStat --fasta Eco8.fasta >ns2.file
 ```
 
-I ran NanoStat on on my Eco6 reads so that I could get summary data on the reads. I have not done this for the Eco8 data yet.
+I ran NanoStat on on my Eco6 and Eco8 reads so that I could get summary data on the reads.
 
 #Preliminary Figure Information
 
@@ -233,14 +234,6 @@ This is the read distribution for Eco8_48hr, which had the lowest number of read
 library(ggplot2)
 getwd()
 setwd("/home/nperry/nperry/snake_venom/")
-
-
-
-
-
-
-
-
 eco8_4x8<-read.delim("readlength5.file", header=FALSE, sep=" ", stringsAsFactors = FALSE)
 eco8_4x8$V2=as.numeric(eco8_4x8$V2)
 ggplot(data=eco8_4x8) + geom_histogram(aes(x=eco8_4x8$V2), binwidth=100) + xlim(0,6000)+xlab("Sequence Length")+ggtitle("Eco8_4x8 Read Length Distribution")
