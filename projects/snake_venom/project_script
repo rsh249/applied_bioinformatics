@@ -6,8 +6,10 @@
 # ERS094900, SRX543069 
 # poretools, poRe, proovread-flex, nanocorrect, nanopolish, BWA-MEM, TransRate, TransDecoder, BLAST+, CLUSTAl
 
+
 cat Eco8_48hr_reads.fasta Eco8_4x8hr_reads.fasta > Eco8.fasta
 #By using cat, I was able to put all of the Eco8 fasta files into a single fasta file so that canu could be run more easily.
+cd /home/nperry/nperry/snake_venom
 canu -p snake_venom -d snake_venom genomeSize=1m maxThreads=8 -nanopore-raw /home/nperry/nperry/snake_venom/Eco6_4x8hr.fasta > canuLogFile
 canu -p Eco8_snake_venom -d Eco8_snake_venom genomeSize=1m maxThreads=8 -nanopore-raw /home/nperry/nperry/snake_venom/Eco8.fasta > canuLogFile2
 #By using canu, I was able to assemble contigs for the Eco6_4x8 reads and the Eco8 reads.
@@ -54,11 +56,15 @@ ls -lh
 #Using Pilon, I was able to polish the genomes of the Eco6_4x8 reads and the Eco8 reads using the Illumina data.
 prodigal.linux -i /home/nperry/nperry/snake_venom/snake_venom/snake_venom.contigs.fasta -o prodigal.test -a proteins.faa
 #I am using this to predict the genes from the original assembly.
+cd snake_venom
 transrate --assembly snake_venom.contigs.fasta
 cd pilonpolishillumina/
 transrate --assembly pilon.fasta
+cd ..
 cd pilonpolish
 transrate --assembly pilon.fasta
+cd ..
+cd ..
 #Transrate assesses the quality of the assembly.
 NanoStat --fasta Eco6_4x8hr_reads.fasta > ns.file
 NanoStat --fasta Eco8.fasta > ns2.file
