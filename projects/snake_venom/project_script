@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Nicholas Perry
+# Applied Bioinformatics Spring 2019
+# Hargreaves, A.D. and Mulley, J.F., 2015. Assessing the utility of the Oxford Nanopore MinION for snake venom gland cDNA sequencing. PeerJ, 3, p.e1441.
+# ERS094900, SRX543069 
+# poretools, poRe, proovread-flex, nanocorrect, nanopolish, BWA-MEM, TransRate, TransDecoder, BLAST+, CLUSTAl
+
+cat Eco8_48hr_reads.fasta Eco8_4x8hr_reads.fasta > Eco8.fasta
+#By using cat, I was able to put all of the Eco8 fasta files into a single fasta file so that canu could be run more easily.
+canu -p snake_venom -d snake_venom genomeSize=1m maxThreads=8 -nanopore-raw /home/nperry/nperry/snake_venom/Eco6_4x8hr.fasta > canuLogFile
+canu -p Eco8_snake_venom -d Eco8_snake_venom genomeSize=1m maxThreads=8 -nanopore-raw /home/nperry/nperry/snake_venom/Eco8.fasta > canuLogFile2
+#By using canu, I was able to assemble contigs for the Eco6_4x8 reads and the Eco8 reads.
+cd /home/nperry/nperry/snake_venom/snake_venom
+datapath=/home/nperry/nperry/snake_venom/
+reads1=$datapath/Eco6_4x8hr.fasta
+reads2=$datapath/Eco8.fasta
+assembly1=$datapath/snake_venom/snake_venom.contigs.fasta
+assembly2=$datapath/Eco8_snake_venom/Eco8_snake_venom.contigs.fasta
+#This is the directory that I worked in, as well as variables that I set.
+cp $assembly1 ./
+aslocal1=snake_venom.contigs.fasta
+bwa index $aslocal1
+bwa mem -t 4 $aslocal1 $reads1 | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+samtools index WGS.sorted.bam
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal1 --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
+ls -lh pilonpolish
+aslocal2=Eco8_snake_venom.contigs.fasta
+bwa index $aslocal2
+bwa mem -t 4 $aslocal2 $reads2 | samtools view - -Sb | samtools sort - -@4 -o WGS1.sorted.bam
+samtools index WGS1.sorted.bam
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal2 --fix all --changes --bam WGS1.sorted.bam --threads 4 --outdir pilonpolish
+ls -lh pilonpolish
+#Using Pilon, I was able to polish the genomes of the Eco6_4x8 reads and the Eco8 reads using the Nanopore data.
+reads=$datapath/SRR1287715.fastq
+cp $assembly2 ./
+aslocal=Eco8_snake_venom.contigs.fasta
+bwa index $aslocal
+bwa mem -t 4 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+samtools index WGS.sorted.bam
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolishillumina
+ls -lh
+cp $assembly1 ./
+aslocal=snake_venom.contigs.fasta
+bwa index $aslocal
+bwa mem -t 4 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+samtools index WGS.sorted.bam
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolishillumina
+ls -lh
+#Using Pilon, I was able to polish the genomes of the Eco6_4x8 reads and the Eco8 reads using the Illumina data.
+prodigal.linux -i /home/nperry/nperry/snake_venom/snake_venom/snake_venom.contigs.fasta -o prodigal.test -a proteins.faa
+#I am using this to predict the genes from the original assembly.
+transrate --assembly snake_venom.contigs.fasta
+cd pilonpolishillumina/
+transrate --assembly pilon.fasta
+cd pilonpolish
+transrate --assembly pilon.fasta
+#Transrate assesses the quality of the assembly.
+NanoStat --fasta Eco6_4x8hr_reads.fasta > ns.file
+NanoStat --fasta Eco8.fasta > ns2.file
+#I ran NanoStat on on my Eco6 and Eco8 reads so that I could get summary data on the reads.
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco6_4x8hr_reads.fasta > readlength2.file
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco6_48hr_reads.fasta > readlength3.file
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco8_48hr_reads.fasta > readlength4.file
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco8_4x8hr_reads.fasta > readlength5.file
+#I used the awk command to get all of the read lengths into a file that I could read into R. In R, I would be able to make read distribution graphs for each of the 4 samples.
+
+#Original Analysis Steps
+
+#1) To get the files into .fastq and .fasta formats, poretools and poRe will be used.
+
+#2) To correct for hybrid errors using short-read sequencing data, proovread-flex will be used.
+
+#3) Nanocorrect will be used for de novo correction.
+
+#4) Nanopolish will be used to correct for electrical signal events that were recorded in the .fast5 file from the MinION read.
+
+#5) To evaluate sequence accuracy, BWA-MEM will be used.
+
+#6) To determine assembly quality, TransRate will be used.
+
+#7) To predict protein-coding open-reading frames, TransDecoder will be used.
+
+#8) Use BLAST+ to query against a reference venom gland transcriptome assembly.
+
+#9) Align and annotate sequences using CLUSTAL.
+
+exit
