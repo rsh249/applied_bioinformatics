@@ -334,7 +334,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Oryza Sativa Final Coding</h1>
 <h4 class="author"><em>Gianna Desrochers</em></h4>
-<h4 class="date"><em>29 April, 2019</em></h4>
+<h4 class="date"><em>01 May, 2019</em></h4>
 
 </div>
 
@@ -342,138 +342,134 @@ div.tocify {
 <div id="kraken2" class="section level1">
 <h1>Kraken2</h1>
 <p>Setting up an analysis: set a variable and make directory</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#minikraken=/usr/share/data/minikraken2</span>
-<span class="co">#targdata=/usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq</span>
-<span class="co">#**can make a text file with the previous and following coding as a shortcut, use command bash followed by file name to run</span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">minikraken=</span>/usr/share/data/minikraken2
+<span class="va">targdata=</span>/usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+<span class="ex">**can</span> make a text file with the previous and following coding as a shortcut, use command bash followed by file name to run
 
-<span class="co">#run kraken with the following:</span>
+<span class="ex">run</span> kraken with the following:
 
-<span class="co">#kraken2 --db $minikraken  --threads 6 --use-names --report kreport.tab --fastq-input $targdata &gt; kraken.out</span>
-<span class="co">#fullkraken=/usr/share/data/krakendb/nt-custom</span>
-<span class="co">#datapath=/usr/share/data/proj_data/oryza/FAH27966_raw</span>
-<span class="co">#kraken2 --db $fullkraken  --threads 6 --use-names --report kreport.tab --fastq-input $datapath/final.fastq &gt; kraken.out</span></code></pre></div>
+<span class="ex">kraken2</span> --db <span class="va">$minikraken</span>  --threads 6 --use-names --report kreport.tab --fastq-input <span class="va">$targdata</span> <span class="op">&gt;</span> kraken.out
+<span class="va">fullkraken=</span>/usr/share/data/krakendb/nt-custom
+<span class="va">datapath=</span>/usr/share/data/proj_data/oryza/FAH27966_raw
+<span class="ex">kraken2</span> --db <span class="va">$fullkraken</span>  --threads 6 --use-names --report kreport.tab --fastq-input <span class="va">$datapath</span>/final.fastq <span class="op">&gt;</span> kraken.out</code></pre></div>
 <p>Then do:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#wc -l $targdata 2649820 /usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">wc</span> -l <span class="va">$targdata</span> 2649820 /usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq</code></pre></div>
 <p>this will give you the possible contamination within your sample, and gives taxonomy of what organism was found in the oryza sample.</p>
 </div>
 <div id="centrifuge" class="section level1">
 <h1>Centrifuge</h1>
 <p>put the following coding:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass</span>
-<span class="co">#ls into creport.tab and then cat creport.tab to see results, can use R to organize data</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"> <span class="ex">centrifuge</span> -p 2 -q -x <span class="va">$centdb</span> -U <span class="va">$targdata</span> -S out.centclass
+<span class="fu">ls</span> into creport.tab and then cat creport.tab to see results, can use R to organize data</code></pre></div>
 <p>centrifuge output using R: name taxID taxRank genomeSize numReads numUniqueReads 19 Sorangium cellulosum 56 species 13907952 1484 876 181 Escherichia coli 562 species 7379307 2240 799 386 Staphylococcus aureus 1280 species 5769964 1187 656 85 Pseudomonas fluorescens 294 species 6526868 1188 497 140 Acinetobacter baumannii 470 species 4011582 1507 490 81 Pseudomonas aeruginosa 287 species 6508174 1656 486</p>
 </div>
 <div id="canu" class="section level1">
 <h1>Canu</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#shortcut of using canu is by using proj_script text file and running it with bash:</span>
-<span class="co">#bash proj_script</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">shortcut</span> of using canu is by using proj_script text file and running it with bash:
+<span class="fu">bash</span> proj_script</code></pre></div>
 </div>
 <div id="oryza-polishing" class="section level1">
 <h1>Oryza Polishing</h1>
 <p>SETUP</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#datapath=/usr/share/data/proj_data/oryza</span>
-<span class="co">#reads=$datapath/FAH27966_raw/final.fastq</span>
-<span class="co">#assembly=~/oryza_project/canu_oryza/oryza_FAH27966.contigs.fasta</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">datapath=</span>/usr/share/data/proj_data/oryza
+<span class="va">reads=$datapath</span>/FAH27966_raw/final.fastq
+<span class="va">assembly=</span>~/oryza_project/canu_oryza/oryza_FAH27966.contigs.fasta</code></pre></div>
 <p>create a directory for polish testing</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#mkdir polishtest</span>
-<span class="co">#cd polishtest</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">mkdir</span> polishtest
+<span class="bu">cd</span> polishtest</code></pre></div>
 </div>
 <div id="quast" class="section level1">
 <h1>Quast</h1>
 <p>get reference genome and check a reference:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#wget ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz</span>
-<span class="co">#gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz</span>
-<span class="co">#refdata=/usr/share/data/proj_data/oryza/reference/riceref.fa</span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">wget</span> ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+<span class="fu">gunzip</span> 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+<span class="va">refdata=</span>/usr/share/data/proj_data/oryza/reference/riceref.fa
 
-<span class="co">#/usr/bin/bbmap/bbmap.sh ref=$refdata in=reads.fq outm=mapped.fq outu=umapped.fq</span>
+<span class="ex">/usr/bin/bbmap/bbmap.sh</span> ref=<span class="va">$refdata</span> in=reads.fq outm=mapped.fq outu=umapped.fq
 
-<span class="co">#quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base</span></code></pre></div>
+<span class="ex">quast.py</span> <span class="va">$assembly</span> -R <span class="va">$refdata</span> --nanopore <span class="va">$reads</span> -o quast_test_output_base</code></pre></div>
 </div>
 <div id="minimapracon" class="section level1">
 <h1>Minimap/Racon</h1>
 <p>Iteration 1:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Map reads to assembly using minimap:</span>
-<span class="co">#minimap -Sw5 -L100 -m0 -t16 $assembly $reads &gt; mapIT01.paf</span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">Map</span> reads to assembly using minimap:
+<span class="ex">minimap</span> -Sw5 -L100 -m0 -t16 <span class="va">$assembly</span> <span class="va">$reads</span> <span class="op">&gt;</span> mapIT01.paf
 
-<span class="co">#Where: + “-t2” specifies 2 threads (optional for this small example) + “Sw5” ????? + “-m0” specifies to never merge chains. + “-L100” requires matches to be at least 100 base pairs in length.</span>
+<span class="ex">Where</span>: + “-t2” specifies 2 threads (optional for this small example) <span class="ex">+</span> “Sw5” ????? + “-m0” specifies to never merge chains. + “-L100” requires matches to be at least 100 base pairs in length.
 
-<span class="co">#Then we take those mapped data and generate a consensus sequence over the assembly using racon., took 4 min</span>
-<span class="co">#racon -t 16 $reads mapIT01.paf $assembly &gt; mapIT01.fa</span></code></pre></div>
+<span class="ex">Then</span> we take those mapped data and generate a consensus sequence over the assembly using racon., took 4 min
+<span class="ex">racon</span> -t 16 <span class="va">$reads</span> mapIT01.paf <span class="va">$assembly</span> <span class="op">&gt;</span> mapIT01.fa</code></pre></div>
 <p>Iteration 2:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#minimap -Sw5 -L100 -m0 -t16 mapIT01.fa $reads &gt; mapIT02.paf</span>
-<span class="co">#racon -t 16 $reads mapIT02.paf mapIT01.fa &gt; mapIT02.fa</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">minimap</span> -Sw5 -L100 -m0 -t16 mapIT01.fa <span class="va">$reads</span> <span class="op">&gt;</span> mapIT02.paf
+<span class="ex">racon</span> -t 16 <span class="va">$reads</span> mapIT02.paf mapIT01.fa <span class="op">&gt;</span> mapIT02.fa</code></pre></div>
 <p>Iteration 3:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#minimap -Sw5 -L100 -m0 -t16 mapIT02.fa $reads &gt; mapIT03.paf</span>
-<span class="co">#racon -t 16 $reads mapIT03.paf mapIT02.fa &gt; mapIT03.fa</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">minimap</span> -Sw5 -L100 -m0 -t16 mapIT02.fa <span class="va">$reads</span> <span class="op">&gt;</span> mapIT03.paf
+<span class="ex">racon</span> -t 16 <span class="va">$reads</span> mapIT03.paf mapIT02.fa <span class="op">&gt;</span> mapIT03.fa</code></pre></div>
 </div>
 <div id="to-find-differences-dnadiff" class="section level1">
 <h1>To Find Differences: dnadiff</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#mkdir dnaoryza</span>
-<span class="co">#dnadiff -p ref $refdata $assembly &amp;</span>
-<span class="co">#dnadiff -p one $refdata mapIT01.fa &amp;</span>
-<span class="co">#dnadiff -p two $refdata mapIT02.fa &amp;</span>
-<span class="co">#dnadiff -p three $refdata mapIT03.fa &amp;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">mkdir</span> dnaoryza
+<span class="ex">dnadiff</span> -p ref <span class="va">$refdata</span> <span class="va">$assembly</span> <span class="kw">&amp;</span>
+<span class="ex">dnadiff</span> -p one <span class="va">$refdata</span> mapIT01.fa <span class="kw">&amp;</span>
+<span class="ex">dnadiff</span> -p two <span class="va">$refdata</span> mapIT02.fa <span class="kw">&amp;</span>
+<span class="ex">dnadiff</span> -p three <span class="va">$refdata</span> mapIT03.fa <span class="kw">&amp;</span></code></pre></div>
 <p>Then look at the *.report files</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#less ref.report</span>
-<span class="co">#Look at %Identity between runs but also look at the number of SNPs and indels reported. </span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">less</span> ref.report
+<span class="ex">Look</span> at %Identity between runs but also look at the number of SNPs and indels reported. 
   
-<span class="co">#grep &quot;TotalSNPs&quot; *.report</span>
-<span class="co">#grep &quot;TotalIndels&quot; *.report</span></code></pre></div>
+<span class="fu">grep</span> <span class="st">&quot;TotalSNPs&quot;</span> *.report
+<span class="fu">grep</span> <span class="st">&quot;TotalIndels&quot;</span> *.report</code></pre></div>
 </div>
 <div id="other-polishing" class="section level1">
 <h1>Other Polishing</h1>
 <p>pilon:<a href="https://github.com/broadinstitute/pilon" class="uri">https://github.com/broadinstitute/pilon</a> **Another consensus caller like racon Tutorial: <a href="https://denbi-nanopore-training-course.readthedocs.io/en/latest/polishing/pilon/pilon.html" class="uri">https://denbi-nanopore-training-course.readthedocs.io/en/latest/polishing/pilon/pilon.html</a></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#cp $assembly ./</span>
-<span class="co">#aslocal=oryza_FAH27966.contigs.fasta #or name of assembly contigs</span>
-<span class="co">#bwa index $aslocal #call local copy of assembly file by name here because bwa needs write access</span>
-<span class="co">#bwa mem -t 16 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam</span>
-<span class="co">#samtools index WGS.sorted.bam</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">cp</span> <span class="va">$assembly</span> ./
+<span class="va">aslocal=</span>oryza_FAH27966.contigs.fasta <span class="co">#or name of assembly contigs</span>
+<span class="ex">bwa</span> index <span class="va">$aslocal</span> <span class="co">#call local copy of assembly file by name here because bwa needs write access</span>
+<span class="ex">bwa</span> mem -t 16 <span class="va">$aslocal</span> <span class="va">$reads</span> <span class="kw">|</span> <span class="ex">samtools</span> view - -Sb <span class="kw">|</span> <span class="ex">samtools</span> sort - -@4 -o WGS.sorted.bam
+<span class="ex">samtools</span> index WGS.sorted.bam</code></pre></div>
 </div>
 <div id="pilon" class="section level1">
 <h1>Pilon</h1>
 <p>grab pilon jar file</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar </span>
-<span class="co">#run java pilon to control memory and thread use</span>
-<span class="co">#java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 16 --outdir pilonpolish</span>
-<span class="co">#ls -lh pilonpolish</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">wget</span> https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+<span class="ex">run</span> java pilon to control memory and thread use
+<span class="ex">java</span> -Xmx64G -jar pilon-1.23.jar --genome <span class="va">$aslocal</span> --fix all --changes --bam WGS.sorted.bam --threads 16 --outdir pilonpolish
+<span class="fu">ls</span> -lh pilonpolish</code></pre></div>
 </div>
 <div id="prodigal-gene-prediction" class="section level1">
 <h1>Prodigal Gene Prediction</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#prodigal.linux -i ~/oryza_project/oryza_FAH27966.contigs.fasta -o prodigal.test -a proteins.faa</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">prodigal.linux</span> -i ~/oryza_project/oryza_FAH27966.contigs.fasta -o prodigal.test -a proteins.faa</code></pre></div>
 </div>
 <div id="filter-reads-by-mapping-to-a-reference-genome" class="section level1">
 <h1>Filter reads by mapping to a reference genome</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz</span>
-<span class="co">#gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz</span>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">wget</span> ftp://ftp.ncbi.nlm.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+<span class="fu">gunzip</span> 39947_ref_IRGSP-1.0_chrPltd.fa.gz
 
-<span class="co">#reads=/usr/share/data/proj_data/oryza/merge_data/final.fastq</span>
+<span class="va">reads=</span>/usr/share/data/proj_data/oryza/merge_data/final.fastq
 
-<span class="co">#aslocal=39947_ref_IRGSP-1.0_chrPltd.fa</span>
+<span class="va">aslocal=</span>39947_ref_IRGSP-1.0_chrPltd.fa
 
-<span class="co">#bwa index $aslocal </span>
-<span class="co">#bwa mem -t 8 $aslocal $reads | samtools view -F 4 -Sb | samtools sort - -@4 -o WGS.sorted.bam</span>
+<span class="ex">bwa</span> index <span class="va">$aslocal</span> 
+<span class="ex">bwa</span> mem -t 8 <span class="va">$aslocal</span> <span class="va">$reads</span> <span class="kw">|</span> <span class="ex">samtools</span> view -F 4 -Sb <span class="kw">|</span> <span class="ex">samtools</span> sort - -@4 -o WGS.sorted.bam
 
-<span class="co">#samtools index WGS.sorted.bam</span>
-<span class="co">#samtools fastq WGS.sorted.bam &gt; output.fastq </span></code></pre></div>
+<span class="ex">samtools</span> index WGS.sorted.bam
+<span class="ex">samtools</span> fastq WGS.sorted.bam <span class="op">&gt;</span> output.fastq </code></pre></div>
 </div>
 <div id="run-canu-of-chloroplast" class="section level1">
 <h1>Run Canu of Chloroplast</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#canu -p plast -d plast_canu genomeSize=135k maxThreads=8  -nanopore-raw output.fastq &amp;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">reads=</span>~/oryza_project/output.fastq
+<span class="ex">canu</span> -p plast -d plast_canu2 genomeSize=135k maxThreads=48  -nanopore-raw <span class="va">$reads</span> <span class="kw">&amp;</span></code></pre></div>
 </div>
 <div id="quast-of-chloroplast" class="section level1">
 <h1>Quast of Chloroplast</h1>
 <p>SETUP</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#datapath=/home/gdesrochers/oryza_project/plast_canu</span>
-<span class="co">#reads=$datapath/plast.correctedReads.fasta.gz</span>
-<span class="co">#assembly=~/oryza_project/plast_canu/plast.correctedReads.fasta.gz</span>
-<span class="co">#create a directory for polish testing</span>
-<span class="co">#mkdir polishtest_plastid</span>
-<span class="co">#cd polishtest_plastid</span>
-<span class="co">#wget ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz</span>
-<span class="co">#gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz</span>
-<span class="co">#refdata=/usr/share/data/proj_data/oryza/reference/riceref.fa</span>
-<span class="co">#/usr/bin/bbmap/bbmap.sh ref=$refdata in=reads.fq outm=mapped.fq outu=umapped.fq</span>
-<span class="co">#quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base_plast</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">reads=</span>~/oryza_project/output.fastq
+<span class="va">assembly=</span>~/oryza_project/chloroplast/plast_canu2/plast.contigs.fasta
+<span class="fu">wget</span> ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+<span class="fu">gunzip</span> 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+<span class="va">refdata=</span>39947_ref_IRGSP-1.0_chrPltd.fa
+<span class="ex">quast.py</span> <span class="va">$assembly</span> -R <span class="va">$refdata</span> --nanopore <span class="va">$reads</span> -o quast_test_output_base_plast</code></pre></div>
 <p>The end.</p>
 </div>
 
