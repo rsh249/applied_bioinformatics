@@ -1,0 +1,288 @@
+---
+title: "Bash Lab"
+author: "Jordan Callahan"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+[home](https://rsh249.github.io/applied_bioinformatics)
+
+### Spring 2019
+
+```{bash, include=FALSE, eval=F}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bash script for analysis of DNA sequence data of:
+
+Michael, T.P., Jupe, F., Bemm, F., Motley, S.T., Sandoval, J.P., Lanz, C., Loudet, O., Weigel, D. and Ecker, J.R., 2018. High contiguity Arabidopsis thaliana genome assembly with a single nanopore flow cell. Nature communications, 9(1), p.541.
+https://www.nature.com/articles/s41467-018-03016-2.pdf
+
+## Data Files: 
+
+https://www.ebi.ac.uk/ena/data/view/PRJEB21270
+ENA ID: PRJEB21270
+
+## Programs used: 
+
+minimap, Canu, racon, bwa, pilon, QUAST, NanoStat, Nanoplot, ggplot.
+
+
+# Summary commands and stats: 
+
+## Setting bash variables
+
+This allows for a more simplified way of coding
+
+```{bash1, eval=F}
+datapath='/usr/share/data/proj_data/thale_cress'
+logfile='log.txt'
+touch $logfile
+
+echo $datapath > $logfile
+
+ls -lh $datapath
+
+```
+
+## File Accounting
+
+Using the commands below will allow you to determine the number of files in your directory. Grep will look for how many files contain the name fastq and count how many times it appears in the directory. We then want to save the number of files as a bash variable and use echo to relay how many data files in a complete sentence.
+
+```{bash2, eval=F}
+numfiles=$(ls -l $datapath | grep "fastq" | wc -l)
+echo "There are $numfiles files in $datapath"
+```
+
+## File size
+
+Use these commands to get the file size.
+
+```{bash3, eval=F}
+du -h $datapath/*fastq*
+```
+
+## Number of records
+
+To figure out how many individual reads you are dealing with per file, or in total, we will be using 'wc' or 'grep'
+
+```{bash4, eval=F}
+wc -l /usr/share/data/proj_data/thale_cress//ERR2173373.fastq
+```
+
+This will count the number of lines but this number needs to be divided by 4 because each read entry consists of 4 lines. A better way is to use grep. Use 'z' in front of grep or cat to unzip the gz files.
+
+```{bash5, eval=F}
+grep -c "$@ERR" /usr/share/data/proj_data/thale_cress//ERR2173373.fastq
+zgrep -c "$@ERR" $datapath/*.fastq.gz
+```
+
+## Read Length Distribution 
+
+Used to determine how long your sequence reads are, we expect to see long reads because most of the files are MinION data. Short reads are often seen in Illumina data files. This will also create a read length text file that stores the read lengths. To view this file use "less ~/readlengths.txt"
+
+```{bash6, eval=F}
+cat /usr/share/data/proj_data/thale_cress/ERR2173373.fastq | awk '{if(NR%4==2) print length($1)}' | sort -n | uniq -c > ~/readlengths.txt
+```
+
+# Quality Stats
+
+We are going to use nanostat, (https://github.com/wdecoster/nanostat) installed via Anacondato, calculate various statistics from a long read sequencing dataset in fastq files. The general summary will include mean read length, read quality, number of reads, and a few other basecalling statistics. Warning: This step takes some time.
+
+```{bash7, eval=F}
+#jcallahan@neotoma1:~$ #The following commands are done in the home directory rather than the projects folder
+
+NanoStat -t 6 --fastq $datapath/*.fastq.gz >> $logfile 
+#Generates stats for all files ending in ".fastq.gz" and puts them in a logfile
+
+NanoStat -t 6 --fastq /usr/share/data_proj_data/thale_cress/ERR2173373.fastq.gz 
+#Generates stats for specific file, this is the file for the minion data only
+
+# Nanoplot 
+Nanoplot --fastq $datapath/ERR2173373.fastq.gz --outd nanoplot_thale_cress
+
+#Filtering
+#Cut off quality @ 7 grep the @ for starting file and filtered file too see the change.
+gunzip -c $datapath/ERR2173373.fastq.gz | NanoFilt -q 7 | gzip > highQuality-TCreads.fastq.gz
+
+grep -c "@" /usr/share/data/proj_data/thale_cress/ERR2173373.fastq.gz
+#9436354
+grep -c "@" highQuality-TCreads.fastq.gz
+#9126407, some reads did not pass the quality of 7.
+
+```
+
+# Analysis Steps
+
+## ONT assembly and correction
+
+1) Minimap was used to map and assemble ONT reads without an error correction stage. Recommended parameters: (-Sw5 -L100 -m0).
+
+2) Canu assemblies were generated using the complete canu pipeline through correction, trimming, and assembly stages. Default parameters were also used.
+Once the three stages are complete, canu spits out the best overlap graph (BOG), contigs, an assembly graph, summary stats and identifies sequencing errors.
+
+```{bash8, eval=F}
+canu -p thale-cress0 -d canucress genomeSize=135m maxMemory=80g maxThreads=16 -nanopore-raw $datapath/ERR2173373.fastq.gz > logcanu0
+```
+
+3) Racon used minimap overlaps to generate high-quality consensus sequences and applied three times for further polishing.
+This was done using mapping info from minimap to build a partial-order alignment (POA) graph.
+
+```{bash9, eval=F}
+
+#Iteration 1:
+#Map reads to assembly using minimap:
+minimap -Sw5 -L100 -m0 -t16 $assembly $reads > mapIT01.paf
+
+#Where: + “-t2” specifies 2 threads (optional for this small example) + “Sw5” ????? + “-m0” specifies to never merge chains. + “-L100” requires matches to be at least 100 base pairs in length
+
+
+#Then we take those mapped data and generate a consensus sequence over the assembly using racon.
+racon -t 16 $reads mapIT01.paf $assembly > mapIT01.fa
+
+#Iteration 2:
+minimap -Sw5 -L100 -m0 -t16 mapIT01.fa $reads > mapIT02.paf
+racon -t16 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+
+#Iteration 3: 
+minimap -Sw5 -L100 -m0 -t16 mapIT02.fa $reads > mapIT03.paf
+racon -t16 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
+```
+
+
+4) The resulting assembly was then polished using the Burrows-Wheeler Alignment tool (BWA) to align short sequencing reads, in this study Illumina PCR-free 2 x 250 bp reads, against a large reference sequence, allowing mismatches and gaps. Seen in next chunk of code.
+
+5) Pilon further polishes the assemblies by calling sequence variants of multiple sizes, correcting bases, fixing mis-assemblies and filling gaps. 
+This step allows for the identification of small variants with high accuracy and biologically relevant genes by generating more contiguous genomes with fewer errors.
+
+```{bash10, eval=F}
+cp $assembly ./
+
+aslocal=thale-cress0.contigs.fasta #or name of assembly contigs
+
+bwa index $aslocal #call local copy of assembly file by name here because bwa needs write access
+
+bwa mem -t 4 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+samtools index WGS.sorted.bam
+
+#grab pilon jar file
+
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar
+
+#run java pilon to control memory and thread use
+java -Xmx256G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 8 --outdir pilonpolish
+
+ls -lh pilonpolish
+```
+
+
+6) QUAST generated genome stats to compare assembly quality and calculate various metrics like N50 or the # of ORFs.
+
+```{bash11, eval=F}
+
+#Accessing References Genome
+datapath='/usr/share/data/proj_data/thale_cress'
+reads=$datapath/ERR2173373.fastq.gz
+assembly=~/thale_cress_assembly/canucress/thale-cress0.contigs.fasta
+mkdir polishcress
+cd polishcress
+
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/plant/Arabidopsis_thaliana/reference/GCF_000001735.4_TAIR10.1/GCF_000001735.4_TAIR10.1_genomic.fna.gz
+gunzip GCF_000001735.4_TAIR10.1_genomic.fna.gz
+refdata=GCF_000001735.4_TAIR10.1_genomic.fna
+
+quast.py $assembly -R $refdata --nanopore $reads -o quast_cress_output_base
+
+
+#For other assemblies, we will run quast for each of the racon polished references: 
+quast.py ~/thale_cress_assembly/polishcress/mapIT01.fa -R $refdata --nanopore $reads -o quast01_cress_output_base
+#ran in polishcress
+quast.py ~/thale_cress_assembly/polishcress/mapIT02.fa -R $refdata --nanopore $reads -o quast02_cress_output_base
+
+quast.py ~/thale_cress_assembly/polishcress/mapIT03.fa -R $refdata --nanopore $reads -o quast03_cress_output_base
+
+
+#Quast for pilon polished assembly
+
+quast.py ~/thale_cress_assembly/piloncress/pilonpolish/pilon.fasta -R $refdata --nanopore $reads -o quastp_cress_output_base
+
+```
+
+
+## Genome assembly validation and comparison
+
+7) Genome-wide quality values for SNPs, insertions, and contigs were calculated. 
+
+```{bash12, eval=F}
+#Observing Differences using dnadiff
+
+mkdir dnacress #(in polishcress folder)
+dnadiff -p ref ../$refdata ~/thale_cress_assembly/canucress/thale-cress0.contigs.fasta
+
+dnadiff -p one ../$refdata ../mapIT01.fa
+
+dnadiff -p two ../$refdata ../mapIT02.fa
+
+dnadiff -p three ../$refdata ../mapIT03.fa
+
+#look at %Identity
+grep "TotalSNPs" *.report
+
+grep "TotalIndels" *.report
+
+#run this in dnacress
+dnadiff -p pilon ../$refdata ~/thale_cress_assembly/piloncress/pilonpolish/pilon.fasta
+
+```
+
+8) Gene Annotation 
+Found the top hits for the gene annotation using ggplot to visualize. 
+
+```{bash13, eval=F}
+##Prodigal gene prediction
+prodigal.linux -i ~/thale_cress_assembly/canucress/thale-cress0.contigs.fasta -o prodigal.test -a proteins.faa
+
+
+```
+
+```{r, eval=F}
+#went onto the GOFEAT website to annotate the proteins.faa file 
+#uploaded csv file and now attempting to read it
+
+Genedata <- read.csv("project_1603.csv", header=TRUE, sep = ';')
+Goterm = Genedata$Gene.onthology
+Goterm = na.omit(Goterm)
+GoID = list()
+for(i in 1:length(Goterm)){
+  GoID[[i]]=strsplit(as.character(Goterm[i]), '[|]')
+  }
+
+u.GoID = unlist(GoID)
+#now plot categorial variables using ggplot
+library(forcats)
+
+u.GoID = as.data.frame(unlist(GoID))
+colnames(u.GoID) = c('GoID')
+
+counts = plyr::count(u.GoID)
+
+counts = counts[order(counts$freq, decreasing=TRUE),]
+
+tophits = counts[1:25,'GoID']
+
+topID = as.data.frame(u.GoID[u.GoID[,1] %in% tophits,])
+colnames(topID) = c('GoID')
+
+
+library(forcats)
+ggplot(data=topID) +
+  geom_bar(aes(x=fct_infreq(GoID))) +
+  xlab('') +
+  theme(axis.text.x  = element_text(angle=90, size=8)) +
+  ggtitle("Top 25 gene hits")
+```
+
+One of the original goals of the research paper, from which this data file was retrieved, was to determine the best way to assembly a genome in order to resolve a complex region of the genome. They were able to validate the contiguity and quality of the assembly with two independent single-molecule technologies, Bionano optical genome maps and Pacific Biosciences Sequel sequencing. In an attempt to replicate this study, I built a canu assembly using the minION data file only and polished the resulting assembly with 3 rounds of racon and one round of pilon, as they did in the research article. I then gathered the genome statistics of each round of polishing and compaired it to the initial canu assembly and the reference genome using dnadiff and QUAST.
+
+[home](https://rsh249.github.io/applied_bioinformatics)

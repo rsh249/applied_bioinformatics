@@ -1,0 +1,144 @@
+#Coding for Project
+#Kraken2: a taxonomic classification system that assigns taxonomic labels to short DNA reads. This database includes complete bacterial, archaeal, and viral genomes. This program compares the k-mers within a sequence to the k-mers within its database to classify what organisms contain the same sequences. 
+#Setting up an analysis: add the following on ubuntu:
+#get to folder containing data (oryza) and then do the following:
+##set a variable
+##make directory 
+##minikraken=/usr/share/data/minikraken2
+## targdata=/usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+
+#**can make a text file with the previous and following coding as a shortcut, use command bash followed by file name to run
+
+#run kraken with the following:
+
+##kraken2 --db $minikraken  --threads 6 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+#fullkraken=/usr/share/data/krakendb/nt-custom
+#datapath=/usr/share/data/proj_data/oryza/FAH27966_raw
+#kraken2 --db $fullkraken  --threads 6 --use-names --report kreport.tab --fastq-input $datapath/final.fastq > kraken.out
+
+##then do: wc -l $targdata 2649820 /usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+#this will give you the possible contamination within your sample, and gives taxonomy of what organism was found in the oryza sample. 
+
+#centrifuge: compares reads to a database, the data compared will show the number of short reads that are specific or non-specific matches 
+#put the following coding:
+## centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass
+##ls into creport.tab and then cat creport.tab to see results
+## can use R to organize data
+
+#centrifuge output using R: 
+#                        name taxID taxRank genomeSize numReads numUniqueReads
+#19     Sorangium cellulosum    56 species   13907952     1484            876
+#181        Escherichia coli   562 species    7379307     2240            799
+#386   Staphylococcus aureus  1280 species    5769964     1187            656
+#85  Pseudomonas fluorescens   294 species    6526868     1188            497
+#140 Acinetobacter baumannii   470 species    4011582     1507            490
+#81   Pseudomonas aeruginosa   287 species    6508174     1656            486
+
+#Oryza Polishing
+#basecalling was time consuming due to huge amount of data
+#make rmarkdown blog to show workflow of project
+#SETUP
+#datapath=/usr/share/data/proj_data/oryza
+#reads=$datapath/FAH27966_raw/final.fastq
+#assembly=~/oryza_project/canu_oryza/oryza_FAH27966.contigs.fasta
+
+#create a directory for polish testing
+#mkdir polishtest
+#cd polishtest
+#polishing is important for removing mismatched pairs and indels.
+
+#Quast: compares and assembles genome to reference genome
+#get reference genome:
+### Check a reference
+
+#wget ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+#gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+#refdata=/usr/share/data/proj_data/oryza/reference/riceref.fa
+
+#/usr/bin/bbmap/bbmap.sh ref=$refdata in=reads.fq outm=mapped.fq outu=umapped.fq
+
+#quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base
+
+#Minimap/racon: polishing, compares the assembled genome to the reference genome, removing anything that is in the wrong place
+#Iteration 1:
+# Map reads to assembly using minimap:
+#minimap -Sw5 -L100 -m0 -t16 $assembly $reads > mapIT01.paf
+#Where: + “-t2” specifies 2 threads (optional for this small example) + “Sw5” ????? + “-m0” specifies to never merge chains. + “-L100” requires matches to be at least 100 base pairs in length.
+#Then we take those mapped data and generate a consensus sequence over the assembly using racon., took 4 min
+#racon -t 16 $reads mapIT01.paf $assembly > mapIT01.fa
+
+#Iteration 2:
+#minimap -Sw5 -L100 -m0 -t16 mapIT01.fa $reads > mapIT02.paf
+#racon -t 16 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+
+#Iteration 3:
+#minimap -Sw5 -L100 -m0 -t16 mapIT02.fa $reads > mapIT03.paf
+#racon -t 16 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
+
+#Differences: dnadiff: removes differences that could have been undetected by the above polishing programs
+
+#mkdir dnaoryza
+#dnadiff -p ref $refdata $assembly &
+#dnadiff -p one $refdata mapIT01.fa &
+#dnadiff -p two $refdata mapIT02.fa &
+#dnadiff -p three $refdata mapIT03.fa &
+
+#Then look at the *.report files
+
+#less ref.report
+#Look at %Identity between runs but also look at the number of SNPs and indels reported. How is polishing changing this (already very good) assembly?
+  
+#grep "TotalSNPs" *.report
+#grep "TotalIndels" *.report
+
+#Other polishing
+#cp $assembly ./
+#aslocal=oryza_FAH27966.contigs.fasta #or name of assembly contigs
+#bwa index $aslocal #call local copy of assembly file by name here because bwa needs write access
+#bwa mem -t 16 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+#check with top to see whats running
+#samtools index WGS.sorted.bam
+
+#grab pilon jar file
+#wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+#run java pilon to control memory and thread use
+#java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 16 --outdir pilonpolish
+#ls -lh pilonpolish
+
+#Prodigal gene prediction
+#prodigal.linux -i ~/oryza_project/oryza_FAH27966.contigs.fasta -o prodigal.test -a proteins.faa
+
+#Filter reads by mapping to a reference genome
+#wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+#gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+
+#reads=/usr/share/data/proj_data/oryza/merge_data/final.fastq
+
+#aslocal=39947_ref_IRGSP-1.0_chrPltd.fa
+
+#bwa index $aslocal 
+#bwa mem -t 8 $aslocal $reads | samtools view -F 4 -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+#samtools index WGS.sorted.bam
+#samtools fastq WGS.sorted.bam > output.fastq 
+
+#canu -p plast -d plast_canu genomeSize=135k maxThreads=8  -nanopore-raw output.fastq &
+
+#Quast Chloroplast: Assembles chloroplast genome while comparing to reference genome
+#SETUP
+#datapath=/home/gdesrochers/oryza_project/plast_canu
+#reads=$datapath/plast.correctedReads.fasta.gz
+#assembly=~/oryza_project/plast_canu/plast.correctedReads.fasta.gz
+#create a directory for polish testing
+#mkdir polishtest_plastid
+#cd polishtest_plastid
+#wget ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+#gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+#refdata=/usr/share/data/proj_data/oryza/reference/riceref.fa
+#/usr/bin/bbmap/bbmap.sh ref=$refdata in=reads.fq outm=mapped.fq outu=umapped.fq
+#quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base_plast
+
+#nanoplots of quality scores and overall coverage- is quast output
+#which parts of the chloroplast genome are covered, see if Racon improves genome
+

@@ -120,7 +120,9 @@ Reading 9 (April 11)
 <a href = "https://www.nature.com/articles/d41586-018-05462-w"> New human gene tally reignites debate
 
 
-Week 13: Project Workshop
+Week 13: <a href='annotation.html'> Project Workshop + Gene Annotation
+
+Week 13b: <a href='plastmap.html'> Filtering raw reads for plastid genome assembly.
 
 Week 14: Project Presentations
 
@@ -133,7 +135,17 @@ Student written Blogs: <a href='blogs'> HERE
 
 ### Links to Projects
 
-Student project directories <a href='https://github.com/rsh249/applied_bioinformatics/projects'>HERE
+Below are links to blog posts demonstrating the bioinformatic workflows for published Nanopore sequencing projects. These are distributed under the same CC-BY4.0 + MIT license that the rest of the site is, please attribute to the author listed on each page and reference this site. 
+
+<a href='projects/snake_venom/project_blog.html'> Snake venom transcriptomics using R7.3 cDNA sequencing </a> -- With data from: <a href='https://doi.org/10.7717/peerj.1441'> Hargeaves & Mulley, 2015
+
+
+<a href='projects/thale_cress/cressprojectcode.html'> Sequencing the *Arabidopsis thaliana* genome from a single nanopore flowcell! </a> -- Following data and bioinformatics from: <a href='https://www.nature.com/articles/s41467-018-03016-2.pdf'> Michael et. al., 2018
+
+
+
+
+
 
 
 

@@ -1,0 +1,390 @@
+---
+title: "Oryza Sativa Final Coding"
+author: "Gianna Desrochers"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: journal
+    highlight: pygments
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+library(reticulate)
+use_python('/path/to/python') #EDIT
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Kraken2
+Setting up an analysis:
+set a variable and make directory 
+
+```{bash, eval=FALSE}
+minikraken=/usr/share/data/minikraken2
+targdata=/usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+**can make a text file with the previous and following coding as a shortcut, use command bash followed by file name to run
+
+run kraken with the following:
+
+kraken2 --db $minikraken  --threads 6 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+fullkraken=/usr/share/data/krakendb/nt-custom
+datapath=/usr/share/data/proj_data/oryza/FAH27966_raw
+kraken2 --db $fullkraken  --threads 6 --use-names --report kreport.tab --fastq-input $datapath/final.fastq > kraken.out
+```
+
+Then do:
+```{bash, eval=FALSE}
+wc -l $targdata 2649820 /usr/share/data/proj_data/oryza/FAH27966_raw/final.fastq
+```
+this will give you the possible contamination within your sample, and gives taxonomy of what organism was found in the oryza sample. 
+
+#Centrifuge
+put the following coding:
+```{bash, eval=FALSE}
+ centrifuge -p 2 -q -x $centdb -U $targdata -S out.centclass
+ls into creport.tab and then cat creport.tab to see results, can use R to organize data
+```
+
+centrifuge output using R: 
+                        name taxID taxRank genomeSize numReads numUniqueReads
+19     Sorangium cellulosum    56 species   13907952     1484            876
+181        Escherichia coli   562 species    7379307     2240            799
+386   Staphylococcus aureus  1280 species    5769964     1187            656
+85  Pseudomonas fluorescens   294 species    6526868     1188            497
+140 Acinetobacter baumannii   470 species    4011582     1507            490
+81   Pseudomonas aeruginosa   287 species    6508174     1656            486
+
+#Canu
+```{bash, eval=FALSE}
+shortcut of using canu is by using proj_script text file and running it with bash:
+bash proj_script
+```
+
+#Oryza Polishing
+SETUP
+```{bash, eval=FALSE}
+datapath=/usr/share/data/proj_data/oryza
+reads=$datapath/FAH27966_raw/final.fastq
+assembly=~/oryza_project/canu_oryza/oryza_FAH27966.contigs.fasta
+```
+create a directory for polish testing
+```{bash, eval=FALSE}
+mkdir polishtest
+cd polishtest
+```
+
+#Quast
+get reference genome and check a reference:
+```{bash, eval=FALSE}
+wget ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+refdata=/usr/share/data/proj_data/oryza/reference/riceref.fa
+
+/usr/bin/bbmap/bbmap.sh ref=$refdata in=reads.fq outm=mapped.fq outu=umapped.fq
+
+quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base
+```
+
+#Minimap/Racon 
+Iteration 1:
+```{bash, eval=FALSE}
+Map reads to assembly using minimap:
+minimap -Sw5 -L100 -m0 -t16 $assembly $reads > mapIT01.paf
+
+Where: + “-t2” specifies 2 threads (optional for this small example) + “Sw5” ????? + “-m0” specifies to never merge chains. + “-L100” requires matches to be at least 100 base pairs in length.
+
+Then we take those mapped data and generate a consensus sequence over the assembly using racon., took 4 min
+racon -t 16 $reads mapIT01.paf $assembly > mapIT01.fa
+```
+
+Iteration 2:
+```{bash, eval=FALSE}
+minimap -Sw5 -L100 -m0 -t16 mapIT01.fa $reads > mapIT02.paf
+racon -t 16 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+```
+
+Iteration 3:
+```{bash, eval=FALSE}
+minimap -Sw5 -L100 -m0 -t16 mapIT02.fa $reads > mapIT03.paf
+racon -t 16 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
+```
+
+#To Find Differences: dnadiff
+```{bash, eval=FALSE}
+mkdir dnaoryza
+dnadiff -p ref $refdata $assembly &
+dnadiff -p one $refdata mapIT01.fa &
+dnadiff -p two $refdata mapIT02.fa &
+dnadiff -p three $refdata mapIT03.fa &
+```
+Then look at the *.report files
+```{bash, eval=FALSE}
+less ref.report
+Look at %Identity between runs but also look at the number of SNPs and indels reported. 
+  
+grep "TotalSNPs" *.report
+grep "TotalIndels" *.report
+```
+
+#Other Polishing
+pilon:https://github.com/broadinstitute/pilon **Another consensus caller like racon Tutorial: https://denbi-nanopore-training-course.readthedocs.io/en/latest/polishing/pilon/pilon.html
+```{bash, eval=FALSE}
+cp $assembly ./
+aslocal=oryza_FAH27966.contigs.fasta #or name of assembly contigs
+bwa index $aslocal #call local copy of assembly file by name here because bwa needs write access
+bwa mem -t 16 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+samtools index WGS.sorted.bam
+```
+
+#Pilon
+grab pilon jar file
+```{bash, eval=FALSE}
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+run java pilon to control memory and thread use
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 16 --outdir pilonpolish
+ls -lh pilonpolish
+```
+
+#Prodigal Gene Prediction
+```{bash, eval=FALSE}
+prodigal.linux -i ~/oryza_project/oryza_FAH27966.contigs.fasta -o prodigal.test -a proteins.faa
+```
+
+#Filter reads by mapping to a reference genome
+```{bash, eval=FALSE}
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+
+reads=/usr/share/data/proj_data/oryza/merge_data/final.fastq
+
+aslocal=39947_ref_IRGSP-1.0_chrPltd.fa
+
+bwa index $aslocal 
+bwa mem -t 8 $aslocal $reads | samtools view -F 4 -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+samtools index WGS.sorted.bam
+samtools fastq WGS.sorted.bam > output.fastq 
+```
+
+#Run Canu of Chloroplast
+```{bash, eval=F}
+reads=~/oryza_project/output.fastq
+canu -p plast -d plast_canu2 genomeSize=135k maxThreads=48  -nanopore-raw $reads &
+```
+
+#Quast of Chloroplast
+SETUP
+```{bash, eval=FALSE}
+reads=~/oryza_project/output.fastq
+assembly=~/oryza_project/chloroplast/plast_canu2/plast.contigs.fasta
+wget ftp://ftp.ncbi.nih.gov/genomes/Oryza_sativa_Japonica_Group/CHR_Pltd/39947_ref_IRGSP-1.0_chrPltd.fa.gz
+gunzip 39947_ref_IRGSP-1.0_chrPltd.fa.gz
+refdata=39947_ref_IRGSP-1.0_chrPltd.fa
+quast.py $assembly -R $refdata --nanopore $reads -o quast_test_output_base_plast
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The end.
+
+
+
+
+

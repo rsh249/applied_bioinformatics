@@ -1,0 +1,246 @@
+---
+title: "Project Blog"
+author: "Nicholas Perry"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+#Introduction
+
+This is my Project Blog. This is all of the code that I currently have working, as well as the figures that I have made.
+
+Link to Original Study:
+
+[snake_venom](https://doi.org/10.7717/peerj.1441)
+
+#Preliminary Step
+
+```{bash, eval=FALSE}
+cat Eco8_48hr_reads.fasta Eco8_4x8hr_reads.fasta > Eco8.fasta
+```
+
+By using cat, I was able to put all of the Eco8 fasta files into a single fasta file so that canu could be run more easily.
+
+#Canu
+
+```{bash, eval=FALSE}
+canu -p snake_venom -d snake_venom genomeSize=1m maxThreads=8 -nanopore-raw /home/nperry/nperry/snake_venom/Eco6_4x8hr.fasta > canuLogFile
+
+canu -p Eco8_snake_venom -d Eco8_snake_venom genomeSize=1m maxThreads=8 -nanopore-raw /home/nperry/nperry/snake_venom/Eco8.fasta > canuLogFile2
+```
+
+By using canu, I was able to assemble contigs for the Eco6_4x8 reads and the Eco8 reads.
+
+#Setup Directory and Variables
+
+```{bash, eval=FALSE}
+cd /home/nperry/nperry/snake_venom/snake_venom
+
+datapath=/home/nperry/nperry/snake_venom/
+
+reads1=$datapath/Eco6_4x8hr.fasta
+
+reads2=$datapath/Eco8.fasta
+
+assembly1=$datapath/snake_venom/snake_venom.contigs.fasta
+
+assembly2=$datapath/Eco8_snake_venom/Eco8_snake_venom.contigs.fasta
+```
+
+This is the directory that I worked in, as well as variables that I set so I did not have to type the directory in every time.
+
+#Nanopore Polishing Pilon
+
+```{bash, eval=FALSE}
+cp $assembly1 ./
+
+aslocal1=snake_venom.contigs.fasta
+
+bwa index $aslocal1
+
+bwa mem -t 4 $aslocal1 $reads1 | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+samtools index WGS.sorted.bam
+
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal1 --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolish
+
+ls -lh pilonpolish
+
+aslocal2=Eco8_snake_venom.contigs.fasta
+
+bwa index $aslocal2
+
+bwa mem -t 4 $aslocal2 $reads2 | samtools view - -Sb | samtools sort - -@4 -o WGS1.sorted.bam
+
+samtools index WGS1.sorted.bam
+
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal2 --fix all --changes --bam WGS1.sorted.bam --threads 4 --outdir pilonpolish
+
+ls -lh pilonpolish
+```
+
+Using Pilon, I was able to polish the genomes of the Eco6_4x8 reads and the Eco8 reads using the Nanopore data.
+
+#Illumina Polishing Pilon
+
+```{bash, eval=FALSE}
+reads=$datapath/SRR1287715.fastq
+
+cp $assembly2 ./
+
+aslocal=Eco8_snake_venom.contigs.fasta
+
+bwa index $aslocal
+
+bwa mem -t 4 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+samtools index WGS.sorted.bam
+
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolishillumina
+
+ls -lh
+
+cp $assembly1 ./
+
+aslocal=snake_venom.contigs.fasta
+
+bwa index $aslocal
+
+bwa mem -t 4 $aslocal $reads | samtools view - -Sb | samtools sort - -@4 -o WGS.sorted.bam
+
+samtools index WGS.sorted.bam
+
+wget https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar 
+
+java -Xmx64G -jar pilon-1.23.jar --genome $aslocal --fix all --changes --bam WGS.sorted.bam --threads 4 --outdir pilonpolishillumina
+
+ls -lh
+```
+
+Using Pilon, I was able to polish the genomes of the Eco6_4x8 reads and the Eco8 reads using the Illumina data.
+
+#Gene Prediction from Original Assembly
+
+```{bash, eval=FALSE}
+prodigal.linux -i /home/nperry/nperry/snake_venom/snake_venom/snake_venom.contigs.fasta -o prodigal.test -a proteins.faa
+```
+
+```{R, eval=TRUE}
+getwd()
+setwd("/home/nperry/b2gWorkspace")
+library(plyr)
+library(ggplot2)
+library(forcats)
+proteins <- read.delim("blast2go_go_table.txt", header=TRUE, stringsAsFactors = FALSE)
+proteins_split <- strsplit(proteins$GO.Names, ";")
+unlist_proteins_split <- unlist(proteins_split)
+gocounts <- count(unlist(proteins_split))
+gocounts[order(gocounts$freq, decreasing = TRUE),]
+counts <- gocounts[order(gocounts$freq, decreasing = TRUE),]
+tophits = counts[1:25, 'x']
+topproteins <- as.data.frame(unlist_proteins_split[unlist_proteins_split %in% tophits])
+colnames(topproteins)=c("GoNames")
+ggplot(data=topproteins) +
+    geom_bar(aes(x=fct_infreq(GoNames))) +
+    xlab('') +
+    theme(axis.text.x  = element_text(angle=90, size = 5))
+```
+
+
+I am using this to predict the genes from the original assembly. The figure shows which of the predicted proteins had the highest counts.
+
+#Transrate
+
+```{bash, eval=FALSE}
+transrate --assembly snake_venom.contigs.fasta
+
+cd pilonpolishillumina/
+
+transrate --assembly pilon.fasta
+
+cd pilonpolish
+
+transrate --assembly pilon.fasta
+```
+
+I ran Transrate on the snake_venom_contigs file, along with each of the polished files for Eco6_4x8 and Eco_8. Transrate assesses the quality of the assembly.
+
+#NanoStat
+
+```{bash, eval=FALSE}
+NanoStat --fasta Eco6_4x8hr_reads.fasta > ns.file
+NanoStat --fasta Eco8.fasta >ns2.file
+```
+
+I ran NanoStat on on my Eco6 and Eco8 reads so that I could get summary data on the reads.
+
+#Preliminary Figure Information
+
+```{bash, eval=FALSE}
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco6_4x8hr_reads.fasta > readlength2.file
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco6_48hr_reads.fasta > readlength3.file
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco8_48hr_reads.fasta > readlength4.file
+awk '/^>/ {if (seqlen){print seqlen}; printf $0" " ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' Eco8_4x8hr_reads.fasta > readlength5.file
+```
+
+I used the awk command to get all of the read lengths into a file that I could read into R. In R, I would be able to make read distribution graphs for each of the 4 samples.
+
+#Read Length Distribution Figures
+
+```{R, eval=TRUE}
+library(ggplot2)
+getwd()
+setwd("/home/nperry/nperry/snake_venom/")
+eco6_4x8<-read.delim("readlength2.file", header=FALSE, sep=" ", stringsAsFactors = FALSE)
+eco6_4x8$V2=as.numeric(eco6_4x8$V2)
+ggplot(data=eco6_4x8) + geom_histogram(aes(x=eco6_4x8$V2), binwidth=100) + xlim(0,6000)+xlab("Sequence Length")+ggtitle("Eco6_4x8 Read Length Distribution")
+```
+
+This is the read distribution for Eco6_4x8, which had a lot of reads around 2000 base pairs.
+
+```{R, eval=TRUE}
+library(ggplot2)
+getwd()
+setwd("/home/nperry/nperry/snake_venom/")
+eco6_48<-read.delim("readlength3.file", header=FALSE, sep=" ", stringsAsFactors = FALSE)
+eco6_48$V2=as.numeric(eco6_48$V2)
+ggplot(data=eco6_48) + geom_histogram(aes(x=eco6_48$V2), binwidth=100) + xlim(0,6000)+xlab("Sequence Length")+ggtitle("Eco6_48hr Read Length Distribution")
+```
+
+This is the read distribution for Eco6_48hr, which has the most reads around 2000 base pairs. Strangely, this did not assemble in canu.
+
+```{R, eval-TRUE}
+library(ggplot2)
+getwd()
+setwd("/home/nperry/nperry/snake_venom/")
+eco8_48<-read.delim("readlength4.file", header=FALSE, sep=" ", stringsAsFactors = FALSE)
+eco8_48$V2=as.numeric(eco8_48$V2)
+ggplot(data=eco8_48) + geom_histogram(aes(x=eco8_48$V2), binwidth=100) + xlim(0,6000)+xlab("Sequence Length")+ggtitle("Eco8_48hr Read Length Distribution")
+```
+
+This is the read distribution for Eco8_48hr, which had the lowest number of reads around 2000 base pairs. Since it did not have a high number of reads, it was combined with the Eco8_4x8 reads.
+
+```{R, eval=TRUE}
+library(ggplot2)
+getwd()
+setwd("/home/nperry/nperry/snake_venom/")
+eco8_4x8<-read.delim("readlength5.file", header=FALSE, sep=" ", stringsAsFactors = FALSE)
+eco8_4x8$V2=as.numeric(eco8_4x8$V2)
+ggplot(data=eco8_4x8) + geom_histogram(aes(x=eco8_4x8$V2), binwidth=100) + xlim(0,6000)+xlab("Sequence Length")+ggtitle("Eco8_4x8 Read Length Distribution")
+```
+
+This is the read distribution for Eco8_4x8, which had a count of about 4000 for reads around 2000 base pairs. This was combined with Eco8_48 reads. It appears that the 4x8 reads for both Eco6 and Eco8 have a higher read count than the 48 hour reads.
