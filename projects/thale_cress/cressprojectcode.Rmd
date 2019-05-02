@@ -241,7 +241,7 @@ Found the top hits for the gene annotation using ggplot to visualize.
 
 ```{bash13, eval=F}
 ##Prodigal gene prediction
-prodigal.linux -i ~/path/to/assembled.contigs.fa -o prodigal.test -a proteins.faa
+prodigal.linux -i ~/thale_cress_assembly/canucress/thale-cress0.contigs.fasta -o prodigal.test -a proteins.faa
 
 
 ```

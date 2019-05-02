@@ -6,10 +6,13 @@
 # SRA IDs: SAMEA3357010, SAMEA3357043, SAMN07211279, SAMN07211280, SAMEA3357223, SAMEA3357193, SAMEA3357346, SAMEA3357374, SAMEA3357320, SAMN07211281, SAMN07211282, SAMEA3357405
 # Program List: Trim Galore, Albacore, Porechop, Unicycler, Canu, SPAdes, Pilon, Nanopolish, ABySS, Velvet
 
-echo "This is a test of the emergency broadcast system"
 
-datapathO='/usr/share/data/proj_data/pneumonia/5170843'
-datapathI='/usr/share/data/proj_data/pneumonia/517083'
+
+refdata=/home/abaryiames/Lab_Projects/polishtest/GCF_000240185.1_ASM24018v2_genomic.fna
+reads=/usr/share/data/proj_data/pneumonia/5170843/barcode01.fastq
+i_1=/usr/share/data/proj_data/pneumonia/5170831/barcode01_1.fastq.gz
+i_2=/usr/share/data/proj_data/pneumonia/5170831/barcode01_2.fastq.gz
+/all_segments.fasta
 sample_name="barcode01"
 mkdir $sample_name
 cd $sample_name
@@ -20,78 +23,51 @@ echo $datapath > $logfile
 
 ls -lh $datapathO
 
+#Nanoplot - Sequence Statistics, determine the quality of your long reads
 NanoPlot --fastq $datapathO/$sample_name* --outdir Nanoplots
-porechop -i $datapathO/$sample_name* -o chopped.fq
-canu -p canu -d canu_dir genomeSize=5.5m maxThreads=8 -nanopore-raw chopped.fq
 
-#These commands exist to help visualize the data provided by the authors of the paper. Included in these data are the average read length from the sequencing data as well as min length, max length, and file size. This can help analize data manipulation if it is included in bash commands that work with the data. It is then possible to check every step to make sure that the results are expected. 
-#The issue I'm running into is that there are 12 different files I need to visualize from two different sequencing platforms for a total of 24 files.  I need to find a better way to automatically analize all 24 files and write them to a single document.
+#Porechop - Gets rid of adapter seqs so that they don't interfere with assembly (adapter seqs aren't actaully part of the genome)
+porechop -i $datapathO/$sample_name* -o barcode01_chop.fastq
 
+chopped_pore=/home/abaryiames/Lab_Projects/pneumonia_script/barcode01_chop.fastq
 
+#Canu - Assembly. Taking the chopped contigs and fitting them into one 5.5Mb genome
+canu -p canu -d canu_dir genomeSize=5.5m maxThreads=8 -nanopore-raw $chopped_pore
 
-#Annotated Pipeline
+assembly=/home/abaryiames/Lab_Projects/pneumonia_script/barcode01/canu_dir/canu.contigs.fasta
 
-##############################################################################################
-
-#ONT Read Processing -
-# Basecalling by Albacore using the --barcoding option.
-
-# This step converts electrical data to a base-called sequence. Barcoding is a method to separate many samples from a single run.
-
-
-
-#ONT primer trimming -
-# Adapter sequences were trimmed from the reads using Porechop, while also using barcoding binning.
-
-#This step removes the nucleotide adapter sequences so that they don't interfere with data analysis
+#Minimap / Racon - Polishing and statistics. Minimap and Racon polishes the Canu assembly by comparing it to the reference genome.
+minimap -Sw5 -L100 -m0 -t2 $assembly $reads > mapIT01.paf
+racon -t 16 $reads mapIT01.paf $assembly > mapIT01.fa
+minimap -Sw5 -L100 -m0 -t2 mapIT01.fa $reads > mapIT02.paf
+racon -t 16 $reads mapIT02.paf mapIT01.fa > mapIT02.fa
+minimap -Sw5 -L100 -m0 -t2 mapIT02.fa $reads > mapIT03.paf
+racon -t 16 $reads mapIT03.paf mapIT02.fa > mapIT03.fa
 
 
+#Hybrid Assembly - Unicycler is an assembly program that specializes in assembling circular genomes. For the hybrid assembly, the nanopore data was used as a template for the illumona data. This was automatically polished.
+unicycler -1 $i_1 -2 $i_2 -l $chopped_pore -o unicycler_hybrid_assemblies --threads 16
 
-#ONT subsampling -
-# Samples were reduced to a maximum of 500Mbp using an in-house script (fastq_to_fastq.py)
+#Illumina Assembly - This unicycler run was just for illumina data.
+unicycler -1 $i_1 -2 $i_2 -o unicycler_illumina_assemblies --threads 16
 
-#This step discards sequences with low read quality based on their qscores
-
-
-
-#ONT-only Assembly -
-# Subsampled ONT reads were assembled using Canu and Unicycler:
-	#Canu: canu -p canu -d out_dir genomeSize=5.5m -nanopore-raw long.fastq.gz
-	#Unicycler: unicycler -l long.fastq.gz -o out_dir
-
-#These commands use the read data as an input, and outputs a genome sequence
+#Name assemblies
+assemblyO=/home/abaryiames/Lab_Projects/polishtest/mapIT03.fa
+assemblyI=/home/abaryiames/Lab_Projects/pneumonia_script/unicycler_illumina_assemblies/assembly.fasta
+assemblyH=/home/abaryiames/Lab_Projects/pneumonia_script/unicycler_hybrid_assemblies/read_alignment/all_segments.fasta
 
 
 
-#Hybrid Assembly -
-#SPAdes: spades.py -1 short_1.fastq.gz -2 short_2.fastq.gz --nanopore long.fastq.gz -o out_dir --careful
-#Canu+Pilon:
-#canu -p canu -d out_dir genomeSize=5.5m -nanopore-raw long.fastq.gz
-#Then fives rounds of Pilon:
-#bowtie2 --local --very-sensitive-local -I 0 -X 2000 -x before_polish.fasta -1 short_1.fastq.gz -2 short_2.fastq.gz | samtools sort -o alignments.bam -T reads.tmp -; samtools index alignments.bam
-#java -jar ~/pilon-1.22.jar --genome before_polish.fasta --frags alignments.bam --changes --output after_polish --outdir out_dir --fix all
-#Unicycler: unicycler -1 short_1.fastq.gz -2 short_2.fastq.gz -l long.fastq.gz -o out_dir
+#dnadiff - DNA diff compares an assembly to a reference genome for statistical information about the accuracy of the assembly.
+dnadiff -p oxford_pilon $refdata $assemblyO
+dnadiff -p oxford_pilon $refdata $assemblyI
+dnadiff -p oxford_pilon $refdata $assemblyH
 
-#These steps use the ONT read as a template sequence and aligns the illumina reads to it
-
+#Quast.py - Quast is a statisitics program similar to dnadiff. This was used for evaluating the accuracy of the different assemblies.
+quast.py $assemblyO -R $refdata --nanopore $reads -o quast_oxford --threads 16
+quast.py $assemblyI -R $refdata --pe1 $i_1 --pe2 $i_2 -o quast_illumina --threads 16
+quast.py $assemblyH -R $refdata --pe1 $i_1 --pe2 $i_2 --nanopore $reads -o quast_hybrid --threads 16
 
 
-
-#Polishing with Nanopolish -
-#python nanopolish_makerange.py draft.fa | parallel --results nanopolish.results -P 8 nanopolish variants --consensus polished.{1}.fa -w {1} -r reads.fa -b reads.sorted.bam -g draft.fa -t 4 --min-candidate-frequency 0.1
-#python nanopolish_merge.py polished.*.fa > polished_genome.fa
-
-
-#Polishing removes mistakes such as indels and mismatched basepairs
-
-
-
-
-#Error Rate Estimation -
-#Each sample should be assembled independently with Velvet and ABySS using the shell command (assemblied_for_error_rate_estimation.sh)
-#Use MUMmer to select for 10+ kbp contigs where they agree and then use them with BLAST
-#BLAST these contigs and run the shell command assembly_accuracies.sh
-
-#The purpose of these steps is to compare the sequence reads based on their sequencing platforms. 
 
 exit
